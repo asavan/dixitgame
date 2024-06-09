@@ -21,6 +21,7 @@ function onConnectionAnimation(document, connection, logger) {
 }
 
 function setupGameToNetwork({keys, game, connection, logger, myId, serverId}) {
+    logger.log("ServerId", serverId);
     for (const handlerName of keys) {
         logger.log("setup handler", handlerName);
         game.on(handlerName, (n) => {
@@ -38,7 +39,7 @@ export default async function netMode({window, document, settings, rngEngine}) {
 
     const myId = getMyId(window, settings, rngEngine);
     assert(myId, "No net id");
-    const logger = loggerFunc(2, null, settings);
+    const logger = loggerFunc(20, null, settings);
     const connection = connectionFunc(myId, logger, false);
     const socketUrl = getWebSocketUrl(settings, window.location);
     if (!socketUrl) {
@@ -48,11 +49,13 @@ export default async function netMode({window, document, settings, rngEngine}) {
 
     onConnectionAnimation(document, connection, logger);
     const gameWaiter = new Promise((resolve, reject) => {
-        connection.on("open", (serverId) => {
-            logger.log("Server id ", serverId, myId);
+        connection.on("open", (serverData) => {
+            logger.log("Server id ", serverData, myId);
+            const serverId = serverData.data.id;
+            assert(serverId === serverData.from, serverData.from);
             const queue = PromiseQueue(console);
             const lobby = lobbyFunc({window, document, settings, myId});
-            setupGameToNetwork(lobby, connection, logger, myId, serverId);
+            setupGameToNetwork({keys: ["username", "start"], game:lobby, connection, logger, myId, serverId});
             const actions = {"start": (data) => {
                 logger.log("start", data);
                 return;

@@ -55,7 +55,7 @@ export default function connectionFunc(id, logger, isServer) {
                 }
 
                 if (json.to !== id && json.to !== "all") {
-                    logger.log("another user");
+                    logger.log("another user", json, id);
                     return;
                 }
 
