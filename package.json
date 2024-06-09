@@ -1,0 +1,60 @@
+{
+  "name": "drixit",
+  "version": "0.0.1",
+  "author": "Alex Sav",
+  "description": "Drixit game",
+  "private": true,
+  "main": "index.js",
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "ws": "node devtools/ws-server.js",
+    "start": "webpack serve --config webpack_configs/webpack.config.js --mode development",
+    "all": "npm-run-all -p -r ws start",
+    "android": "webpack --config webpack_configs/android.webpack.config.js --mode production",
+    "build": "webpack --config webpack_configs/production.webpack.config.js --mode production",
+    "style": "npx eslint . -c linters/eslint.config.js",
+    "style:fix": "npx eslint . -c linters/eslint.config.js --fix",
+    "style2": "npx stylelint --config linters/.stylelintrc.json \"src/**/*.css\"",
+    "style2:fix": "npx stylelint --config linters/.stylelintrc.json \"src/**/*.css\" --fix",
+    "test": "node --test --test-reporter dot",
+    "test:verbose": "node --test",
+    "test:watch": "node --test --watch ./tests",
+    "test:coverage": "npx c8 node --test --test-reporter dot",
+    "updates": "npx ncu",
+    "updates:fix": "npx ncu -u && npm install"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.0",
+    "@stylistic/eslint-plugin-js": "^2.1.0",
+    "c8": "^9.1.0",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.0",
+    "dependency-cruiser": "^16.3.2",
+    "eslint": "^9.3.0",
+    "globals": "^15.3.0",
+    "html-inline-css-webpack-plugin": "^1.11.2",
+    "html-webpack-plugin": "^5.6.0",
+    "jsdom": "^24.1.0",
+    "madge": "^7.0.0",
+    "mini-css-extract-plugin": "^2.9.0",
+    "npm-check-updates": "^16.14.20",
+    "npm-run-all": "^4.1.5",
+    "stylelint": "^15.11.0",
+    "stylelint-config-standard": "^34.0.0",
+    "terser-webpack-plugin": "^5.3.10",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4",
+    "workbox-webpack-plugin": "^7.1.0",
+    "ws": "8.17.0"
+  },
+  "dependencies": {
+    "@akamfoad/qrcode": "^0.3.2",
+    "esm-seedrandom": "^3.0.5"
+  }
+}

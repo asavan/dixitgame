@@ -1,0 +1,34 @@
+import enterName from "../views/names.js";
+import loggerFunc from "../views/logger.js";
+import {assert} from "../utils/assert.js";
+import handlersFunc from "../utils/handlers.js";
+
+export default function lobby({window, document, settings, myId}) {
+
+    const logger = loggerFunc(2, null, settings);
+
+    assert(myId, "No id");
+
+    const commands = [
+        "username",
+        "start"
+    ];
+
+    const handlers = handlersFunc(commands);
+    function on(name, f) {
+        return handlers.on(name, f);
+    }
+
+    const onNameChange = (name) => {
+        logger.log("change name");
+        return handlers.call("username", {name, externalId: myId});
+    };
+
+    const onConnect = () => {
+        return enterName(window, document, settings, onNameChange);
+    };
+    return {
+        on,
+        onConnect,
+    };
+}
