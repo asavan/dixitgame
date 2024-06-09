@@ -95,9 +95,6 @@ ul {
   background-color: var(--current-color);
 }
 
-
-/* stylelint-enable property-no-vendor-prefix */
-
 .dealer .player-name::after{
   content: "*";
 }

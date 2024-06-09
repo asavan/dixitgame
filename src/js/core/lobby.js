@@ -58,6 +58,7 @@ export default function lobby({window, document, settings, myId, players}) {
     }, players);
 
     function join(name, externalId, isBot) {
+        logger.log("join");
         assert(name, "No name");
         assert(externalId, "No externalId");
         const found = players.findIndex(player => player.externalId === externalId);
@@ -85,11 +86,12 @@ export default function lobby({window, document, settings, myId, players}) {
     };
 
     const onNameChange = (name) => {
-        traceLogger.log("change name");
+        logger.log("change name");
         return handlers.call("username", {name, externalId: myId});
     };
 
     const onConnect = () => {
+        logger.log("onConnect");
         return enterName(window, document, settings, onNameChange);
     };
 

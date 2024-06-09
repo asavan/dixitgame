@@ -67,16 +67,20 @@ export default async function server({window, document, settings, rngEngine}) {
         }
     };
 
+    lobby.on("username", async (data) => {
+        await actions["username"](data);
+    });
+
     connection.registerHandler(actions, queue);
 
     lobby.on("start", (data) => {
         removeElem(qrCodeEl);
         qrCodeEl = undefined;
-        const myIndex = myId;
+        const myIndex = data.players.findIndex(p => p.externalId === myId);
         const presenter = initPresenter({document, settings, rngEngine, queue, myIndex},
             data.players, emptyEngine(settings));
         const loggerActions = loggerFunc(7, null, settings);
-        loggerActions.log(presenter.toJson());
+        loggerActions.log(presenter.state());
         setupGameToNetwork(["start"], lobby, connection, logger);
 
         // connection.registerHandler(unoActions, queue);

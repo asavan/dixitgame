@@ -2,6 +2,9 @@ import newPlayer from "../core/player.js";
 import core from "../core/basic.js";
 import layout from "../views/layout.js";
 
+// TODO delete mb?
+import loggerFunc from "../views/logger.js";
+
 export default function initPresenter({document, settings, myIndex},
     playersRaw,
     {
@@ -12,7 +15,8 @@ export default function initPresenter({document, settings, myIndex},
     }
 ) {
 
-    const players = playersRaw.map((p, i) => newPlayer([12, 34], i, 0, "bot"+i));
+    const logger = loggerFunc(60, null, settings);
+    const players = playersRaw.map((p, i) => newPlayer([12, 34, 4, 5, 7, 77], i, 0, p.name));
 
     function size() {
         return players.length;
@@ -40,8 +44,8 @@ export default function initPresenter({document, settings, myIndex},
         return gameState === core.GameStage.CHOOSE_DEALER;
     };
 
-    layout.drawLayout({document, myIndex, settings, players, dealer});
-
+    layout.drawLayout({document, myIndex, settings, players, dealer, logger});
+    logger.log("Game init");
 
     return {
         state,
