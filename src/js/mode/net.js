@@ -1,9 +1,12 @@
-import {getWebSocketUrl, getMyId} from "../connection/common.js";
+import { getWebSocketUrl, getMyId } from "../connection/common.js";
 import connectionChooser from "../connection/connection_chooser.js";
 import loggerFunc from "../views/logger.js";
 import PromiseQueue from "../utils/async-queue.js";
 import { assert } from "../utils/assert.js";
 import lobbyFunc from "../core/client-lobby.js";
+import initPresenter from "../rules/presenter.js";
+import emptyEngine from "../core/default-engine.js";
+
 
 function onConnectionAnimation(document, connection, logger) {
     connection.on("socket_open", () => {
@@ -20,8 +23,7 @@ function onConnectionAnimation(document, connection, logger) {
     });
 }
 
-function setupGameToNetwork({keys, game, connection, logger, myId, serverId}) {
-    logger.log("ServerId", serverId);
+function setupGameToNetwork({ keys, game, connection, logger, myId, serverId }) {
     for (const handlerName of keys) {
         logger.log("setup handler", handlerName);
         game.on(handlerName, (n) => {
@@ -34,7 +36,7 @@ function setupGameToNetwork({keys, game, connection, logger, myId, serverId}) {
     }
 }
 
-export default async function netMode({window, document, settings, rngEngine}) {
+export default async function netMode({ window, document, settings, rngEngine }) {
     const connectionFunc = await connectionChooser(settings);
 
     const myId = getMyId(window, settings, rngEngine);
@@ -54,14 +56,21 @@ export default async function netMode({window, document, settings, rngEngine}) {
             const serverId = serverData.data.id;
             assert(serverId === serverData.from, serverData.from);
             const queue = PromiseQueue(console);
-            const lobby = lobbyFunc({window, document, settings, myId});
-            setupGameToNetwork({keys: ["username", "start"], game:lobby, connection, logger, myId, serverId});
-            const actions = {"start": (data) => {
-                logger.log("start", data);
-                return;
-            }};
+            const lobby = lobbyFunc({ window, document, settings, myId });
+            setupGameToNetwork({ keys: lobby.actionKeys(), game: lobby, connection, logger, myId, serverId });
+            const actions = {
+                "start": (data) => {
+                    logger.log("start", data);
+                    const myIndex = data.players.findIndex(p => p.externalId === myId);
+                    const presenter = initPresenter({ document, settings, rngEngine, queue, myIndex },
+                        data.players, emptyEngine(settings));
+                    const loggerActions = loggerFunc(7, null, settings);
+                    loggerActions.log(presenter.state());
+                    return;
+                }
+            };
             connection.registerHandler(actions, queue);
-            lobby.onConnect();
+            lobby.afterSetup();
             resolve(lobby);
         });
 

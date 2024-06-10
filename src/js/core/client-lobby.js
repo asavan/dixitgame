@@ -10,8 +10,7 @@ export default function lobby({window, document, settings, myId}) {
     assert(myId, "No id");
 
     const commands = [
-        "username",
-        "start"
+        "username"
     ];
 
     const handlers = handlersFunc(commands);
@@ -24,11 +23,15 @@ export default function lobby({window, document, settings, myId}) {
         return handlers.call("username", {name, externalId: myId});
     };
 
-    const onConnect = () => {
+    const afterSetup = () => {
         return enterName(window, document, settings, onNameChange);
     };
+
+    const actionKeys = () => handlers.actionKeys();
+
     return {
         on,
-        onConnect,
+        actionKeys,
+        afterSetup,
     };
 }

@@ -36,16 +36,16 @@ export default function connectionFunc(id, logger, isServer) {
             logger.log("No queue");
             return;
         }
-        queue.add(() => callback(data.data, data.from));
+        queue.add(() => callback(data));
     }
 
     function connect(socketUrl) {
         return new Promise((resolve, reject) => {
             const signaling = createSignalingChannel(id, socketUrl, logger);
             dataChannel = signaling;
-            signaling.on("error", (id) => {
-                logger.log("Connection to ws error " + id);
-                reject(id);
+            signaling.on("error", (data) => {
+                logger.log("Connection to ws error " + data);
+                reject(data);
             });
 
             signaling.on("message", function(json) {
@@ -78,14 +78,12 @@ export default function connectionFunc(id, logger, isServer) {
                 }
                 if (Object.keys(currentHandler).includes(json.action)) {
                     logger.log("callCurrentHandler");
-                    return callCurrentHandler(json.action, json);
+                    return callCurrentHandler(json.action, json.data);
                 }
                 logger.log("Unknown action " + json.action);
             });
 
-            signaling.on("close", (data) => {
-                return handlers.call("socket_close", data);
-            });
+            signaling.on("close", data => handlers.call("socket_close", data));
 
             signaling.on("open", () => {
                 handlers.call("socket_open", {});

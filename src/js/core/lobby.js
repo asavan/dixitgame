@@ -46,9 +46,9 @@ export default function lobby({window, document, settings, myId, players}) {
         }
     };
 
-    function banPlayer(id1) {
-        logger.log("banPlayer " + id1);
-        players[id1].banned = true;
+    function banPlayer(playerIndex) {
+        logger.log("banPlayer " + playerIndex);
+        players[playerIndex].banned = true;
     }
 
     const renderChoosePlace = () => choosePlaceFunc(document, {
@@ -90,8 +90,8 @@ export default function lobby({window, document, settings, myId, players}) {
         return handlers.call("username", {name, externalId: myId});
     };
 
-    const onConnect = () => {
-        logger.log("onConnect");
+    const afterSetup = () => {
+        logger.log("afterSetup");
         return enterName(window, document, settings, onNameChange);
     };
 
@@ -132,12 +132,15 @@ export default function lobby({window, document, settings, myId, players}) {
 
     const canSeeGame = (externalId) => hasExternalPlayer(externalId);
 
+    const actionKeys = () => handlers.actionKeys();
+
     return {
         on,
+        actionKeys,
+        afterSetup,
         join,
         canSeeGame,
         toJson,
-        onConnect,
         afterAllJoined,
         disconnect,
     };

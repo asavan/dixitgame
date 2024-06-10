@@ -49,13 +49,13 @@ function drawMyHand({document, myIndex, settings, players, logger, dealer, onCho
     }
 
     drawHand(document, elem, myPlayer.pile(), settings);
-    elem.addEventListener("click", async (e) => {
+    elem.addEventListener("click", (e) => {
         e.preventDefault();
         const cardEl = e.target.parentElement;
         if (cardEl && cardEl.classList.contains("card")) {
             const card = Number.parseInt(cardEl.dataset.card);
             logger.log(card);
-            chooseCard(document, card).then(onChoose).catch((e) => logger.error(e));
+            return chooseCard(document, card).then(onChoose).catch((e) => logger.error(e));
         }
     });
 

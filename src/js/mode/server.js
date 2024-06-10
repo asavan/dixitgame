@@ -8,6 +8,7 @@ import lobbyFunc from "../core/lobby.js";
 import initPresenter from "../rules/presenter.js";
 import emptyEngine from "../core/default-engine.js";
 
+
 function setupGameToNetwork(keys, game, connection, logger) {
     for (const handlerName of keys) {
         logger.log("setup handler " + handlerName);
@@ -97,7 +98,7 @@ export default async function server({window, document, settings, rngEngine}) {
 
     connection.on("open", (con) => {
         ++index;
-        clients[con.id] = {"index": index};
+        clients[con.id] = {index};
         logger.log("connected", con);
         if (lobby.canSeeGame(con.id)) {
             return connection.sendRawTo("start", lobby.toJson(), con.id);
@@ -106,6 +107,6 @@ export default async function server({window, document, settings, rngEngine}) {
         }
     });
 
-    lobby.onConnect();
+    lobby.afterSetup();
     await connection.connect(socketUrl);
 }

@@ -6,6 +6,8 @@ import handlersFunc from "../utils/handlers.js";
 import { assert } from "../utils/assert.js";
 import loggerFunc from "../views/logger.js";
 
+// import dixit from "./dixit.js";
+
 
 export default function game(data) {
     const {playersRaw, dealer, direction, rngEngine, settings} = {...data};
@@ -13,24 +15,10 @@ export default function game(data) {
 
     const logger = loggerFunc(70, null, settings);
 
-
     const commands = [
         "shuffle",
-        "shuffleFake",
-        "draw",
-        "discard",
-        "discardExternal",
-        "move",
-        "clearPlayer",
-        "clearPlayerExternal",
-        "changeCurrent",
-        "changeCurrentExternal",
-        "changeDealer",
-        "gameover",
-        "roundover",
-        "pass",
-        "drawExternal",
-        "moveExternal"
+        "deal",
+        "move"
     ];
 
     const handlers = handlersFunc(commands);
@@ -77,6 +65,7 @@ export default function game(data) {
     const toJson = () => {
         return {gameState};
     };
+
 
 
     return {

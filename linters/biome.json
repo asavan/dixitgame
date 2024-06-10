@@ -14,7 +14,7 @@
         "indentStyle": "space",
         "indentWidth": 4,
         "lineEnding": "crlf",
-        "lineWidth": 120,
+        "lineWidth": 100,
         "attributePosition": "auto",
         "ignore": []
     },
@@ -47,7 +47,7 @@
             "quoteProperties": "asNeeded",
             "trailingCommas": "none",
             "semicolons": "always",
-            "arrowParentheses": "always",
+            "arrowParentheses": "asNeeded",
             "bracketSpacing": true,
             "bracketSameLine": false
         },
