@@ -4,6 +4,7 @@ import {drawBack, drawCard, repaintCard} from "./basic_views.js";
 
 import shuffle from "./shuffle.js";
 
+import chooseCard from "./choose_card.js";
 
 function showCards(settings) {
     return settings.showAll || settings.clickAll;
@@ -20,7 +21,7 @@ function drawHand(document, parent, pile) {
     return hand;
 }
 
-function drawMyHand({document, myIndex, settings, players, logger, dealer}, box) {
+function drawMyHand({document, myIndex, settings, players, logger, dealer, onChoose}, box) {
     const myPlayer = players[myIndex];
     const elem = document.createElement("div");
     elem.classList.add("my-hand", "js-player");
@@ -42,17 +43,22 @@ function drawMyHand({document, myIndex, settings, players, logger, dealer}, box)
     elem.appendChild(statusRow);
     elem.dataset.id = myIndex;
 
+    logger.log("drawMyHand", {dealer, myIndex});
     if (dealer === myIndex) {
         elem.classList.add("dealer");
     }
 
     drawHand(document, elem, myPlayer.pile(), settings);
-    elem.addEventListener("click", (e) => {
+    elem.addEventListener("click", async (e) => {
         e.preventDefault();
         const cardEl = e.target.parentElement;
         if (cardEl && cardEl.classList.contains("card")) {
             const card = Number.parseInt(cardEl.dataset.card);
             logger.log(card);
+            const res = await chooseCard(document, card);
+            if (typeof onChoose === "function") {
+                onChoose(res);
+            }
         }
     });
 
@@ -60,7 +66,8 @@ function drawMyHand({document, myIndex, settings, players, logger, dealer}, box)
 }
 
 
-function drawLayout({document, myIndex, settings, players, dealer, logger}) {
+function drawLayout(data) {
+    const {document, myIndex, settings, players, dealer, logger} = {...data};
     const box = document.querySelector(".places");
     box.replaceChildren();
     const places = document.createElement("ul");
@@ -125,7 +132,7 @@ function drawLayout({document, myIndex, settings, players, dealer, logger}) {
 
         places.appendChild(elem);
     }
-    drawMyHand({document, myIndex, settings, players, logger}, box);
+    drawMyHand(data, box);
 }
 
 async function drawDeal(window, document, card, animTime) {

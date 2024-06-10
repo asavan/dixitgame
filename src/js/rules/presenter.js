@@ -44,7 +44,11 @@ export default function initPresenter({document, settings, myIndex},
         return gameState === core.GameStage.CHOOSE_DEALER;
     };
 
-    layout.drawLayout({document, myIndex, settings, players, dealer, logger});
+    const onChoose = (card) => {
+        logger.log("YEY card", card);
+    };
+
+    layout.drawLayout({document, myIndex, settings, players, dealer, logger, onChoose});
     logger.log("Game init");
 
     return {

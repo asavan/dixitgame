@@ -7,7 +7,7 @@
   --main-color: #F0F8FF;
   --player-color: chartreuse;
   --field-size: 4;
-  --card-width: 50px;
+  --card-width: 120px;
   --color-green: #5A5;
   --color-red: #F55;
   --color-yellow: #FA0;
@@ -228,7 +228,7 @@ footer {
   background-color: var(--current-color);
   transition: background-color 500ms linear;
   width: 100%;
-  max-width: 500px;
+  max-width: 430px;
   height: 100%;
   display: block;
   position:relative;
@@ -268,12 +268,11 @@ footer {
   top: 0;
   left: 0;
   grid-template-areas:
-    'r y'
-    'r y'
-    'g b'
-    'g b'
-    'c c';
-  opacity: 0.8;
+    'a'
+    'a'
+    'a'
+    'a'
+    'c';
   grid-gap: 5px;
 }
 
@@ -282,29 +281,14 @@ footer {
   grid-area: c;
 }
 
-.color-grid > li {
+.main-card {
+  grid-area: a;
+}
+
+.color-grid > div {
   cursor: pointer;
 }
 
-.green {
-  background-color: var(--color-green);
-  grid-area: g;
-}
-
-.blue {
-  background-color: var(--color-blue);
-  grid-area: b;
-}
-
-.yellow {
-  background-color: var(--color-yellow);
-  grid-area: y;
-}
-
-.red {
-  background-color: var(--color-red);
-  grid-area: r;
-}
 
 .player {
   background-color: aliceblue;
@@ -470,12 +454,13 @@ footer {
   background-image: url("../images/deck.png");
   background-size: 1400%;
   display:block;
-  animation: flying-cards-animation 3s steps(8, end) infinite;
+  animation: flying-cards-animation 10s steps(10) infinite;
 }
 
 @keyframes flying-cards-animation {
-  0% { background-position: 300% 800%  }
-  100% { background-position: 300% 0% }
+  0% { background-position: 0 0  }
+  30% { background-position: 1000% 0% }
+  100% { background-position: 1000% 0% }
 }
 
 
