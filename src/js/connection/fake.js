@@ -1,6 +1,10 @@
 import handlersFunc from "../utils/handlers.js";
 import { delay } from "../utils/timer.js";
 
+function stub() {
+    // do nothing.
+}
+
 export default function connectionFunc(id, logger, isServer) {
     const handlers = handlersFunc([
         "close",
@@ -55,9 +59,8 @@ export default function connectionFunc(id, logger, isServer) {
         await delay(100);
     }
 
-    const sendRawTo = () => {};
-
-    const sendRawAll = () => {};
+    const sendRawTo = stub;
+    const sendRawAll = stub;
 
     return {
         connect,

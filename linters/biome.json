@@ -1,22 +1,108 @@
 {
+    "files": {
+        "ignore": [
+            "src/js/lib/**"
+        ],
+        "include": [
+            "src/**",
+            "tests/**"
+        ]
+    },
     "formatter": {
         "enabled": true,
         "formatWithErrors": false,
-        "ignore": [],
-        "attributePosition": "auto",
         "indentStyle": "space",
         "indentWidth": 4,
         "lineEnding": "crlf",
-        "lineWidth": 120
+        "lineWidth": 120,
+        "attributePosition": "auto",
+        "ignore": []
+    },
+    "linter": {
+        "rules": {
+            "recommended": true,
+            "complexity": {
+                "useArrowFunction": "off",
+                "useLiteralKeys": "off",
+                "useOptionalChain": "off",
+                "noExtraBooleanCast": "error",
+                "noMultipleSpacesInRegularExpressionLiterals": "error",
+                "noUselessCatch": "error",
+                "noWith": "error"
+            },
+            "correctness": {
+                "noConstAssign": "error",
+                "noConstantCondition": "error",
+                "noEmptyCharacterClassInRegex": "error",
+                "noEmptyPattern": "error",
+                "noGlobalObjectCalls": "error",
+                "noInvalidConstructorSuper": "error",
+                "noInvalidNewBuiltin": "error",
+                "noNonoctalDecimalEscape": "error",
+                "noPrecisionLoss": "error",
+                "noSelfAssign": "error",
+                "noSetterReturn": "error",
+                "noSwitchDeclarations": "error",
+                "noUndeclaredVariables": "error",
+                "noUnreachable": "error",
+                "noUnreachableSuper": "error",
+                "noUnsafeFinally": "error",
+                "noUnsafeOptionalChaining": "error",
+                "noUnusedLabels": "error",
+                "noUnusedPrivateClassMembers": "error",
+                "noUnusedVariables": "error",
+                "useIsNan": "error",
+                "useValidForDirection": "error",
+                "useYield": "error"
+            },
+            "style": {
+                "noUselessElse": "off",
+                "useTemplate": "off"
+            },
+            "suspicious": {
+                "noAsyncPromiseExecutor": "error",
+                "useAwait": "error",
+                "noCatchAssign": "error",
+                "noClassAssign": "error",
+                "noCompareNegZero": "error",
+                "noControlCharactersInRegex": "error",
+                "noDebugger": "error",
+                "noDuplicateCase": "error",
+                "noDuplicateClassMembers": "error",
+                "noDuplicateObjectKeys": "error",
+                "noDuplicateParameters": "error",
+                "noEmptyBlockStatements": "error",
+                "noFallthroughSwitchClause": "error",
+                "noFunctionAssign": "error",
+                "noGlobalAssign": "error",
+                "noImportAssign": "error",
+                "noMisleadingCharacterClass": "error",
+                "noPrototypeBuiltins": "error",
+                "noRedeclare": "error",
+                "noShadowRestrictedNames": "error",
+                "noUnsafeNegation": "error",
+                "useGetterReturn": "error",
+                "useValidTypeof": "error"
+            }
+        }
     },
     "javascript": {
         "formatter": {
-            "arrowParentheses": "always",
-            "bracketSameLine": false,
-            "bracketSpacing": true,
             "jsxQuoteStyle": "double",
             "quoteProperties": "asNeeded",
+            "trailingCommas": "none",
             "semicolons": "always",
+            "arrowParentheses": "always",
+            "bracketSpacing": true,
+            "bracketSameLine": false
+        },
+        "globals": [
+            "__USE_SERVICE_WORKERS__",
+            "__SERVICE_WORKER_VERSION__"
+        ]
+    },
+    "json": {
+        "formatter": {
             "trailingCommas": "none"
         }
     },
@@ -31,32 +117,5 @@
         "linter": {
             "enabled": true
         }
-    },
-    "json": {
-        "formatter": {
-            "trailingCommas": "none"
-        }
-    },
-    "linter": {
-        "rules": {
-            "complexity": {
-                "useLiteralKeys": "off",
-                "useArrowFunction": "off",
-                "useOptionalChain": "off"
-            },
-            "style": {
-                "useTemplate": "off",
-                "noUselessElse": "off"
-            }
-        }
-    },
-    "files": {
-        "include": [
-            "src/**",
-            "tests/**"
-        ],
-        "ignore": [
-            "src/js/lib/**"
-        ]
     }
 }

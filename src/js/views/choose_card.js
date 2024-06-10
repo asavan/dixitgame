@@ -19,11 +19,10 @@ export default function chooseCard(document, card) {
         places.appendChild(colorItem);
         const cancel = document.createElement("li");
         cancel.classList.add("cancel-color");
-
         cancel.addEventListener("click", e => {
             e.preventDefault();
             box.replaceChildren();
-            reject();
+            reject("chooseCard cancel");
         });
         places.appendChild(cancel);
     });

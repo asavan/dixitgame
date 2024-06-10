@@ -17,7 +17,7 @@ export function stringifyEvent(e) {
     for (const k in e) {
         obj[k] = e[k];
     }
-    return JSON.stringify(obj, (k, v) => {
+    return JSON.stringify(obj, (_k, v) => {
         if (v instanceof Node) return "Node";
         if (v instanceof Window) return "Window";
         return v;

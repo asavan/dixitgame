@@ -55,10 +55,7 @@ function drawMyHand({document, myIndex, settings, players, logger, dealer, onCho
         if (cardEl && cardEl.classList.contains("card")) {
             const card = Number.parseInt(cardEl.dataset.card);
             logger.log(card);
-            const res = await chooseCard(document, card);
-            if (typeof onChoose === "function") {
-                onChoose(res);
-            }
+            chooseCard(document, card).then(onChoose).catch((e) => logger.error(e));
         }
     });
 
@@ -135,7 +132,7 @@ function drawLayout(data) {
     drawMyHand(data, box);
 }
 
-async function drawDeal(window, document, card, animTime) {
+async function drawDeal({document, card, animTime}) {
     const centerPile = document.querySelector(".center-pile");
     const list = centerPile.querySelector(".hand");
 
@@ -221,28 +218,26 @@ async function drawDealOther({document, card, animTime, target, newCount, logger
 }
 
 
-async function drawMove(window, document, newCard1, animTime) {
+async function drawMove({document, cardEl, animTime}) {
     const centerPile = document.querySelector(".center-pile");
     const list = centerPile.querySelector(".hand");
 
-    const card = Number.parseInt(newCard1.dataset.card, 10);
+    const card = Number.parseInt(cardEl.dataset.card, 10);
 
     const flipItem = document.querySelector("#flip-card");
     const flipClone = flipItem.content.cloneNode(true).firstElementChild;
     const flipList = flipClone.querySelector(".card-flip");
-    const cardItem = document.querySelector("#card");
-    const newCard = drawCard(card, cardItem);
-    newCard.classList.add("card-face");
+    cardEl.classList.add("card-face");
     const backClone = drawBack(document);
     backClone.classList.add("card-face", "card-face-back");
-    flipList.appendChild(newCard);
+    flipList.appendChild(cardEl);
     flipList.appendChild(backClone);
     list.appendChild(flipClone);
 
 
-    const dx = newCard1.getBoundingClientRect().x - flipList.getBoundingClientRect().x;
-    const dy = newCard1.getBoundingClientRect().y - flipList.getBoundingClientRect().y;
-    newCard1.classList.add("transparent");
+    const dx = cardEl.getBoundingClientRect().x - flipList.getBoundingClientRect().x;
+    const dy = cardEl.getBoundingClientRect().y - flipList.getBoundingClientRect().y;
+    cardEl.classList.add("transparent");
 
     const slide = [
         { transform: `translate(calc(${dx}px + 100%), ${dy}px)` },
@@ -261,16 +256,16 @@ async function drawMove(window, document, newCard1, animTime) {
     };
     if (typeof flipList.animate === "function") {
         flipList.animate(slide, timing);
-        newCard1.animate(shrink, timing);
+        cardEl.animate(shrink, timing);
         await delay(animTime);
     }
     const cardToRepaint = list.querySelector(".card");
     repaintCard(card, cardToRepaint);
-    newCard1.remove();
+    cardEl.remove();
     flipClone.remove();
 }
 
-async function drawMoveOther(window, document, fromEl, animTime, card, newCount) {
+async function drawMoveOther({document, fromEl, animTime, card, newCount}) {
     const centerPile = document.querySelector(".center-pile");
     const list = centerPile.querySelector(".hand");
 
@@ -312,13 +307,11 @@ async function drawMoveOther(window, document, fromEl, animTime, card, newCount)
     flipClone.remove();
 }
 
-function drawMoveByCard(window, document, card, animTime) {
+function drawMoveByCard({document, card, animTime}) {
     const myHand = document.querySelector(".my-hand .hand");
     const cardEl = myHand.querySelector(`[data-card="${card}"]`);
-    return drawMove(window, document, cardEl, animTime);
+    return drawMove({document, cardEl, animTime});
 }
-
-
 
 export default {
     drawLayout,

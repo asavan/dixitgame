@@ -1,0 +1,63 @@
+{
+    "formatter": {
+        "enabled": true,
+        "formatWithErrors": false,
+        "ignore": [],
+        "attributePosition": "auto",
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineEnding": "crlf",
+        "lineWidth": 120
+    },
+    "javascript": {
+        "formatter": {
+            "arrowParentheses": "always",
+            "bracketSameLine": false,
+            "bracketSpacing": true,
+            "jsxQuoteStyle": "double",
+            "quoteProperties": "asNeeded",
+            "semicolons": "always",
+            "trailingCommas": "none"
+        },
+        "globals": ["document", "window", "console", "setTimeout"]
+    },
+    "css": {
+        "formatter": {
+            "enabled": true,
+            "indentStyle": "space",
+            "indentWidth": 2,
+            "lineEnding": "crlf",
+            "lineWidth": 120
+        },
+        "linter": {
+            "enabled": true
+        }
+    },
+    "json": {
+        "formatter": {
+            "trailingCommas": "none"
+        }
+    },
+    "linter": {
+        "rules": {
+            "complexity": {
+                "useLiteralKeys": "off",
+                "useArrowFunction": "off",
+                "useOptionalChain": "off"
+            },
+            "style": {
+                "useTemplate": "off",
+                "noUselessElse": "off"
+            }
+        }
+    },
+    "files": {
+        "include": [
+            "src/**",
+            "tests/**"
+        ],
+        "ignore": [
+            "src/js/lib/**"
+        ]
+    }
+}

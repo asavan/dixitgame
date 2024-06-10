@@ -20,6 +20,7 @@
     "style:fix": "npx eslint . -c linters/eslint.config.js --fix",
     "style2": "npx stylelint --config linters/.stylelintrc.json \"src/**/*.css\"",
     "style2:fix": "npx stylelint --config linters/.stylelintrc.json \"src/**/*.css\" --fix",
+    "style3": "npx @biomejs/biome lint --config-path=./linters/biome.json ./src/",
     "test": "node --test --test-reporter dot",
     "test:verbose": "node --test",
     "test:watch": "node --test --watch ./tests",
