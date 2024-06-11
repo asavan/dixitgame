@@ -1,5 +1,5 @@
 import {assert} from "../utils/assert.js";
-import {RoundStage} from "./constants.js";
+import RoundStage from "./constants.js";
 
 
 function checkSanity(state) {
@@ -56,9 +56,6 @@ export function hide(state) {
         return true;
     };
     const moveInner = checker.moveInner;
-    const nextAction = (act) => {
-        return act({players, storyteller, cardsOnTable, allowChangeMove});
-    };
 
     const toJson = () => {
         return {players, storyteller, cardsOnTable, allowChangeMove};
@@ -74,8 +71,7 @@ export function hide(state) {
         moveInner,
         getRoundState,
         isReady,
-        toJson,
-        nextAction
+        toJson
     };
 }
 
@@ -95,9 +91,6 @@ export function mimic(state) {
     };
 
     const moveInner = checker.moveInner;
-    const nextAction = (act) => {
-        return act({players, storyteller, cardsOnTable, allowChangeMove});
-    };
 
     const getRoundState = () => roundState;
     const isReady = () => {
@@ -113,7 +106,6 @@ export function mimic(state) {
         getRoundState,
         moveInner,
         isReady,
-        nextAction,
         toJson
     };
 }
@@ -162,6 +154,77 @@ export function guess(state) {
         getRoundState,
         moveInner,
         isReady,
+        toJson
+    };
+}
+
+function fillPlayers(scoreDiff, storyteller, scoreReg, scoreStoryteller) {
+    for (let i = 0; i < scoreDiff.length; ++i) {
+        if (i === storyteller) {
+            scoreDiff[i] += scoreStoryteller;
+        } else {
+            scoreDiff[i] += scoreReg;
+        }
+    }
+}
+
+export function countScore(state) {
+    const {
+        players, storyteller, cardsOnTable, votesMap,
+        scoreAllReg, scoreAllStoryteller,
+        scoreNoneReg, scoreNoneStoryteller,
+        scoreAdditionReg,
+        scoreAdditionStoryteller,
+        scoreGuessReg, scoreGuessStoryteller
+    } = {...state};
+    checkSanity(state);
+    const roundState = RoundStage.COUNT_SCORE;
+    const scoreDiff = Array(players.length).fill(0);
+    const storytellerCard = cardsOnTable[storyteller];
+    const playersCount = votesMap.reduce((arr, cur) => {
+        if (cur !== undefined) {
+            const plIndex = cardsOnTable.indexOf(cur);
+            ++arr[plIndex];
+        }
+        return arr;
+    }, Array(players.length).fill(0));
+
+    const storytellerCount = playersCount[storyteller];
+    if (storytellerCount === players.length - 1) {
+        // all
+        fillPlayers(scoreDiff, storyteller, scoreAllReg, scoreAllStoryteller);
+    } else if (storytellerCount === 0) {
+        // none
+        fillPlayers(scoreDiff, storyteller, scoreNoneReg, scoreNoneStoryteller);
+    } else {
+        for (let i = 0; i < scoreDiff.length; ++i) {
+            if (i === storyteller) {
+                scoreDiff[i] = scoreGuessStoryteller;
+            } else {
+                if (votesMap[i] === storytellerCard) {
+                    scoreDiff[i] = scoreGuessReg;
+                }
+            }
+        }
+    }
+
+    for (let i = 0; i < scoreDiff.length; ++i) {
+        if (i === storyteller) {
+            scoreDiff[i] += scoreAdditionStoryteller * playersCount[i];
+        } else {
+            scoreDiff[i] += scoreAdditionReg * playersCount[i];
+        }
+    }
+
+    const toJson = () => {
+        return {players, storyteller, scoreDiff};
+    };
+    const getRoundState = () => roundState;
+    const isReady = () => true;
+
+    return {
+        isReady,
+        getRoundState,
         toJson
     };
 }

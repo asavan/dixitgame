@@ -7,7 +7,10 @@ import { assert } from "../utils/assert.js";
 import lobbyFunc from "../core/lobby.js";
 import initPresenter from "../rules/presenter.js";
 import emptyEngine from "../core/default-engine.js";
-
+import dixit from "../rules/dixit.js";
+import viewActions from "../rules/view_actions.js";
+import engineActions from "../rules/engine_actions.js";
+import glueFunc from "../core/glue.js";
 
 function setupGameToNetwork(keys, game, connection, logger) {
     for (const handlerName of keys) {
@@ -74,14 +77,20 @@ export default async function server({window, document, settings, rngEngine}) {
 
     connection.registerHandler(actions, queue);
 
-    lobby.on("start", (data) => {
+    lobby.on("start", async (data) => {
         removeElem(qrCodeEl);
         qrCodeEl = undefined;
         const myIndex = data.players.findIndex(p => p.externalId === myId);
+        const loggerCore = loggerFunc(7, null, settings);
         const presenter = initPresenter({document, settings, rngEngine, queue, myIndex},
             data.players, emptyEngine(settings));
-        const loggerActions = loggerFunc(7, null, settings);
-        loggerActions.log(presenter.state());
+        const gameCore = dixit.game({settings, rngEngine, logger: loggerCore, playersCount: data.players.length});
+        const vActions = viewActions(presenter);
+        const eActions = engineActions(gameCore);
+        glueFunc(gameCore, vActions);
+        glueFunc(presenter, eActions);
+        await gameCore.start();
+        loggerCore.log(presenter.state());
         setupGameToNetwork(["start"], lobby, connection, logger);
 
         // connection.registerHandler(unoActions, queue);

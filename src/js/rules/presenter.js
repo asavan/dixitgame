@@ -6,6 +6,7 @@ import layout from "../views/layout.js";
 import loggerFunc from "../views/logger.js";
 
 import handlersFunc from "../utils/handlers.js";
+import RoundStage from "./constants.js";
 
 export default function initPresenter({document, settings, myIndex},
     playersRaw,
@@ -18,7 +19,8 @@ export default function initPresenter({document, settings, myIndex},
 ) {
 
     const logger = loggerFunc(60, null, settings);
-    const players = playersRaw.map((p, i) => newPlayer([12, 34, 4, 5, 7, 77], i, 0, p.name));
+    const players = playersRaw.map((p, i) => newPlayer([], i, 0, p.name));
+    let stage = RoundStage.HIDE;
 
     const commands = ["tryMove"];
 
@@ -55,6 +57,7 @@ export default function initPresenter({document, settings, myIndex},
 
     const onChoose = (card) => {
         logger.log("YEY card", card);
+        handlers.call("tryMove", {playerIndex: myIndex, card, stage});
     };
 
     const onMove = (data) => {
@@ -64,11 +67,14 @@ export default function initPresenter({document, settings, myIndex},
 
     const onChangeState = (data) => {
         logger.log("On onChangeState", data);
+        stage = data.stage;
         layout.drawLayout({document, myIndex, settings, players, dealer, logger, onChoose});
     };
 
     const onDeal = (data) => {
         logger.log("On onDeal", data);
+        const {playerIndex, card} = {...data};
+        players[playerIndex].addCard(card);
         layout.drawLayout({document, myIndex, settings, players, dealer, logger, onChoose});
     };
 

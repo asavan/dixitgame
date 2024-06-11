@@ -43,11 +43,10 @@
     },
     "javascript": {
         "formatter": {
-            "jsxQuoteStyle": "double",
             "quoteProperties": "asNeeded",
             "trailingCommas": "none",
             "semicolons": "always",
-            "arrowParentheses": "asNeeded",
+            "arrowParentheses": "always",
             "bracketSpacing": true,
             "bracketSameLine": false
         },
