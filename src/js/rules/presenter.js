@@ -57,7 +57,7 @@ export default function initPresenter({document, settings, myIndex},
 
     const onChoose = (card) => {
         logger.log("YEY card", card);
-        handlers.call("tryMove", {playerIndex: myIndex, card, stage});
+        handlers.call("tryMove", {playerIndex: myIndex, card, state: stage});
     };
 
     const onMove = (data) => {
@@ -86,7 +86,7 @@ export default function initPresenter({document, settings, myIndex},
     logger.log("Game init");
 
 
-    const actionKeys = () => handlers.actionKeys();
+    const actionKeys = handlers.actionKeys;
 
     return {
         on,

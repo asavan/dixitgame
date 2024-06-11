@@ -90,15 +90,15 @@ function game(data) {
     }
 
     const onShuffle = (d) => report("shuffle", d);
-    const deck = deckFunc.newShuffledDeck(onShuffle, rngEngine, settings.cardsCount);
+    let deck;
 
-    async function dealN(initialDealt) {
-        assert(initialDealt*players.length < deck.size(), "Not enought cards to play");
+    async function dealN(initialDealt, deck) {
+        logger.log("dealN", deck);
+        const n = players.length;
+        assert(initialDealt * n < deck.size(), "Not enought cards to play");
         for (let round = 0; round < initialDealt; ++round) {
-            const n = players.length;
             for (let i = 0; i < n; i++) {
-                const dealIndex = core.nextPlayer(i, n, direction, storyteller);
-                const currentPlayer = players[dealIndex].getIndex();
+                const currentPlayer = core.nextPlayer(i, n, direction, storyteller);
                 await dealToPlayer(deck, currentPlayer);
             }
         }
@@ -119,12 +119,16 @@ function game(data) {
     }
 
     const start = async () => {
-        await dealN(settings.cardsDeal);
+        deck = await deckFunc.newShuffledDeck(onShuffle, rngEngine, settings.cardsCount);
+        await dealN(settings.cardsDeal, deck);
     };
+
+    const actionKeys = handlers.actionKeys;
 
     return {
         tryMove,
         start,
+        actionKeys,
         on
     };
 }

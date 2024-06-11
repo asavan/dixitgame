@@ -6,6 +6,11 @@ const GameStage = Object.freeze({
     GAME_OVER: 5
 });
 
+function nextPlayer(diff, size, direction, cur) {
+    return (cur + (diff + 1) * direction + size) % size;
+}
+
 export default {
-    GameStage
+    GameStage,
+    nextPlayer
 };
