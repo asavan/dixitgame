@@ -8,17 +8,20 @@ function checkSanity(state) {
     assert(storyteller >= 0 && storyteller < players.length);
 }
 
-function handMoveChecker({players, cardsOnTable, allowChangeMove, roundState}) {
+function handMoveChecker({players, cardsOnTable, allowChangeMove, roundState, logger}) {
     const check = ({playerIndex, state, card}) => {
         if (state !== roundState) {
+            logger.log("Different state", state, roundState);
             return false;
         }
         const oldCard = cardsOnTable[playerIndex];
         if (oldCard !== undefined && !allowChangeMove) {
+            logger.log("allowChangeMove not set", oldCard);
             return false;
         }
         const hand = players[playerIndex];
         if (!hand.includes(card)) {
+            logger.log("foreign hand", hand, card);
             return false;
         }
         return true;
@@ -41,16 +44,18 @@ function handMoveChecker({players, cardsOnTable, allowChangeMove, roundState}) {
 }
 
 export function hide(state) {
-    const {players, storyteller, allowChangeMove} = {...state};
+    const {players, storyteller, logger} = {...state};
     checkSanity(state);
     const roundState = RoundStage.HIDE;
     const cardsOnTable = Array(players.length);
-    const checker = handMoveChecker({players, cardsOnTable, allowChangeMove, roundState});
+    const checker = handMoveChecker({...state, cardsOnTable, roundState});
     const canMove = (data) => {
+        logger.log("hide canMove");
         if (data.playerIndex !== storyteller) {
+            logger.log("Not storyteller", storyteller, data);
             return false;
         }
-        if (checker.check(data)) {
+        if (!checker.check(data)) {
             return false;
         }
         return true;
@@ -58,7 +63,7 @@ export function hide(state) {
     const moveInner = checker.moveInner;
 
     const toJson = () => {
-        return {players, storyteller, cardsOnTable, allowChangeMove};
+        return {cardsOnTable};
     };
 
     const getRoundState = () => roundState;
@@ -76,15 +81,15 @@ export function hide(state) {
 }
 
 export function mimic(state) {
-    const {players, storyteller, cardsOnTable, allowChangeMove} = {...state};
+    const {storyteller, cardsOnTable} = {...state};
     checkSanity(state);
     const roundState = RoundStage.MIMIC;
-    const checker = handMoveChecker({players, cardsOnTable, allowChangeMove, roundState});
+    const checker = handMoveChecker({...state, roundState});
     const canMove = (data) => {
         if (data.playerIndex === storyteller) {
             return false;
         }
-        if (checker.check(data)) {
+        if (!checker.check(data)) {
             return false;
         }
         return true;
@@ -98,7 +103,7 @@ export function mimic(state) {
     };
 
     const toJson = () => {
-        return {players, storyteller, cardsOnTable, allowChangeMove};
+        return {storyteller, cardsOnTable};
     };
 
     return {
@@ -111,13 +116,14 @@ export function mimic(state) {
 }
 
 export function guess(state) {
-    const {players, storyteller, cardsOnTable, allowChangeMove, voteForOwn} = {...state};
+    const {players, storyteller, cardsOnTable, allowChangeMove, voteForOwn, logger} = {...state};
     checkSanity(state);
     const roundState = RoundStage.GUESS;
     const votesMap = Array(players.length);
     const canMove = (data) => {
         const {playerIndex, state, card} = {...data};
         if (playerIndex === storyteller) {
+            logger.log("storyteller cannot guess", storyteller, data);
             return false;
         }
         if (state !== roundState) {

@@ -1,6 +1,6 @@
 import {assert} from "./assert.js";
 
-export default function handlersFunc(arr) {
+export default function handlersFunc(arr, queue) {
     const handlers = {};
     for (const f of arr) {
         handlers[f] = [];
@@ -22,7 +22,11 @@ export default function handlersFunc(arr) {
                 console.error("bad call", name);
                 continue;
             }
-            promises.push(f(arg));
+            if (queue) {
+                queue.add(() => f(arg));
+            } else {
+                promises.push(f(arg));
+            }
         }
         return Promise.all(promises);
     };

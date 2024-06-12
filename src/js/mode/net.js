@@ -1,11 +1,15 @@
-import { getWebSocketUrl, getMyId } from "../connection/common.js";
+import { getWebSocketUrl, getMyId, glueNetToActions } from "../connection/common.js";
 import connectionChooser from "../connection/connection_chooser.js";
 import loggerFunc from "../views/logger.js";
 import PromiseQueue from "../utils/async-queue.js";
 import { assert } from "../utils/assert.js";
 import lobbyFunc from "../core/client-lobby.js";
 import initPresenter from "../rules/presenter.js";
-import emptyEngine from "../core/default-engine.js";
+import networkMapperObj from "../core/network_mapper.js";
+import glueObj from "../core/glue.js";
+
+import viewActions from "../rules/view_actions.js";
+import engineActions from "../rules/engine_actions.js";
 
 
 function onConnectionAnimation(document, connection, logger) {
@@ -21,19 +25,6 @@ function onConnectionAnimation(document, connection, logger) {
         connection.on("socket_close", onClose);
         connection.on("open", onClose);
     });
-}
-
-function setupGameToNetwork({ keys, game, connection, logger, myId, serverId }) {
-    for (const handlerName of keys) {
-        logger.log("setup handler", handlerName);
-        game.on(handlerName, (n) => {
-            if (n && n.externalId && myId !== n.externalId) {
-                logger.log("Ignore", n.externalId);
-                return;
-            }
-            return connection.sendRawTo(handlerName, n, serverId);
-        });
-    }
 }
 
 export default async function netMode({ window, document, settings, rngEngine }) {
@@ -55,21 +46,25 @@ export default async function netMode({ window, document, settings, rngEngine })
             logger.log("Server id ", serverData, myId);
             const serverId = serverData.data.id;
             assert(serverId === serverData.from, serverData.from);
-            const queue = PromiseQueue(console);
+            const queue = PromiseQueue(logger);
             const lobby = lobbyFunc({ window, document, settings, myId });
-            setupGameToNetwork({ keys: lobby.actionKeys(), game: lobby, connection, logger, myId, serverId });
+            const gameToNetwork = networkMapperObj.networkMapperClient({logger, connection, myId, serverId});
+            glueObj.glueSimpleByObj(lobby, gameToNetwork);
             const actions = {
                 "start": (data) => {
                     logger.log("start", data);
-                    const myIndex = data.players.findIndex(p => p.externalId === myId);
-                    const presenter = initPresenter({ document, settings, rngEngine, queue, myIndex },
-                        data.players, emptyEngine(settings));
                     const loggerActions = loggerFunc(7, null, settings);
+                    const myIndex = data.players.findIndex(p => p.externalId === myId);
+                    const presenter = initPresenter({ document, settings, rngEngine, queue, myIndex }, data);
+                    const vActions = viewActions(presenter);
+                    const eActions = engineActions(gameToNetwork);
+                    glueObj.glueSimpleByObj(presenter, eActions);
+                    glueNetToActions(connection, vActions, queue);
                     loggerActions.log(presenter.state());
                     return;
                 }
             };
-            connection.registerHandler(actions, queue);
+            glueNetToActions(connection, actions, queue);
             lobby.afterSetup();
             resolve(lobby);
         });

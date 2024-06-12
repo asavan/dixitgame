@@ -5,7 +5,7 @@ export default {
     connection: "websocket",
     wsPort: 8088,
     loggerAnchor: ".log",
-    logLevel: 7,
+    logLevel: 4,
     cardsDeal: 6,
     maxScore: 30,
     direction: 1,

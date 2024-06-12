@@ -30,6 +30,7 @@ export default function newPlayer(arr, ind, oldScore, name) {
     const toJson = () => {
         return {
             score,
+            name,
             pile: pile()
         };
     };

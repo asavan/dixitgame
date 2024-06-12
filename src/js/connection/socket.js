@@ -17,26 +17,11 @@ export default function connectionFunc(id, logger, isServer) {
         return handlers.on(name, f);
     }
 
-    let currentHandler = {};
-    let queue;
+    let userHandlers;
     let dataChannel;
 
-    function registerHandler(handler, q) {
-        queue = q;
-        currentHandler = handler;
-    }
-
-    function callCurrentHandler(method, data) {
-        const callback = currentHandler[method];
-        if (typeof callback !== "function") {
-            logger.log("Not function");
-            return;
-        }
-        if (!queue) {
-            logger.log("No queue");
-            return;
-        }
-        queue.add(() => callback(data));
+    function registerHandler(handler) {
+        userHandlers = handler;
     }
 
     function connect(socketUrl) {
@@ -76,9 +61,9 @@ export default function connectionFunc(id, logger, isServer) {
                     logger.log("handlers.actionKeys");
                     return handlers.call(json.action, json);
                 }
-                if (Object.keys(currentHandler).includes(json.action)) {
+                if (userHandlers && userHandlers.actionKeys().includes(json.action)) {
                     logger.log("callCurrentHandler");
-                    return callCurrentHandler(json.action, json.data);
+                    return userHandlers.call(json.action, json.data);
                 }
                 logger.log("Unknown action " + json.action);
             });
@@ -104,7 +89,7 @@ export default function connectionFunc(id, logger, isServer) {
         if (!dataChannel) {
             return false;
         }
-        logger.log(data);
+        logger.log("sendRawAll", data);
         return dataChannel.send(type, data, "all", ignore);
     };
 

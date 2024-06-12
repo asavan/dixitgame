@@ -1,36 +1,26 @@
 import loggerFunc from "../views/logger.js";
-import { getWebSocketUrl, getMyId } from "../connection/common.js";
+import { getWebSocketUrl, getMyId, glueNetToActions } from "../connection/common.js";
 import connectionChooser from "../connection/connection_chooser.js";
 import PromiseQueue from "../utils/async-queue.js";
 import { makeQr, removeElem } from "../views/qr_helper.js";
 import { assert } from "../utils/assert.js";
 import lobbyFunc from "../core/lobby.js";
 import initPresenter from "../rules/presenter.js";
-import emptyEngine from "../core/default-engine.js";
+import emptyEngine from "../rules/default-engine.js";
 import dixit from "../rules/dixit.js";
 import viewActions from "../rules/view_actions.js";
 import engineActions from "../rules/engine_actions.js";
-import glueFunc from "../core/glue.js";
+import glueObj from "../core/glue.js";
+import networkMapperObj from "../core/network_mapper.js";
+import { delay } from "../utils/timer.js";
 
-function setupGameToNetwork(keys, game, connection, logger) {
-    for (const handlerName of keys) {
-        logger.log("setup handler " + handlerName);
-        game.on(handlerName, (n) => {
-            let ignore;
-            if (n && n.externalId) {
-                console.log("Ignore", n.externalId);
-                ignore = [n.externalId];
-            }
-            return connection.sendRawAll(handlerName, n, ignore);
-        });
-    }
-}
 
 export default async function server({window, document, settings, rngEngine}) {
     const clients = {};
     let index = 0;
     const myId = getMyId(window, settings, rngEngine);
     const logger = loggerFunc(70, null, settings);
+    const networkLogger = loggerFunc(3, null, settings);
     clients[myId] = {index};
     const socketUrl = getWebSocketUrl(settings, window.location);
     if (!socketUrl) {
@@ -39,13 +29,14 @@ export default async function server({window, document, settings, rngEngine}) {
     }
 
     const connectionFunc = await connectionChooser(settings);
-    const connection = connectionFunc(myId, logger, true);
+    const connection = connectionFunc(myId, networkLogger, true);
     connection.on("error", (e) => {
         logger.error(e);
         throw e;
     });
 
     let qrCodeEl;
+    let presenter;
 
     connection.on("socket_open", () => {
         qrCodeEl = makeQr(window, document, settings);
@@ -71,28 +62,29 @@ export default async function server({window, document, settings, rngEngine}) {
         }
     };
 
-    lobby.on("username", async (data) => {
-        await actions["username"](data);
-    });
+    lobby.on("username", actions["username"]);
 
-    connection.registerHandler(actions, queue);
+    const gameToNetwork = networkMapperObj.networkMapperServer({logger, connection});
+    // TODO
+    // glueObj.glueSimpleByObj(lobby, nMapper);
+    glueNetToActions(connection, actions, queue);
 
     lobby.on("start", async (data) => {
         removeElem(qrCodeEl);
         qrCodeEl = undefined;
         const myIndex = data.players.findIndex(p => p.externalId === myId);
         const loggerCore = loggerFunc(7, null, settings);
-        const presenter = initPresenter({document, settings, rngEngine, queue, myIndex},
-            data.players, emptyEngine(settings));
-        const gameCore = dixit.game({settings, rngEngine, logger: loggerCore, playersCount: data.players.length});
+        presenter = initPresenter({document, settings, rngEngine, queue, myIndex},
+            emptyEngine(settings, data.players));
+        const gameCore = dixit.game({settings, rngEngine, delay,
+            logger: loggerCore, playersCount: data.players.length});
         const vActions = viewActions(presenter);
         const eActions = engineActions(gameCore);
-        glueFunc(gameCore, vActions);
-        glueFunc(presenter, eActions);
-        await gameCore.start();
-        loggerCore.log(presenter.state());
-        setupGameToNetwork(["start"], lobby, connection, logger);
-
+        glueObj.glueSimpleByObj(gameCore, vActions);
+        glueObj.glueSimpleByObj(presenter, eActions);
+        glueObj.glueSimpleByObj(gameCore, gameToNetwork);
+        glueNetToActions(connection, eActions, queue);
+        await gameCore.start(presenter.toJson());
         // connection.registerHandler(unoActions, queue);
     });
 
@@ -109,8 +101,8 @@ export default async function server({window, document, settings, rngEngine}) {
         ++index;
         clients[con.id] = {index};
         logger.log("connected", con);
-        if (lobby.canSeeGame(con.id)) {
-            return connection.sendRawTo("start", lobby.toJson(), con.id);
+        if (lobby.canSeeGame(con.id) && presenter) {
+            return connection.sendRawTo("start", presenter.toJson(), con.id);
         } else {
             logger.log("Try see game", con.id);
         }

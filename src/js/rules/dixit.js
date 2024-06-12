@@ -12,8 +12,8 @@ const NEXT_ROUND = 2;
 
 
 
-function round(dataRound, logger, handlers) {
-    const {players, storyteller, settings} = {...dataRound};
+function round(dataRound) {
+    const {logger, handlers} = {...dataRound};
     let stage = RoundStage.BEGIN_ROUND;
     const nextMapper = {
         [RoundStage.BEGIN_ROUND]: hide,
@@ -23,19 +23,24 @@ function round(dataRound, logger, handlers) {
         [RoundStage.COUNT_SCORE]: null,
     };
 
-    let curState = nextMapper[stage](Object.assign({}, settings, {players, storyteller}));
+    let curState = nextMapper[stage](dataRound);
     const tryMove = async (data) => {
         const {playerIndex, state, card} = {...data};
-        logger.log("tryMove", playerIndex, state, card);
+        logger.log("tryMove", playerIndex, state, card, curState.getRoundState());
         if (!curState.canMove(data)) {
+            logger.log("tryMoveBad");
             return BAD_MOVE;
         }
-        curState.moveInner(data);
-        await handlers.call("move", data);
+        await curState.moveInner(data);
+        logger.log("tryMove Before move");
+        await handlers.call("move", {...data, roundState: curState.getRoundState()});
+        logger.log("tryMove After move");
+
         // animation
         while (curState.isReady()) {
+            logger.log("tryMove isReady");
             const countedState = curState.toJson();
-            curState = nextMapper[curState.getRoundState()](countedState);
+            curState = nextMapper[curState.getRoundState()]({...dataRound, ...countedState});
             if (!curState) {
                 return NEXT_ROUND;
             }
@@ -51,12 +56,14 @@ function round(dataRound, logger, handlers) {
 }
 
 function game(data) {
-    const {settings, rngEngine, logger, playersCount} = { ...data };
+    const {settings, rngEngine, delay, logger, playersCount} = { ...data };
     const commands = [
+        "start",
         "shuffle",
         "deal",
         "move",
         "gameover",
+        "newround",
         "changeState"
     ];
 
@@ -69,7 +76,7 @@ function game(data) {
     const direction = settings.direction;
     const players = Array(playersCount).fill([]);
 
-    let curRound = round({players, storyteller, settings}, logger, handlers);
+    let curRound = round({...settings, players, storyteller, logger, handlers});
     const tryMove = async (data) => {
         const res = curRound.tryMove(data);
         if (res === NEXT_ROUND) {
@@ -79,6 +86,7 @@ function game(data) {
                 await handlers.call("gameover", data);
                 return;
             }
+            await handlers.call("newround", data);
             await dealN(1);
             logger.log("Next round", roundNum);
             curRound = round({players, storyteller, settings}, logger, handlers);
@@ -118,7 +126,9 @@ function game(data) {
         return card;
     }
 
-    const start = async () => {
+    const start = async (data) => {
+        await report("start", data);
+        await delay(200);
         deck = await deckFunc.newShuffledDeck(onShuffle, rngEngine, settings.cardsCount);
         await dealN(settings.cardsDeal, deck);
     };
