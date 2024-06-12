@@ -22,6 +22,15 @@ function drawHand(document, parent, pile) {
     return hand;
 }
 
+function drawOpenPile(document, pile) {
+    const parent = document.querySelector(".my-hand");
+    const hand = parent.querySelector(".hand");
+    if (hand) {
+        hand.remove();
+    }
+    drawHand(document, parent, pile);
+}
+
 function drawMyHand({document, myIndex, settings, players, logger, dealer, onChoose}, box) {
     const myPlayer = players[myIndex];
     const elem = document.createElement("div");
@@ -321,6 +330,7 @@ function drawMoveByCard({document, card, animTime}) {
 export default {
     drawLayout,
     drawDeal,
+    drawOpenPile,
     drawMoveOther,
     drawDealOther,
     drawMoveByCard,

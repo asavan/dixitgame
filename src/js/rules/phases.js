@@ -46,10 +46,10 @@ function handMoveChecker({players, cardsOnTable, allowChangeMove, roundState, lo
 export function roundBegin(state) {
     checkSanity(state);
     const roundState = RoundStage.BEGIN_ROUND;
-    const toJson = () => {return {}};
+    const toJson = () => {return {};};
     const isReady = () => true;
     const canMove = () => true;
-    const moveInner = () => {return {}};
+    const moveInner = () => {return {};};
     const getRoundState = () => roundState;
     return {
         canMove,
@@ -98,8 +98,9 @@ export function hide(state) {
 }
 
 export function mimic(state) {
-    const {storyteller, cardsOnTable} = {...state};
+    const {storyteller, cardsOnTable, players} = {...state};
     checkSanity(state);
+    assert(players.length === cardsOnTable.length, "mimic state bad");
     const roundState = RoundStage.MIMIC;
     const checker = handMoveChecker({...state, roundState});
     const canMove = (data) => {
@@ -121,7 +122,7 @@ export function mimic(state) {
     };
 
     const toJson = () => {
-        return {};
+        return {cardsOnTable};
     };
 
     return {
@@ -136,6 +137,7 @@ export function mimic(state) {
 export function guess(state) {
     const {players, storyteller, cardsOnTable, allowChangeMove, voteForOwn, logger} = {...state};
     checkSanity(state);
+    assert(players.length === cardsOnTable.length, "guess state bad");
     const roundState = RoundStage.GUESS;
     const votesMap = Array(players.length);
     const canMove = (data) => {
@@ -172,10 +174,11 @@ export function guess(state) {
 
     const getRoundState = () => roundState;
     const isReady = () => {
-        return votesMap.filter(c => c === undefined).length === 1;
+        const countMoves = votesMap.reduce((acc, item) => acc + (item !== undefined), 0);
+        return countMoves + 1 >= players.length;
     };
     const toJson = () => {
-        return {players, storyteller, cardsOnTable, votesMap};
+        return {cardsOnTable, votesMap};
     };
 
     return {
@@ -207,6 +210,8 @@ export function countScore(state) {
         scoreGuessReg, scoreGuessStoryteller
     } = {...state};
     checkSanity(state);
+    assert(players.length === cardsOnTable.length, "countScore state bad");
+    assert(players.length === votesMap.length, "countScore state bad2");
     const roundState = RoundStage.COUNT_SCORE;
     const scoreDiff = Array(players.length).fill(0);
     const storytellerCard = cardsOnTable[storyteller];
@@ -246,7 +251,7 @@ export function countScore(state) {
     }
 
     const toJson = () => {
-        return {players, storyteller, scoreDiff};
+        return {scoreDiff};
     };
     const getRoundState = () => roundState;
     const isReady = () => true;

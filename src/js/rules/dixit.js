@@ -1,4 +1,3 @@
-
 import RoundStage from "./constants.js";
 import {hide, mimic, guess, countScore, applyScore, roundBegin} from "./phases.js";
 import deckFunc from "../core/deck.js";
@@ -40,11 +39,12 @@ function round(dataRound) {
         // animation
         while (curState.isReady()) {
             logger.log("tryMove isReady");
-            const countedState = curState.toJson();
-            curState = nextMapper[curState.getRoundState()]({...dataRound, ...countedState});
-            if (!curState) {
+            const nextStateFunc = nextMapper[curState.getRoundState()];
+            if (!nextStateFunc) {
                 return NEXT_ROUND;
             }
+            const countedState = curState.toJson();
+            curState = nextStateFunc({...dataRound, ...countedState});
             stage = curState.getRoundState();
             await handlers.call("changeState", {...curState.toJson(), stage});
         }
@@ -70,12 +70,13 @@ function game(data) {
     ];
 
     const handlers = handlersFunc(commands);
-    function on(name, f) {
-        return handlers.on(name, f);
+    function report(callbackName, data) {
+        return handlers.call(callbackName, data);
     }
+
     let storyteller = 0;
     let roundNum = 0;
-    const scoreMap = Array(playersCount).fill(0); 
+    const scoreMap = Array(playersCount).fill(0);
     const direction = settings.direction;
     const players = Array(playersCount).fill([]);
 
@@ -97,9 +98,6 @@ function game(data) {
         }
     };
 
-    function report(callbackName, data) {
-        return handlers.call(callbackName, data);
-    }
 
     const onShuffle = (d) => report("shuffle", d);
     let deck;
@@ -138,6 +136,7 @@ function game(data) {
     };
 
     const actionKeys = handlers.actionKeys;
+    const on = handlers.on;
 
     return {
         tryMove,

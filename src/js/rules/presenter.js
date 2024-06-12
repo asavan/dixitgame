@@ -8,7 +8,9 @@ import loggerFunc from "../views/logger.js";
 import handlersFunc from "../utils/handlers.js";
 import RoundStage from "./constants.js";
 
-export default function initPresenter({document, settings, myIndex, queue},
+import { shuffleArray } from "../utils/shuffle.js";
+
+export default function initPresenter({document, settings, rngEngine, myIndex, queue},
     {
         dealer,
         direction,
@@ -86,6 +88,12 @@ export default function initPresenter({document, settings, myIndex, queue},
     const onChangeState = (data) => {
         logger.log("On onChangeState", data, players);
         stage = data.stage;
+        if (stage === RoundStage.GUESS) {
+            const cardsToShow = [...cardsOnTable];
+            shuffleArray(cardsToShow, rngEngine);
+            layout.drawOpenPile(document, cardsToShow);
+            return;
+        }
         layout.drawLayout({document, myIndex, settings, players, dealer, logger, onChoose});
     };
 
