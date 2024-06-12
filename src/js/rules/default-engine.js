@@ -10,16 +10,18 @@ export default function emptyEngine(settings, players) {
     const dealer = 0;
     const direction = 1;
     const gameState = core.GameStage.CHOOSE_DEALER;
-    const roundState = RoundStage.BEGIN_ROUND;
+    const stage = RoundStage.BEGIN_ROUND;
     const maxScore = settings.maxScore;
     const cardsOnTable = [];
+    const votesMap = [];
     const playersRaw = players.map(p => emptyPlayer(p.name, p.externalId));
     return {
         dealer,
         direction,
         gameState,
-        roundState,
+        stage,
         cardsOnTable,
+        votesMap,
         playersRaw,
         maxScore
     };

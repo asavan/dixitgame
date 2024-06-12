@@ -1,6 +1,6 @@
 
 import RoundStage from "./constants.js";
-import {hide, mimic, guess, countScore} from "./phases.js";
+import {hide, mimic, guess, countScore, applyScore, roundBegin} from "./phases.js";
 import deckFunc from "../core/deck.js";
 import handlersFunc from "../utils/handlers.js";
 import core from "../core/basic.js";
@@ -20,10 +20,11 @@ function round(dataRound) {
         [RoundStage.HIDE]: mimic,
         [RoundStage.MIMIC]: guess,
         [RoundStage.GUESS]: countScore,
-        [RoundStage.COUNT_SCORE]: null,
+        [RoundStage.COUNT_SCORE]: applyScore,
+        [RoundStage.APPLY_SCORE]: null,
     };
 
-    let curState = nextMapper[stage](dataRound);
+    let curState = roundBegin(dataRound);
     const tryMove = async (data) => {
         const {playerIndex, state, card} = {...data};
         logger.log("tryMove", playerIndex, state, card, curState.getRoundState());
@@ -44,8 +45,8 @@ function round(dataRound) {
             if (!curState) {
                 return NEXT_ROUND;
             }
-            await handlers.call("changeState", curState.toJson());
             stage = curState.getRoundState();
+            await handlers.call("changeState", {...curState.toJson(), stage});
         }
         return SAME_ROUND;
     };
@@ -63,6 +64,7 @@ function game(data) {
         "deal",
         "move",
         "gameover",
+        "roundover",
         "newround",
         "changeState"
     ];
@@ -73,13 +75,15 @@ function game(data) {
     }
     let storyteller = 0;
     let roundNum = 0;
+    const scoreMap = Array(playersCount).fill(0); 
     const direction = settings.direction;
     const players = Array(playersCount).fill([]);
 
-    let curRound = round({...settings, players, storyteller, logger, handlers});
+    let curRound = round({...settings, players, storyteller, scoreMap, logger, handlers});
     const tryMove = async (data) => {
         const res = curRound.tryMove(data);
         if (res === NEXT_ROUND) {
+            await handlers.call("roundover", data);
             ++storyteller;
             ++roundNum;
             if (settings.maxScore) {

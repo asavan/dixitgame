@@ -43,6 +43,23 @@ function handMoveChecker({players, cardsOnTable, allowChangeMove, roundState, lo
     return {check, moveInner};
 }
 
+export function roundBegin(state) {
+    checkSanity(state);
+    const roundState = RoundStage.BEGIN_ROUND;
+    const toJson = () => {return {}};
+    const isReady = () => true;
+    const canMove = () => true;
+    const moveInner = () => {return {}};
+    const getRoundState = () => roundState;
+    return {
+        canMove,
+        getRoundState,
+        moveInner,
+        isReady,
+        toJson
+    };
+}
+
 export function hide(state) {
     const {players, storyteller, logger} = {...state};
     checkSanity(state);
@@ -99,11 +116,12 @@ export function mimic(state) {
 
     const getRoundState = () => roundState;
     const isReady = () => {
-        return cardsOnTable.every(c => c !== undefined);
+        const countMoves = cardsOnTable.reduce((acc, item) => acc + (item !== undefined), 0);
+        return cardsOnTable.length === countMoves;
     };
 
     const toJson = () => {
-        return {storyteller, cardsOnTable};
+        return {};
     };
 
     return {
@@ -127,19 +145,24 @@ export function guess(state) {
             return false;
         }
         if (state !== roundState) {
+            logger.log("guess wrong state", storyteller, data);
             return false;
         }
         const indexInOnTable = cardsOnTable.indexOf(card);
         if (indexInOnTable < 0) {
+            logger.log("guess no card", storyteller, data, cardsOnTable);
             return false;
         }
         const oldCard = votesMap[playerIndex];
         if (oldCard !== undefined && !allowChangeMove) {
+            logger.log("guess allowChangeMove", storyteller, data);
             return false;
         }
         if (indexInOnTable === playerIndex && !voteForOwn) {
+            logger.log("guess voteForOwn", storyteller, data);
             return false;
         }
+        logger.log("guess ok", data);
         return true;
     };
 
@@ -224,6 +247,28 @@ export function countScore(state) {
 
     const toJson = () => {
         return {players, storyteller, scoreDiff};
+    };
+    const getRoundState = () => roundState;
+    const isReady = () => true;
+
+    return {
+        isReady,
+        getRoundState,
+        toJson
+    };
+}
+
+export function applyScore(state) {
+    const roundState = RoundStage.APPLY_SCORE;
+
+    const {scoreMap, scoreDiff} = {...state};
+    assert(scoreDiff.length === scoreMap.length, "Bad score");
+    for (let i = 0; i < scoreMap.length; ++i) {
+        scoreMap[i] += scoreDiff[i];
+    }
+
+    const toJson = () => {
+        return {};
     };
     const getRoundState = () => roundState;
     const isReady = () => true;
