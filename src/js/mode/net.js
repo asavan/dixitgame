@@ -11,6 +11,15 @@ import glueObj from "../core/glue.js";
 import viewActions from "../rules/view_actions.js";
 import engineActions from "../rules/engine_actions.js";
 
+// function netGameStart({ document, settings, rngEngine, queue, myId }, gameToNetwork, data ) {
+//     const myIndex = data.players.findIndex(p => p.externalId === myId);
+//     const presenter = initPresenter({ document, settings, rngEngine, queue, myIndex }, data);
+//     const vActions = viewActions(presenter);
+//     const eActions = engineActions(gameToNetwork);
+//     glueObj.glueSimpleByObj(presenter, eActions);
+//     glueNetToActions(connection, vActions, queue);
+// }
+
 
 function onConnectionAnimation(document, connection, logger) {
     connection.on("socket_open", () => {
@@ -27,7 +36,8 @@ function onConnectionAnimation(document, connection, logger) {
     });
 }
 
-export default async function netMode({ window, document, settings, rngEngine }) {
+export default async function netMode(netModeData) {
+    const { window, document, settings, rngEngine } = { ...netModeData };
     const connectionFunc = await connectionChooser(settings);
 
     const myId = getMyId(window, settings, rngEngine);
@@ -49,22 +59,25 @@ export default async function netMode({ window, document, settings, rngEngine })
             const queue = PromiseQueue(logger);
             const lobby = lobbyFunc({ window, document, settings, myId });
             const gameToNetwork = networkMapperObj.networkMapperClient({logger, connection, myId, serverId});
-            glueObj.glueSimpleByObj(lobby, gameToNetwork);
+            glueObj.glueSimple(lobby, gameToNetwork);
+            logger.log("After glue", lobby.actionKeys());
             const actions = {
                 "start": (data) => {
                     logger.log("start", data);
                     const loggerActions = loggerFunc(7, null, settings);
                     const myIndex = data.players.findIndex(p => p.externalId === myId);
-                    const presenter = initPresenter({ document, settings, rngEngine, queue, myIndex }, data);
+                    const presenter = initPresenter({ ...netModeData, queue, myIndex }, data);
                     const vActions = viewActions(presenter);
                     const eActions = engineActions(gameToNetwork);
                     glueObj.glueSimpleByObj(presenter, eActions);
                     glueNetToActions(connection, vActions, queue);
+                    logger.log("After glue3");
                     loggerActions.log(presenter.state());
                     return;
                 }
             };
             glueNetToActions(connection, actions, queue);
+            logger.log("After glue2");
             lobby.afterSetup();
             resolve(lobby);
         });

@@ -27,7 +27,7 @@ export default function lobby({window, document, settings, myId}) {
         return enterName(window, document, settings, onNameChange);
     };
 
-    const actionKeys = () => handlers.actionKeys();
+    const actionKeys = handlers.actionKeys;
 
     return {
         on,
