@@ -21,7 +21,7 @@ export default function initPresenter({document, settings, myIndex, queue},
 
     const logger = loggerFunc(60, null, settings);
     const traceLogger = loggerFunc(1, null, settings);
-    const players = playersRaw.map((p, i) => newPlayer(p.pile, i, p.score, p.name));
+    const players = playersRaw.map((p, i) => newPlayer(p.pile, i, p.score, p.name, p.externalId));
     let stage = RoundStage.HIDE;
 
     const commands = ["tryMove"];
@@ -55,6 +55,7 @@ export default function initPresenter({document, settings, myIndex, queue},
             direction,
             gameState,
             maxScore,
+            cardsOnTable,
             playersRaw: players.map(p => p.toJson())
         };
     }

@@ -1,4 +1,4 @@
-export default function newPlayer(arr, ind, oldScore, name) {
+export default function newPlayer(arr, ind, oldScore, name, externalId) {
     const i = ind;
     const deck = [...arr];
     let score = oldScore || 0;
@@ -31,6 +31,7 @@ export default function newPlayer(arr, ind, oldScore, name) {
         return {
             score,
             name,
+            externalId,
             pile: pile()
         };
     };

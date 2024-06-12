@@ -67,7 +67,8 @@ export default async function server({window, document, settings, rngEngine}) {
     const gameToNetwork = networkMapperObj.networkMapperServer({logger, connection});
     // TODO
     // glueObj.glueSimpleByObj(lobby, nMapper);
-    glueNetToActions(connection, actions, queue);
+    const glued = glueNetToActions(connection, actions, queue);
+    assert(glued > 0, "Bad network");
 
     lobby.on("start", async (data) => {
         removeElem(qrCodeEl);
@@ -82,7 +83,8 @@ export default async function server({window, document, settings, rngEngine}) {
         const eActions = engineActions(gameCore);
         glueObj.glueSimpleByObj(gameCore, vActions);
         glueObj.glueSimpleByObj(presenter, eActions);
-        glueObj.glueSimpleByObj(gameCore, gameToNetwork);
+        const glued = glueObj.glueSimple(gameCore, gameToNetwork);
+        assert(glued > 0, "Bad network2");
         glueNetToActions(connection, eActions, queue);
         await gameCore.start(presenter.toJson());
         // connection.registerHandler(unoActions, queue);

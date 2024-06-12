@@ -5,6 +5,7 @@ import {drawBack, drawCard, repaintCard} from "./basic_views.js";
 import shuffle from "./shuffle.js";
 
 import chooseCard from "./choose_card.js";
+import { assert } from "../utils/assert.js";
 
 function showCards(settings) {
     return settings.showAll || settings.clickAll;
@@ -65,7 +66,11 @@ function drawMyHand({document, myIndex, settings, players, logger, dealer, onCho
 
 function drawLayout(data) {
     const {document, myIndex, settings, players, dealer, logger} = {...data};
+    assert(document, "No document");
     const box = document.querySelector(".places");
+    assert(box, "No places");
+    // clean old state
+    box.classList.remove("loading", "flying-cards");
     box.replaceChildren();
     const places = document.createElement("ul");
     places.classList.add("circle-wrapper");

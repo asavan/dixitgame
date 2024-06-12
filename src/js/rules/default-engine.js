@@ -2,16 +2,8 @@ import core from "../core/basic.js";
 import RoundStage from "./constants.js";
 
 
-export function emptyPlayer(name) {
-    return {score: 0, pile: [], name};
-}
-
-export function emptyPlayers(count) {
-    const players = [];
-    for (let i = 0; i < count; ++i) {
-        players.push(emptyPlayer(""));
-    }
-    return players;
+export function emptyPlayer(name, externalId) {
+    return {score: 0, pile: [], name, externalId};
 }
 
 export default function emptyEngine(settings, players) {
@@ -21,7 +13,7 @@ export default function emptyEngine(settings, players) {
     const roundState = RoundStage.BEGIN_ROUND;
     const maxScore = settings.maxScore;
     const cardsOnTable = [];
-    const playersRaw = players.map(p => emptyPlayer(p.name));
+    const playersRaw = players.map(p => emptyPlayer(p.name, p.externalId));
     return {
         dealer,
         direction,

@@ -90,6 +90,7 @@ export function createSignalingChannel(id, socketUrl, logger) {
 export function glueNetToActions(connection, actions, queue) {
     const mapperActions = glueObj.simpleMapper(actions);
     const networkHandler = handlersFunc(mapperActions.actionKeys(), queue);
-    glueObj.glueSimple(networkHandler, mapperActions);
+    const glued = glueObj.glueSimple(networkHandler, mapperActions);
     connection.registerHandler(networkHandler);
+    return glued;
 }
