@@ -1,5 +1,5 @@
 import RoundStage from "./constants.js";
-import {hide, mimic, guess, countScore, applyScore, roundBegin} from "./phases.js";
+import {hide, mimic, guess, countScore, applyScore} from "./phases.js";
 import deckFunc from "../core/deck.js";
 import handlersFunc from "../utils/handlers.js";
 import core from "../core/basic.js";
@@ -10,9 +10,9 @@ const SAME_ROUND = 1;
 const NEXT_ROUND = 2;
 
 
-
-function round(dataRound) {
+async function round(dataRound) {
     const {logger, handlers} = {...dataRound};
+    logger.log("round started ", dataRound);
     let stage = RoundStage.BEGIN_ROUND;
     const nextMapper = {
         [RoundStage.BEGIN_ROUND]: hide,
@@ -23,7 +23,9 @@ function round(dataRound) {
         [RoundStage.APPLY_SCORE]: null,
     };
 
-    let curState = roundBegin(dataRound);
+    let curState = nextMapper[stage]({...dataRound});
+    ++stage;
+
     const tryMove = async (data) => {
         const {playerIndex, state, card} = {...data};
         logger.log("tryMove", playerIndex, state, card, curState.getRoundState());
@@ -38,19 +40,22 @@ function round(dataRound) {
 
         // animation
         while (curState.isReady()) {
-            logger.log("tryMove isReady");
+            logger.log("tryMove isReady", curState.getRoundState());
             const nextStateFunc = nextMapper[curState.getRoundState()];
             if (!nextStateFunc) {
+                logger.log("round exit");
                 return NEXT_ROUND;
             }
             const countedState = curState.toJson();
             curState = nextStateFunc({...dataRound, ...countedState});
-            stage = curState.getRoundState();
+            ++stage;
+            assert(stage === curState.getRoundState(), "stage not sequensed");
             await handlers.call("changeState", {...curState.toJson(), stage});
         }
         return SAME_ROUND;
     };
 
+    await handlers.call("changeState", {...curState.toJson(), stage});
     return {
         tryMove
     };
@@ -74,45 +79,54 @@ function game(data) {
         return handlers.call(callbackName, data);
     }
 
+
     let storyteller = 0;
     let roundNum = 0;
     const scoreMap = Array(playersCount).fill(0);
     const direction = settings.direction;
     const players = Array(playersCount).fill([]);
 
-    let curRound = round({...settings, players, storyteller, scoreMap, logger, handlers});
+    let curRound;
+    let deck;
+
+    function newRound() {
+        return round({...settings, players, storyteller, scoreMap, logger, handlers});
+    }
+
     const tryMove = async (data) => {
-        const res = curRound.tryMove(data);
+        const res = await curRound.tryMove(data);
+        logger.log("game try move", res);
         if (res === NEXT_ROUND) {
             await handlers.call("roundover", data);
-            ++storyteller;
+            storyteller = core.nextPlayer(0, playersCount, direction, storyteller);
             ++roundNum;
-            if (settings.maxScore) {
+            const maxScore = scoreMap.reduce((acc, s) => acc < s ? s : acc, 0);
+            if (settings.maxScore <= maxScore) {
+                logger.log("game try move4");
                 await handlers.call("gameover", data);
                 return;
             }
             await handlers.call("newround", data);
             await dealN(1);
             logger.log("Next round", roundNum);
-            curRound = round({players, storyteller, settings}, logger, handlers);
+            curRound = await newRound();
+            logger.log("game try move8");
         }
     };
 
-
     const onShuffle = (d) => report("shuffle", d);
-    let deck;
 
-    async function dealN(initialDealt, deck) {
+    async function dealN(initialDealt) {
         logger.log("dealN", deck);
-        const n = players.length;
-        assert(initialDealt * n < deck.size(), "Not enought cards to play");
+        assert(initialDealt * playersCount < deck.size(), "Not enought cards to play");
         for (let round = 0; round < initialDealt; ++round) {
-            for (let i = 0; i < n; i++) {
-                const currentPlayer = core.nextPlayer(i, n, direction, storyteller);
+            for (let i = 0; i < playersCount; i++) {
+                const currentPlayer = core.nextPlayer(i, playersCount, direction, storyteller);
                 await dealToPlayer(deck, currentPlayer);
             }
         }
     }
+
     async function dealToPlayer(deck, playerIndex) {
         if (deck == null || deck.size() === 0) {
             logger.error("deck is empty");
@@ -131,8 +145,9 @@ function game(data) {
     const start = async (data) => {
         await report("start", data);
         await delay(200);
+        curRound = await newRound();
         deck = await deckFunc.newShuffledDeck(onShuffle, rngEngine, settings.cardsCount);
-        await dealN(settings.cardsDeal, deck);
+        await dealN(settings.cardsDeal);
     };
 
     const actionKeys = handlers.actionKeys;

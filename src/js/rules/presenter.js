@@ -82,6 +82,11 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
             players[playerIndex].removeCard(card);
             cardsOnTable.push(card);
         }
+
+        if (stage === RoundStage.GUESS) {
+            return;
+        }
+
         layout.drawLayout({document, myIndex, settings, players, dealer, logger, onChoose});
     };
 
