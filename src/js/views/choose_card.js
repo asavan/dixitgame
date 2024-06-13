@@ -1,14 +1,14 @@
-import {drawCard} from "./basic_views.js";
+import {drawCard2} from "./basic_views.js";
 
-export default function chooseCard(document, card) {
+export default function chooseCard(document, card, urlGen) {
     return new Promise((resolve, reject) => {
-        const cardItem = document.querySelector("#card");
+        const cardItem = document.querySelector("#card2");
         const box = document.querySelector(".color-picker-holder");
         box.replaceChildren();
         const places = document.createElement("ul");
         places.classList.add("color-grid");
         box.appendChild(places);
-        const colorItem = drawCard(card, cardItem);
+        const colorItem = drawCard2(card, cardItem, urlGen);
         colorItem.classList.add("main-card");
         colorItem.classList.remove("sprite-container");
         colorItem.addEventListener("click", e => {

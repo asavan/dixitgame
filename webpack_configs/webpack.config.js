@@ -40,6 +40,7 @@ const devConfig = () => {
                 patterns: [
                     { from: "./src/images", to: "./images" },
                     { from: "./src/manifest.json", to: "./" },
+                    { from: "./assets/v1", to: "./images/v1" },
                     { from: "./.well-known", to: "./.well-known" }
                 ],
             })

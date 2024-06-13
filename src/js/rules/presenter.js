@@ -14,6 +14,8 @@ import onGameEnd from "../views/end_game.js";
 
 import { assert } from "../utils/assert.js";
 
+import urlGenerator from "../views/get_image_url.js";
+
 export default function initPresenter({document, settings, rngEngine, myIndex, queue},
     {
         dealer,
@@ -30,6 +32,7 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
     const logger = loggerFunc(6, null, settings);
     const traceLogger = loggerFunc(1, null, settings);
     const players = playersRaw.map((p, i) => newPlayer(p.pile, i, p.score, p.name, p.externalId));
+    const urlGen = urlGenerator().makeKUrlGen(settings.cardsCount, rngEngine);
 
     const commands = ["tryMove"];
 
@@ -100,7 +103,7 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
         if (stage === RoundStage.GUESS) {
             const cardsToShow = [...cardsOnTable];
             shuffleArray(cardsToShow, rngEngine);
-            layout.drawOpenPile(document, cardsToShow);
+            layout.drawOpenPile(document, cardsToShow, urlGen);
             return;
         }
         if (stage === RoundStage.APPLY_SCORE) {
@@ -153,7 +156,7 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
 
     function drawScreen(marker) {
         logger.log("drawScreen", marker);
-        layout.drawLayout({document, myIndex, settings, players, dealer, logger: traceLogger, onChoose});
+        layout.drawLayout({document, myIndex, settings, players, dealer, urlGen, logger: traceLogger, onChoose});
     }
 
     drawScreen("Game init");

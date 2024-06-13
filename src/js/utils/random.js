@@ -17,10 +17,30 @@ function makeId(length, rngFunc) {
     return result;
 }
 
+function swap(arr, i, j) {
+    const tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+}
 
+function selectKRandom(arr, k, rngFunc) {
+    if (k > arr.length) {
+        return arr;
+    }
+    let len = arr.length;
+    let count = 0;
+    while (count < k) {
+        const randInd = randomInteger(0, len, rngFunc);
+        swap(arr, randInd, len-1);
+        --len;
+        ++count;
+    }
+    return arr.slice(len);
+}
 
 export default {
     makeId,
     randomEl,
-    randomInteger
+    randomInteger,
+    selectKRandom
 };

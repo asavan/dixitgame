@@ -1,6 +1,6 @@
 import {delay} from "../utils/timer.js";
 
-import {drawBack, drawCard, repaintCard} from "./basic_views.js";
+import {drawBack, drawCard, drawCard2, repaintCard} from "./basic_views.js";
 
 import shuffle from "./shuffle.js";
 
@@ -11,27 +11,27 @@ function showCards(settings) {
     return settings.showAll || settings.clickAll;
 }
 
-function drawHand(document, parent, pile) {
+function drawHand(document, parent, pile, urlGen) {
     const hand = document.createElement("ul");
-    const cardItem = document.querySelector("#card");
+    const cardItem = document.querySelector("#card2");
     hand.classList.add("hand");
     for (const p of pile) {
-        hand.appendChild(drawCard(p, cardItem));
+        hand.appendChild(drawCard2(p, cardItem, urlGen));
     }
     parent.appendChild(hand);
     return hand;
 }
 
-function drawOpenPile(document, pile) {
+function drawOpenPile(document, pile, urlGen) {
     const parent = document.querySelector(".my-hand");
     const hand = parent.querySelector(".hand");
     if (hand) {
         hand.remove();
     }
-    drawHand(document, parent, pile);
+    drawHand(document, parent, pile, urlGen);
 }
 
-function drawMyHand({document, myIndex, settings, players, logger, dealer, onChoose}, box) {
+function drawMyHand({document, myIndex, players, logger, dealer, urlGen, onChoose}, box) {
     const myPlayer = players[myIndex];
     const elem = document.createElement("div");
     elem.classList.add("my-hand", "js-player");
@@ -58,14 +58,14 @@ function drawMyHand({document, myIndex, settings, players, logger, dealer, onCho
         elem.classList.add("dealer");
     }
 
-    drawHand(document, elem, myPlayer.pile(), settings);
+    drawHand(document, elem, myPlayer.pile(), urlGen);
     elem.addEventListener("click", (e) => {
         e.preventDefault();
         const cardEl = e.target.parentElement;
         if (cardEl && cardEl.classList.contains("card")) {
             const card = Number.parseInt(cardEl.dataset.card);
             logger.log(card);
-            return chooseCard(document, card).then(onChoose).catch((e) => logger.error(e));
+            return chooseCard(document, card, urlGen).then(onChoose).catch((e) => logger.error(e));
         }
     });
 
