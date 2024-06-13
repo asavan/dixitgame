@@ -23,7 +23,7 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
     }
 ) {
 
-    const logger = loggerFunc(60, null, settings);
+    const logger = loggerFunc(6, null, settings);
     const traceLogger = loggerFunc(1, null, settings);
     const players = playersRaw.map((p, i) => newPlayer(p.pile, i, p.score, p.name, p.externalId));
 
@@ -91,7 +91,7 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
     };
 
     const onChangeState = (data) => {
-        logger.log("On onChangeState", data, players);
+        traceLogger.log("On onChangeState", data, players);
         stage = data.stage;
         if (stage === RoundStage.GUESS) {
             const cardsToShow = [...cardsOnTable];

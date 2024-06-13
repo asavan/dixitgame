@@ -202,6 +202,7 @@ function fillPlayers(scoreDiff, storyteller, scoreReg, scoreStoryteller) {
 
 export function countScore(state) {
     const {
+        logger,
         players, storyteller, cardsOnTable, votesMap,
         scoreAllReg, scoreAllStoryteller,
         scoreNoneReg, scoreNoneStoryteller,
@@ -251,6 +252,7 @@ export function countScore(state) {
     }
 
     const toJson = () => {
+        logger.log("countScore", scoreDiff);
         return {scoreDiff};
     };
     const getRoundState = () => roundState;
@@ -266,13 +268,14 @@ export function countScore(state) {
 export function applyScore(state) {
     const roundState = RoundStage.APPLY_SCORE;
 
-    const {scoreMap, scoreDiff} = {...state};
+    const {scoreMap, scoreDiff, logger} = {...state};
     assert(scoreDiff.length === scoreMap.length, "Bad score");
     for (let i = 0; i < scoreMap.length; ++i) {
         scoreMap[i] += scoreDiff[i];
     }
 
     const toJson = () => {
+        logger.log("applyScore", scoreMap);
         return {};
     };
     const getRoundState = () => roundState;

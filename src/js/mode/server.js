@@ -19,7 +19,7 @@ export default async function server({window, document, settings, rngEngine}) {
     const clients = {};
     let index = 0;
     const myId = getMyId(window, settings, rngEngine);
-    const logger = loggerFunc(70, null, settings);
+    const logger = loggerFunc(6, null, settings);
     const networkLogger = loggerFunc(3, null, settings);
     clients[myId] = {index};
     const socketUrl = getWebSocketUrl(settings, window.location);
@@ -67,27 +67,29 @@ export default async function server({window, document, settings, rngEngine}) {
     const gameToNetwork = networkMapperObj.networkMapperServer({logger, connection});
     // TODO
     // glueObj.glueSimpleByObj(lobby, nMapper);
-    const glued = glueNetToActions(connection, actions, queue);
-    assert(glued > 0, "Bad network");
+    glueNetToActions(connection, actions, queue);
 
     lobby.on("start", async (data) => {
         removeElem(qrCodeEl);
         qrCodeEl = undefined;
         const myIndex = data.players.findIndex(p => p.externalId === myId);
-        const loggerCore = loggerFunc(7, null, settings);
+        const loggerCore = loggerFunc(3, null, settings);
         presenter = initPresenter({document, settings, rngEngine, queue, myIndex},
             emptyEngine(settings, data.players));
         const gameCore = dixit.game({settings, rngEngine, delay,
             logger: loggerCore, playersCount: data.players.length});
         const vActions = viewActions(presenter);
         const eActions = engineActions(gameCore);
+
+        // for debug. delete this
+        window.presenter = presenter;
+        window.gameCore = gameCore;
+
         glueObj.glueSimpleByObj(gameCore, vActions);
         glueObj.glueSimpleByObj(presenter, eActions);
-        const glued = glueObj.glueSimple(gameCore, gameToNetwork);
-        assert(glued > 0, "Bad network2");
+        glueObj.glueSimple(gameCore, gameToNetwork);
         glueNetToActions(connection, eActions, queue);
         await gameCore.start(presenter.toJson());
-        // connection.registerHandler(unoActions, queue);
     });
 
     connection.on("disconnect", (id) => {

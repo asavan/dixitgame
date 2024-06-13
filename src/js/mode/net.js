@@ -41,7 +41,7 @@ export default async function netMode(netModeData) {
 
     const myId = getMyId(window, settings, rngEngine);
     assert(myId, "No net id");
-    const logger = loggerFunc(20, null, settings);
+    const logger = loggerFunc(5, null, settings);
     const networkLogger = loggerFunc(3, null, settings);
     const traceLogger = loggerFunc(1, null, settings);
     const connection = connectionFunc(myId, networkLogger, false);
@@ -75,7 +75,7 @@ export default async function netMode(netModeData) {
                 }
             };
             glueNetToActions(connection, actions, queue);
-            logger.log("After glue2");
+            traceLogger.log("After glue2");
             lobby.afterSetup();
             resolve(lobby);
         });
