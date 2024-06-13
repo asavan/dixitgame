@@ -276,7 +276,7 @@ export function applyScore(state) {
 
     const toJson = () => {
         logger.log("applyScore", scoreMap);
-        return {};
+        return {scoreMap, scoreDiff};
     };
     const getRoundState = () => roundState;
     const isReady = () => true;

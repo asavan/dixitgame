@@ -10,6 +10,10 @@ import RoundStage from "./constants.js";
 
 import { shuffleArray } from "../utils/shuffle.js";
 
+import onGameEnd from "../views/end_game.js";
+
+import { assert } from "../utils/assert.js";
+
 export default function initPresenter({document, settings, rngEngine, myIndex, queue},
     {
         dealer,
@@ -87,11 +91,11 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
             return;
         }
 
-        layout.drawLayout({document, myIndex, settings, players, dealer, logger, onChoose});
+        drawScreen("drawMove");
     };
 
     const onChangeState = (data) => {
-        traceLogger.log("On onChangeState", data, players);
+        logger.log("On onChangeState", data, players);
         stage = data.stage;
         if (stage === RoundStage.GUESS) {
             const cardsToShow = [...cardsOnTable];
@@ -99,7 +103,20 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
             layout.drawOpenPile(document, cardsToShow);
             return;
         }
-        layout.drawLayout({document, myIndex, settings, players, dealer, logger, onChoose});
+        if (stage === RoundStage.APPLY_SCORE) {
+            const scoreDiff = data.scoreDiff;
+            assert(scoreDiff.length === players.length, "Bad onChangeState");
+            for (let i = 0; i < players.length; ++i) {
+                players[i].updateScore(scoreDiff[i]);
+            }
+        }
+        if (stage === RoundStage.ROUND_OVER) {
+            const scoreMap = data.scoreMap;
+            for (let i = 0; i < players.length; ++i) {
+                assert(players[i].getScore() === scoreMap[i], "Different score");
+            }
+        }
+        drawScreen("drawOnChangeState");
     };
 
     const onNewRound = (data) => {
@@ -107,20 +124,40 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
         cardsOnTable = [];
     };
 
+    const onRoundEnd = (data) => {
+        logger.log("onRoundEnd", data);
+        cardsOnTable = [];
+    };
+
     const onDeal = (data) => {
         traceLogger.log("On onDeal", data);
         const {playerIndex, card} = {...data};
         players[playerIndex].addCard(card);
-        layout.drawLayout({document, myIndex, settings, players, dealer, logger: traceLogger, onChoose});
+        drawScreen("onDeal");
     };
+
+    function onGameOver(data) {
+        drawScreen("onGameOver");
+        const {winners} = {...data};
+        const names = winners.map(w => players[w].getName());
+        const firstLine = names.join(", ") + " wins";
+        const secondLine = "with score " + data.score;
+        logger.log(firstLine, secondLine);
+        onGameEnd(document, firstLine, secondLine);
+        return true;
+    }
 
     const onShuffle = (data) => {
         logger.log("onShuffle", data);
     };
 
-    layout.drawLayout({document, myIndex, settings, players, dealer, logger: traceLogger, onChoose});
-    logger.log("Game init");
+    function drawScreen(marker) {
+        logger.log("drawScreen", marker);
+        layout.drawLayout({document, myIndex, settings, players, dealer, logger: traceLogger, onChoose});
+    }
 
+    drawScreen("Game init");
+    logger.log("Game init");
 
     const actionKeys = handlers.actionKeys;
     const on = handlers.on;
@@ -139,5 +176,7 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
         size,
         getDealer,
         showAllCards,
+        onGameOver,
+        onRoundEnd
     };
 }

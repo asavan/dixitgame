@@ -5,6 +5,8 @@ export default function viewActions(presenter) {
         "changeState": presenter.onChangeState,
         "shuffle": presenter.onShuffle,
         "newround": presenter.onNewRound,
+        "roundover": presenter.onRoundEnd,
+        "gameover": presenter.onGameOver,
         "deal": presenter.onDeal
     };
 }

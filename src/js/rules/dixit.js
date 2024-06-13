@@ -9,6 +9,16 @@ const BAD_MOVE = 0;
 const SAME_ROUND = 1;
 const NEXT_ROUND = 2;
 
+function calcWinners(maxScore, scoreMap) {
+    const winners = [];
+    for (let i = 0; i < scoreMap.length; ++i) {
+        const score = scoreMap[i];
+        if (score === maxScore) {
+            winners.push(i);
+        }
+    }
+    return winners;
+}
 
 async function round(dataRound) {
     const {logger, handlers} = {...dataRound};
@@ -44,6 +54,8 @@ async function round(dataRound) {
             const nextStateFunc = nextMapper[curState.getRoundState()];
             if (!nextStateFunc) {
                 logger.log("round exit");
+                ++stage;
+                await handlers.call("changeState", {...curState.toJson(), stage});
                 return NEXT_ROUND;
             }
             const countedState = curState.toJson();
@@ -103,7 +115,7 @@ function game(data) {
             const maxScore = scoreMap.reduce((acc, s) => acc < s ? s : acc, 0);
             if (settings.maxScore <= maxScore) {
                 logger.log("game try move4");
-                await handlers.call("gameover", data);
+                await handlers.call("gameover", {winners: calcWinners(maxScore, scoreMap)});
                 return;
             }
             await handlers.call("newround", data);
