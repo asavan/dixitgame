@@ -22,13 +22,18 @@ function drawHand(document, parent, pile, urlGen) {
     return hand;
 }
 
-function drawOpenPile(document, pile, urlGen) {
+function drawOpenPile(document, pile, urlGen, myCard) {
     const parent = document.querySelector(".my-hand");
-    const hand = parent.querySelector(".hand");
+    let hand = parent.querySelector(".hand");
     if (hand) {
         hand.remove();
     }
-    drawHand(document, parent, pile, urlGen);
+    hand = drawHand(document, parent, pile, urlGen);
+    const cardEl = hand.querySelector(`[data-card="${myCard}"]`);
+    if (cardEl) {
+        console.log(cardEl);
+        cardEl.classList.add("faint");
+    }
 }
 
 function drawMyHand({document, myIndex, players, logger, dealer, urlGen, onChoose}, box) {

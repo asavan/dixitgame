@@ -118,9 +118,9 @@ function game(data) {
                 await handlers.call("gameover", {winners: calcWinners(maxScore, scoreMap)});
                 return;
             }
-            await handlers.call("newround", data);
+            await handlers.call("newround", {storyteller});
             await dealN(1);
-            logger.log("Next round", roundNum);
+            logger.log("Next round", roundNum, scoreMap);
             curRound = await newRound();
             logger.log("game try move8");
         }

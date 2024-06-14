@@ -87,7 +87,7 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
         const {playerIndex, state, card} = {...data};
         if (state === RoundStage.HIDE || state === RoundStage.MIMIC) {
             players[playerIndex].removeCard(card);
-            cardsOnTable.push(card);
+            // cardsOnTable.push(card);
         }
 
         if (stage === RoundStage.GUESS) {
@@ -97,13 +97,23 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
         drawScreen("drawMove");
     };
 
+    const drawGuess = () => {
+        const cardsToShow = [...cardsOnTable];
+        shuffleArray(cardsToShow, rngEngine);
+        let myCard;
+        if (myIndex !== dealer) {
+            myCard = cardsOnTable[myIndex];
+        }
+        logger.log("drawGuess", myCard, myIndex, cardsToShow);
+        layout.drawOpenPile(document, cardsToShow, urlGen, myCard);
+    };
+
     const onChangeState = (data) => {
         logger.log("On onChangeState", data, players);
         stage = data.stage;
         if (stage === RoundStage.GUESS) {
-            const cardsToShow = [...cardsOnTable];
-            shuffleArray(cardsToShow, rngEngine);
-            layout.drawOpenPile(document, cardsToShow, urlGen);
+            cardsOnTable = data.cardsOnTable;
+            drawGuess();
             return;
         }
         if (stage === RoundStage.APPLY_SCORE) {
@@ -125,6 +135,7 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
     const onNewRound = (data) => {
         logger.log("onNewRound", data);
         cardsOnTable = [];
+        dealer = data.storyteller;
     };
 
     const onRoundEnd = (data) => {
@@ -156,11 +167,16 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
 
     function drawScreen(marker) {
         logger.log("drawScreen", marker);
+
         layout.drawLayout({document, myIndex, settings, players, dealer, urlGen, logger: traceLogger, onChoose});
+        if (stage === RoundStage.GUESS) {
+            drawGuess();
+            return;
+        }
     }
 
     drawScreen("Game init");
-    logger.log("Game init");
+    logger.log("Game init", myIndex);
 
     const actionKeys = handlers.actionKeys;
     const on = handlers.on;
