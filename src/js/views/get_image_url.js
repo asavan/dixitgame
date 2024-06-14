@@ -31,7 +31,6 @@ export default function urlGenerator() {
         "pinterest_369576713144777548.jpg",
         "pinterest_369576713144777550.jpg",
         "pinterest_369576713144777551.jpg",
-        "pinterest_369576713144777552.jpg",
         "pinterest_369576713144777553.jpg",
         "pinterest_369576713144777554.jpg",
         "pinterest_369576713144777555.jpg",
