@@ -22,6 +22,7 @@
     "style2:fix": "npx stylelint --config linters/.stylelintrc.json \"src/**/*.css\" --fix",
     "style3": "npx @biomejs/biome lint --config-path=./linters/biome.json ./src/",
     "style4": "npx dprint check --config ./linters/dprint.json ./src/css/**",
+    "style4:fix": "npx dprint fmt --config ./linters/dprint.json ./src/css/**",
     "test": "node --test --test-reporter dot",
     "test:verbose": "node --test",
     "test:watch": "node --test --watch ./tests",
