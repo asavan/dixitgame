@@ -90,13 +90,13 @@ function drawLayout(data) {
     places.classList.add("circle-wrapper");
     box.appendChild(places);
     const increaseDeg = 360 / players.length;
+    const N = players.length;
     let i = 0;
     for (const pl of players) {
         if (i === myIndex) {
             ++i;
             continue;
         }
-        const angleDeg = 90 + increaseDeg*(i-myIndex);
 
         const elem = document.createElement("li");
         elem.classList.add("js-player");
@@ -138,8 +138,11 @@ function drawLayout(data) {
 
 
         elem.dataset.id = i;
+        const angleDeg = 90 + increaseDeg*(i-myIndex);
         elem.dataset.angle = angleDeg + "deg";
         elem.style.setProperty("--angle-deg", angleDeg + "deg");
+        const pathPercent = 25 + ((i-myIndex+N)%N)*100/N;
+        elem.style.setProperty("--path-pc", pathPercent);
         elem.classList.add("circle");
         if (dealer === i) {
             elem.classList.add("dealer");

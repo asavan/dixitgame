@@ -34,10 +34,13 @@ export default function choosePlace(document, {onSeatsFinished, onSwap, onClick}
     }
 
     places.addEventListener("click", onSelect);
+    const N = nonBannedPlayers.length;
+    let count = 0;
     for (let i = 0; i < players.length; ++i) {
         const player = players[i];
         if (player == null) {
             angleDeg += increaseDeg;
+            ++count;
             continue;
         }
         if (player.banned) {
@@ -48,8 +51,11 @@ export default function choosePlace(document, {onSeatsFinished, onSwap, onClick}
         elem.dataset.id = i;
         elem.dataset.angle = angleDeg + "deg";
         elem.style.setProperty("--angle-deg", angleDeg + "deg");
+        const pathPercent = 25 + count*100/N;
+        elem.style.setProperty("--path-pc", pathPercent);
         elem.classList.add("circle", "clickable");
         angleDeg += increaseDeg;
+        ++count;
         places.appendChild(elem);
     }
 

@@ -34,22 +34,17 @@ ul { list-style-type: none; }
 
 .selected { background-color: red; }
 
-.circle-wrapper {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
+.circle-wrapper { flex-grow: 1; }
 
 .places {
   width: 100%;
   height: 100%;
-  display: block;
+  display: flex;
+  flex-direction: column;
   position: relative;
 }
 
 .my-hand {
-  position: absolute;
-  bottom: 0;
   width: 100%;
   min-height: 135px;
   box-sizing: border-box;
@@ -67,14 +62,10 @@ ul { list-style-type: none; }
 .card-count { font-size: 3rem; }
 
 .circle {
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
   text-align: center;
-  transform: rotate(var(--angle-deg)) translate(140px) rotate(
-    calc(-1 * var(--angle-deg))
-  ) translate(-50%, -50%);
+  offset-path: ellipse(40% 35%);
+  offset-distance: calc(1% * var(--path-pc));
+  offset-rotate: 0deg;
   max-width: 100px;
 }
 
