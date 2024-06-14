@@ -147,7 +147,7 @@ ul { list-style-type: none; }
   padding-bottom: 150%;
 
   /* Set The Sprite as the Background */
-  background-image: url("../images/back.png");
+  background-image: url("./images/back.png");
   background-position: 0 0;
   background-size: 100%;
   display: block;
@@ -405,7 +405,7 @@ footer {
   height: 0;
 
   /* Set The Sprite as the Background */
-  background-image: url("../images/deck.png");
+  background-image: url("./images/deck.png");
   background-size: 1400%;
   display: block;
   animation: flying-cards-animation 10s steps(10) infinite;

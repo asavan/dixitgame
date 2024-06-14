@@ -29,9 +29,12 @@ const prodConfig = () => {
             rules: [
                 {
                     test: /\.css$/i,
-                    use: [{
-                        loader: MiniCssExtractPlugin.loader
-                    }, "css-loader"],
+                    use: [MiniCssExtractPlugin.loader, {
+                        loader: "css-loader",
+                        options: {
+                            url: false
+                        }
+                    }],
                 }
             ]
         },
@@ -42,7 +45,8 @@ const prodConfig = () => {
                 __SERVICE_WORKER_VERSION__: JSON.stringify(PACKAGE.version)
             }),
             new MiniCssExtractPlugin({
-                filename: "[name].[contenthash].css"
+                filename: "[name].[contenthash].css",
+
             }),
             new HtmlWebpackPlugin({
                 template: "./src/index.html",
@@ -65,6 +69,7 @@ const prodConfig = () => {
                     { from: "./src/images", to: "./images" },
                     { from: "./github", to: "./" },
                     { from: "./src/manifest.json", to: "./" },
+                    { from: "./assets/v1", to: "./images/v1" },
                     { from: "./.well-known", to: "./.well-known" }
                 ],
             })
