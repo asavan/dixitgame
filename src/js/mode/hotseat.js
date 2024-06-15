@@ -11,7 +11,7 @@ import rngFunc from "../utils/random.js";
 import { delay } from "../utils/timer.js";
 
 
-export default async function hotseat({document, settings, rngEngine}) {
+export default async function hotseat({window, document, settings, rngEngine}) {
     if (!settings.seed) {
         settings.seed = rngFunc.makeId(6, rngEngine);
     }
