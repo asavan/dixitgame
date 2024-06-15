@@ -30,6 +30,7 @@ const devConfig = () => {
         plugins: [
             new HtmlWebpackPlugin({
                 template: "./src/index.html",
+                scriptLoading: "module",
                 minify: false,
             }),
             new MiniCssExtractPlugin({
