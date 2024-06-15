@@ -14,9 +14,9 @@
 },
 {
   "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {"namespace": "android_app", "package_name": "ru.asavan.suno",
+  "target": {"namespace": "android_app", "package_name": "ru.asavan.drixit",
     "sha256_cert_fingerprints": [
-      "EA:A4:A8:A4:DF:4B:6B:E4:D8:0B:3C:AF:E8:80:9B:93:E1:A8:6C:EE:22:35:C9:FD:8D:09:46:B2:28:3F:1A:73"
+      "F2:08:85:7A:66:90:A3:C8:90:68:0A:67:64:27:E2:D9:A4:B0:4A:C3:1E:F5:EA:AC:0C:01:14:C7:82:C8:D2:F1"
     ]
   }
 }
