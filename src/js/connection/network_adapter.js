@@ -7,16 +7,17 @@ export default function networkAdapter(connection, queue, myId, serverId, logger
         networkMapperObj.networkMapperServer({logger, connection}) :
         networkMapperObj.networkMapperClient({logger, connection, myId, serverId});
     const on = connection.on;
-    const connectObj = (actions) => {
-        const mapperActions = glueObj.simpleMapper(actions);
+    const connectMapper = (mapperActions) => {
         const networkHandler = handlersFunc(mapperActions.actionKeys(), queue);
         const glued = glueObj.glueSimple(networkHandler, mapperActions);
         connection.registerHandler(networkHandler);
         return glued;
     };
+    const connectObj = (actions) => connectMapper(glueObj.simpleMapper(actions));
     const getAction = gameToNetwork.getAction;
     return {
         on,
+        connectMapper,
         connectObj,
         getAction
     };

@@ -21,8 +21,9 @@ function glueSimple(onable, actions) {
 }
 
 function simpleMapper(mapper) {
+    const keys = Object.keys(mapper);
     const getAction = (name) => mapper[name];
-    const actionKeys = () => Object.keys(mapper);
+    const actionKeys = () => keys;
     return {
         actionKeys,
         getAction

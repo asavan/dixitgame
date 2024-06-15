@@ -65,7 +65,7 @@ export default async function server({window, document, settings, rngEngine}) {
     lobby.on("username", actions["username"]);
 
     const nAdapter = networkAdapter(connection, queue, myId, myId, networkLogger);
-    nAdapter.connectObj(actions);
+    nAdapter.connectMapper(glueObj.simpleMapper(actions));
 
     lobby.on("start", async (data) => {
         removeElem(qrCodeEl);
@@ -77,16 +77,16 @@ export default async function server({window, document, settings, rngEngine}) {
         const gameCore = dixit.game({settings, rngEngine, delay,
             logger: loggerCore, playersCount: data.players.length});
         const vActions = viewActions(presenter);
-        const eActions = engineActions(gameCore);
+        const eActionsMapper = glueObj.simpleMapper(engineActions(gameCore));
 
         // for debug. delete this
         window.presenter = presenter;
         window.gameCore = gameCore;
 
         glueObj.glueSimpleByObj(gameCore, vActions);
-        glueObj.glueSimpleByObj(presenter, eActions);
+        glueObj.glueSimple(presenter, eActionsMapper);
         glueObj.glueSimple(gameCore, nAdapter);
-        nAdapter.connectObj(eActions);
+        nAdapter.connectMapper(eActionsMapper);
         // glueNetToActions(connection, eActions, queue);
         await gameCore.start(presenter.toJson());
     });
