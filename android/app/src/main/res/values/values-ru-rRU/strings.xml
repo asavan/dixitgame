@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Игра пикифазы</string>
+    <string name="launch">Запустить в браузере</string>
+    <string name="launch_twa">Запустить TWA</string>
+    <string name="launch_twa_local">Запустить</string>
+    <string name="launch_twa_atenalp">Запустить новейшую версию</string>
+    <string name="launch_real_ip">Настоящий IP</string>
+    <string name="launch_first">Начать первым</string>
+    <string name="server_mode">Режим сервера</string>
+    <string name="ai">Сыграть с ботом</string>
+    <string name="webview">Webview</string>
+    <string name="launch_localhost">Запустить на localhost</string>
+    <string name="webview_localhost">Webview localhost</string>
+    <string name="errors">Вывод ошибок</string>
+</resources>

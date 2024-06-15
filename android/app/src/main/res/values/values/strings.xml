@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Mastermind game</string>
+
+    <string name="launch">Launch in browser</string>
+    <string name="launch_twa">Launch in app</string>
+    <string name="launch_twa_atenalp">Launch newest version</string>
+    <string name="launch_first">Start first</string>
+    <string name="launch_localhost">localhost</string>
+    <string name="launch_real_ip">Real IP</string>
+    <string name="launch_twa_local">Launch in app local</string>
+    <string name="server_mode">Server mode</string>
+    <string name="ai">Ai in webview</string>
+    <string name="webview">Webview</string>
+    <string name="webview_localhost">Webview localhost</string>
+    <string name="errors">Error messages</string>
+</resources>
