@@ -1,5 +1,5 @@
 import loggerFunc from "../views/logger.js";
-import { getWebSocketUrl, getMyId, glueNetToActions } from "../connection/common.js";
+import { getWebSocketUrl, getMyId } from "../connection/common.js";
 import connectionChooser from "../connection/connection_chooser.js";
 import PromiseQueue from "../utils/async-queue.js";
 import { makeQr, removeElem } from "../views/qr_helper.js";
@@ -11,7 +11,7 @@ import dixit from "../rules/dixit.js";
 import viewActions from "../rules/view_actions.js";
 import engineActions from "../rules/engine_actions.js";
 import glueObj from "../core/glue.js";
-import networkMapperObj from "../core/network_mapper.js";
+import networkAdapter from "../connection/network_adapter.js";
 import { delay } from "../utils/timer.js";
 
 
@@ -64,10 +64,8 @@ export default async function server({window, document, settings, rngEngine}) {
 
     lobby.on("username", actions["username"]);
 
-    const gameToNetwork = networkMapperObj.networkMapperServer({logger, connection});
-    // TODO
-    // glueObj.glueSimpleByObj(lobby, nMapper);
-    glueNetToActions(connection, actions, queue);
+    const nAdapter = networkAdapter(connection, queue, myId, myId, networkLogger);
+    nAdapter.connectObj(actions);
 
     lobby.on("start", async (data) => {
         removeElem(qrCodeEl);
@@ -87,8 +85,9 @@ export default async function server({window, document, settings, rngEngine}) {
 
         glueObj.glueSimpleByObj(gameCore, vActions);
         glueObj.glueSimpleByObj(presenter, eActions);
-        glueObj.glueSimple(gameCore, gameToNetwork);
-        glueNetToActions(connection, eActions, queue);
+        glueObj.glueSimple(gameCore, nAdapter);
+        nAdapter.connectObj(eActions);
+        // glueNetToActions(connection, eActions, queue);
         await gameCore.start(presenter.toJson());
     });
 

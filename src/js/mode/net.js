@@ -1,23 +1,14 @@
-import { getWebSocketUrl, getMyId, glueNetToActions } from "../connection/common.js";
+import { getWebSocketUrl, getMyId } from "../connection/common.js";
 import connectionChooser from "../connection/connection_chooser.js";
 import loggerFunc from "../views/logger.js";
 import PromiseQueue from "../utils/async-queue.js";
 import { assert } from "../utils/assert.js";
 import lobbyFunc from "../core/client-lobby.js";
 import initPresenter from "../rules/presenter.js";
-import networkMapperObj from "../core/network_mapper.js";
+import networkAdapter from "../connection/network_adapter.js";
 import glueObj from "../core/glue.js";
 
 import viewActions from "../rules/view_actions.js";
-
-// function netGameStart({ document, settings, rngEngine, queue, myId }, gameToNetwork, data ) {
-//     const myIndex = data.players.findIndex(p => p.externalId === myId);
-//     const presenter = initPresenter({ document, settings, rngEngine, queue, myIndex }, data);
-//     const vActions = viewActions(presenter);
-//     const eActions = engineActions(gameToNetwork);
-//     glueObj.glueSimpleByObj(presenter, eActions);
-//     glueNetToActions(connection, vActions, queue);
-// }
 
 
 function onConnectionAnimation(document, connection, logger) {
@@ -59,8 +50,8 @@ export default async function netMode(netModeData) {
             assert(serverId === serverData.from, serverData.from);
             const queue = PromiseQueue(logger);
             const lobby = lobbyFunc({ window, document, settings, myId });
-            const gameToNetwork = networkMapperObj.networkMapperClient({logger, connection, myId, serverId});
-            glueObj.glueSimple(lobby, gameToNetwork);
+            const nAdapter = networkAdapter(connection, queue, myId, serverId, networkLogger);
+            glueObj.glueSimple(lobby, nAdapter);
             traceLogger.log("After glue", lobby.actionKeys());
             const actions = {
                 "start": (data) => {
@@ -68,14 +59,11 @@ export default async function netMode(netModeData) {
                     const myIndex = data.playersRaw.findIndex(p => p.externalId === myId);
                     const presenter = initPresenter({ ...netModeData, queue, myIndex }, data);
                     const vActions = viewActions(presenter);
-                    glueObj.glueSimple(presenter, gameToNetwork);
-                    const glued = glueNetToActions(connection, vActions, queue);
-                    traceLogger.log("After glue3", glued);
-                    return;
+                    glueObj.glueSimple(presenter, nAdapter);
+                    nAdapter.connectObj(vActions);
                 }
             };
-            glueNetToActions(connection, actions, queue);
-            traceLogger.log("After glue2");
+            nAdapter.connectObj(actions);
             lobby.afterSetup();
             resolve(lobby);
         });
