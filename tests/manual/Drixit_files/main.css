@@ -74,7 +74,7 @@ ul { list-style-type: none; }
   text-align: center;
   position: absolute;
   color: white;
-  offset-path: path("M 30 210 L 30 105 s 0 -245 91 25 S 216 238 233 98 S 319 163 329 192 L 348 262");
+  offset-path: path("M 27 232 L 24 120 s -2 -249 87 -12 S 246 331 279 96 S 376 164 363 263");
   offset-distance: calc(1% * var(--path-pc));
   offset-rotate: 0deg;
   width: 30px;
