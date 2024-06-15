@@ -58,9 +58,8 @@ export default async function netMode(netModeData) {
                     traceLogger.log("start", data);
                     const myIndex = data.playersRaw.findIndex(p => p.externalId === myId);
                     const presenter = initPresenter({ ...netModeData, queue, myIndex }, data);
-                    const vActions = viewActions(presenter);
-                    glueObj.glueSimple(presenter, nAdapter);
-                    nAdapter.connectObj(vActions);
+                    const pAdapter = glueObj.wrapAdapter(presenter, viewActions);
+                    pAdapter.connectAdapter(nAdapter);
                 }
             };
             nAdapter.connectObj(actions);

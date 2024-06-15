@@ -56,7 +56,7 @@ function wrapAdapter(core, actionFunc) {
         glueSimple(core, adapter);
         adapter.connectMapper(mapper);
     };
-    return {        
+    return {
         connectMapper,
         actionKeys,
         connectAdapter,

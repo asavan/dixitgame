@@ -79,7 +79,7 @@ function drawMyHand({document, myIndex, players, logger, dealer, urlGen, onChoos
 
 
 function drawLayout(data) {
-    const {document, myIndex, settings, players, dealer, logger} = {...data};
+    const {document, myIndex, settings, players, dealer, logger, urlGen} = {...data};
     assert(document, "No document");
     const box = document.querySelector(".places");
     assert(box, "No places");
@@ -102,8 +102,8 @@ function drawLayout(data) {
         elem.classList.add("js-player");
 
         if (showCards(settings)) {
-            // elem.classList.add("show-all");
-            drawHand(document, elem, pl.pile(), settings);
+            elem.classList.add("show-all");
+            drawHand(document, elem, pl.pile(), urlGen);
             if (settings.clickAll) {
                 const plNum = i;
                 elem.addEventListener("click", (e) => {

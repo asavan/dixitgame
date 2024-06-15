@@ -4,7 +4,7 @@
 
 [![Test covered](https://github.com/asavan/dixitgame/actions/workflows/static.yml/badge.svg)](https://github.com/asavan/dixitgame/actions/workflows/static.yml)
 
-![Suno](/screenshots/screen_green.png "Suno")
+![Dixit](/screenshots/1.png "Dixit")
 
 ## Rules
 Board Game, Dixit
