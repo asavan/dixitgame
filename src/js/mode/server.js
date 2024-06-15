@@ -76,18 +76,15 @@ export default async function server({window, document, settings, rngEngine}) {
             emptyEngine(settings, data.players));
         const gameCore = dixit.game({settings, rngEngine, delay,
             logger: loggerCore, playersCount: data.players.length});
-        const vActions = viewActions(presenter);
-        const eActionsMapper = glueObj.simpleMapper(engineActions(gameCore));
+        const pAdapter = glueObj.wrapAdapter(presenter, viewActions);
+        const eAdapter = glueObj.wrapAdapter(gameCore, engineActions);
+        eAdapter.connectAdapter(pAdapter);
+        eAdapter.connectAdapter(nAdapter);
 
         // for debug. delete this
         window.presenter = presenter;
         window.gameCore = gameCore;
 
-        glueObj.glueSimpleByObj(gameCore, vActions);
-        glueObj.glueSimple(presenter, eActionsMapper);
-        glueObj.glueSimple(gameCore, nAdapter);
-        nAdapter.connectMapper(eActionsMapper);
-        // glueNetToActions(connection, eActions, queue);
         await gameCore.start(presenter.toJson());
     });
 

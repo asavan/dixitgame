@@ -37,9 +37,30 @@ function glueSimpleByObj(onable, mapper) {
 function wrapGlue(onable) {
     const connectObj = (mapper) => glueSimpleByObj(onable, mapper);
     const connect = (actions) => glueSimple(onable, actions);
+    const connectMapper = connect;
     return {
         connect,
+        connectMapper,
         connectObj
+    };
+}
+
+function wrapAdapter(core, actionFunc) {
+    const actions = actionFunc(core);
+    const mapper = simpleMapper(actions);
+    const glued = wrapGlue(core);
+    const connectMapper = glued.connectMapper;
+    const getAction = mapper.getAction;
+    const actionKeys = mapper.actionKeys;
+    const connectAdapter = (adapter) => {
+        glueSimple(core, adapter);
+        adapter.connectMapper(mapper);
+    };
+    return {        
+        connectMapper,
+        actionKeys,
+        connectAdapter,
+        getAction
     };
 }
 
@@ -48,5 +69,6 @@ export default {
     glueSimple,
     glueSimpleByObj,
     wrapGlue,
+    wrapAdapter,
     simpleMapper
 };
