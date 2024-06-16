@@ -45,8 +45,7 @@ function wrapGlue(onable) {
     };
 }
 
-function wrapAdapter(core, actionFunc) {
-    const actions = actionFunc(core);
+function wrapAdapterActions(core, actions) {
     const mapper = simpleMapper(actions);
     const glued = wrapGlue(core);
     const connectMapper = glued.connectMapper;
@@ -64,11 +63,17 @@ function wrapAdapter(core, actionFunc) {
     };
 }
 
+function wrapAdapter(core, actionFunc) {
+    const actions = actionFunc(core);
+    return wrapAdapterActions(core, actions);
+}
+
 export default {
     glue,
     glueSimple,
     glueSimpleByObj,
     wrapGlue,
     wrapAdapter,
+    wrapAdapterActions,
     simpleMapper
 };

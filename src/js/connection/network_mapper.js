@@ -1,4 +1,5 @@
-function networkMapperServer({logger, connection}) {
+function networkMapperServer({connection}) {
+    const logger = connection.getLogger();
     const getAction = (handlerName) => {
         return (data) => {
             let ignore;
@@ -14,7 +15,8 @@ function networkMapperServer({logger, connection}) {
     };
 }
 
-function networkMapperClient({logger, connection, myId, serverId}) {
+function networkMapperClient({connection, myId, serverId}) {
+    const logger = connection.getLogger();
     const getAction = (handlerName) => {
         return (data) => {
             if (data && data.externalId && myId !== data.externalId) {

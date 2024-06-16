@@ -80,6 +80,7 @@ export default function connectionFunc(id, logger, isServer) {
 
     const sendRawTo = (action, data, to) => {
         if (!dataChannel) {
+            logger.error("No channel", dataChannel);
             return false;
         }
         return dataChannel.send(action, data, to);
@@ -87,11 +88,15 @@ export default function connectionFunc(id, logger, isServer) {
 
     const sendRawAll = (type, data, ignore) => {
         if (!dataChannel) {
+            logger.error("No channel", dataChannel);
             return false;
         }
-        logger.log("sendRawAll", data);
         return dataChannel.send(type, data, "all", ignore);
     };
+
+    const getLogger = () => logger;
+    // for tests
+    const getChannel = () => dataChannel;
 
     return {
         connect,
@@ -99,5 +104,8 @@ export default function connectionFunc(id, logger, isServer) {
         registerHandler,
         sendRawTo,
         sendRawAll,
+        getLogger,
+        // for tests
+        getChannel
     };
 }

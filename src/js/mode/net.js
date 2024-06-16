@@ -14,6 +14,7 @@ import viewActions from "../rules/view_actions.js";
 function onConnectionAnimation(document, connection, logger) {
     connection.on("socket_open", () => {
         const grid = document.querySelector(".places");
+        grid.replaceChildren();
         grid.classList.add("loading");
         logger.log("socket_open");
         const onClose = () => {
@@ -26,6 +27,28 @@ function onConnectionAnimation(document, connection, logger) {
     });
 }
 
+function onConnectionOpen(connection, serverData, netModeData, myId, logger) {
+    const serverId = serverData.data.id;
+    assert(serverId === serverData.from, serverData.from);
+    const queue = PromiseQueue(logger);
+    const lobby = lobbyFunc({ ...netModeData, myId });
+    const nAdapter = networkAdapter(connection, queue, myId, serverId);
+    const actions = {
+        "start": (data) => {
+            logger.log("start", data);
+            const myIndex = data.playersRaw.findIndex(p => p.externalId === myId);
+            const presenter = initPresenter({ ...netModeData, queue, myIndex }, data);
+            const pAdapter = glueObj.wrapAdapter(presenter, viewActions);
+            pAdapter.connectAdapter(nAdapter);
+        }
+    };
+
+    const lAdapter = glueObj.wrapAdapterActions(lobby, actions);
+    lAdapter.connectAdapter(nAdapter);
+    lobby.afterSetup();
+    return lobby;
+}
+
 export default async function netMode(netModeData) {
     const { window, document, settings, rngEngine } = { ...netModeData };
     const connectionFunc = await connectionChooser(settings);
@@ -33,47 +56,29 @@ export default async function netMode(netModeData) {
     const myId = getMyId(window, settings, rngEngine);
     assert(myId, "No net id");
     const logger = loggerFunc(5, null, settings);
-    const networkLogger = loggerFunc(3, null, settings);
-    const traceLogger = loggerFunc(1, null, settings);
-    const connection = connectionFunc(myId, networkLogger, false);
     const socketUrl = getWebSocketUrl(settings, window.location);
     if (!socketUrl) {
         logger.error("Can't determine ws address", socketUrl);
         return;
     }
 
+    const networkLogger = loggerFunc(3, null, settings);
+    const connection = connectionFunc(myId, networkLogger, false);
     onConnectionAnimation(document, connection, logger);
-    const gameWaiter = new Promise((resolve, reject) => {
+    const lobbyWaiter = new Promise((resolve, reject) => {
+        const traceLogger = loggerFunc(1, null, settings);
         connection.on("open", (serverData) => {
             traceLogger.log("Server id ", serverData, myId);
-            const serverId = serverData.data.id;
-            assert(serverId === serverData.from, serverData.from);
-            const queue = PromiseQueue(logger);
-            const lobby = lobbyFunc({ window, document, settings, myId });
-            const nAdapter = networkAdapter(connection, queue, myId, serverId, networkLogger);
-            glueObj.glueSimple(lobby, nAdapter);
-            traceLogger.log("After glue", lobby.actionKeys());
-            const actions = {
-                "start": (data) => {
-                    traceLogger.log("start", data);
-                    const myIndex = data.playersRaw.findIndex(p => p.externalId === myId);
-                    const presenter = initPresenter({ ...netModeData, queue, myIndex }, data);
-                    const pAdapter = glueObj.wrapAdapter(presenter, viewActions);
-                    pAdapter.connectAdapter(nAdapter);
-                }
-            };
-            nAdapter.connectObj(actions);
-            lobby.afterSetup();
+            const lobby = onConnectionOpen(connection, serverData, netModeData, myId, logger);
             resolve(lobby);
         });
-
         connection.on("error", (e) => {
-            logger.error(e);
+            traceLogger.error(e);
             reject(e);
         });
     });
 
     await connection.connect(socketUrl);
-    const lobby = await gameWaiter;
+    const lobby = await lobbyWaiter;
     return lobby;
 }
