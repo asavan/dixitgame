@@ -66,8 +66,17 @@ ul { list-style-type: none; }
 .clickable { cursor: pointer; }
 
 .card-count {
-    font-size: 2rem;
-    /*position: absolute;*/
+    font-size: 1.5rem;
+    position: absolute;
+}
+
+.anchored-notice {
+  position: absolute;
+  /*  anchor reference  */
+  position-anchor: --anchor-el;
+  /*  Position bottom of anchored elem at top of anchor  */
+  bottom: anchor(top);
+  right: anchor(right);
 }
 
 .circle {
@@ -77,15 +86,26 @@ ul { list-style-type: none; }
   offset-path: path("M 27 232 L 24 120 s -2 -249 87 -12 S 246 331 279 96 S 376 164 363 263");
   offset-distance: calc(1% * var(--path-pc));
   offset-rotate: 0deg;
-  width: 30px;
+  width: 20px;
   aspect-ratio: 1 / 1;
   border-radius: 100%;
   background-color: blue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.big {
+  width: 48px;
 }
 
 .player-hand {
   min-height: 172px;
   background-color: var(--current-color);
+}
+
+.player-name{
+    anchor-name: --anchor-el;
 }
 
 .dealer .player-name::after { content: "*"; }
