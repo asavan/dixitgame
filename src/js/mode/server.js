@@ -7,12 +7,14 @@ import { assert } from "../utils/assert.js";
 import lobbyFunc from "../core/lobby.js";
 import initPresenter from "../rules/presenter.js";
 import emptyEngine from "../rules/default-engine.js";
+import { emptyPlayer } from "../rules/default-engine.js";
 import dixit from "../rules/dixit.js";
 import viewActions from "../rules/view_actions.js";
 import engineActions from "../rules/engine_actions.js";
 import glueObj from "../core/glue.js";
 import networkAdapter from "../connection/network_adapter.js";
 import { delay } from "../utils/timer.js";
+import urlGenerator from "../views/get_image_url.js";
 
 
 export default async function server({window, document, settings, rngEngine}) {
@@ -70,12 +72,15 @@ export default async function server({window, document, settings, rngEngine}) {
     lobby.on("start", async (data) => {
         removeElem(qrCodeEl);
         qrCodeEl = undefined;
-        const myIndex = data.players.findIndex(p => p.externalId === myId);
+        const {players} = {...data};
+        const myIndex = players.findIndex(p => p.externalId === myId);
         const loggerCore = loggerFunc(3, null, settings);
+        const urlGenRaw = urlGenerator().makeKUrlGen(settings.cardsCount, rngEngine).getData();
+        const playersRaw = players.map(p => emptyPlayer(p.name, p.externalId));
         presenter = initPresenter({document, settings, rngEngine, queue, myIndex},
-            emptyEngine(settings, data.players, rngEngine));
+            {...emptyEngine(settings), playersRaw, urlGenRaw});
         const gameCore = dixit.game({settings, rngEngine, delay,
-            logger: loggerCore, playersCount: data.players.length});
+            logger: loggerCore, playersCount: players.length});
         const pAdapter = glueObj.wrapAdapter(presenter, viewActions);
         const eAdapter = glueObj.wrapAdapter(gameCore, engineActions);
         eAdapter.connectAdapter(pAdapter);
