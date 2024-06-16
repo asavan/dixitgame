@@ -1,4 +1,4 @@
-// import random from "../utils/random.js";
+import random from "../utils/random.js";
 
 export default function urlGenerator() {
     const urls = [
@@ -267,14 +267,16 @@ export default function urlGenerator() {
     const getUrlInner = (num, arr) => base + arr[num];
     const makeUrlGen = (arr) => {
         const getUrl = (num) => getUrlInner(num, arr);
+        const getData = () => arr;
         return {
+            getData,
             getUrl
         };
     };
 
-    const makeKUrlGen = (k) => makeUrlGen(urls.slice(0, k));
-
+    const makeKUrlGen = (k, rngEngine) => makeUrlGen(random.selectKRandom(urls, k, rngEngine));
     return {
+        makeUrlGen,
         makeKUrlGen
     };
 }

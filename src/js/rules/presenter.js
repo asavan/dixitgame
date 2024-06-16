@@ -26,13 +26,14 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
         votesMap,
         playersRaw,
         stage,
+        urlGenRaw
     }
 ) {
 
     const logger = loggerFunc(6, null, settings);
     const traceLogger = loggerFunc(1, null, settings);
     const players = playersRaw.map((p, i) => newPlayer(p.pile, i, p.score, p.name, p.externalId));
-    const urlGen = urlGenerator().makeKUrlGen(settings.cardsCount, rngEngine);
+    const urlGen = urlGenerator().makeUrlGen(urlGenRaw);
 
     const commands = ["tryMove"];
 
@@ -68,6 +69,7 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
             cardsOnTable,
             votesMap,
             stage,
+            urlGenRaw,
             playersRaw: players.map(p => p.toJson())
         };
     }

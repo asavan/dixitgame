@@ -73,7 +73,7 @@ export default async function server({window, document, settings, rngEngine}) {
         const myIndex = data.players.findIndex(p => p.externalId === myId);
         const loggerCore = loggerFunc(3, null, settings);
         presenter = initPresenter({document, settings, rngEngine, queue, myIndex},
-            emptyEngine(settings, data.players));
+            emptyEngine(settings, data.players, rngEngine));
         const gameCore = dixit.game({settings, rngEngine, delay,
             logger: loggerCore, playersCount: data.players.length});
         const pAdapter = glueObj.wrapAdapter(presenter, viewActions);
