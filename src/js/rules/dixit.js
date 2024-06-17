@@ -115,7 +115,7 @@ function game(data) {
             const maxScore = scoreMap.reduce((acc, s) => acc < s ? s : acc, 0);
             if (settings.maxScore <= maxScore) {
                 logger.log("game try move4");
-                await handlers.call("gameover", {winners: calcWinners(maxScore, scoreMap)});
+                await handlers.call("gameover", {winners: calcWinners(maxScore, scoreMap), score: maxScore});
                 return;
             }
             await handlers.call("newround", {storyteller});
