@@ -8,8 +8,8 @@ function glue(keys, onable, actions) {
             ++glued;
             onable.on(action, callback);
         } else {
-            console.error("Bad action", action);
-            console.trace("Bad action");
+            // console.error("Bad action", action);
+            // console.trace("Bad action");
         }
     }
     assert(glued > 0, "Bad glue");

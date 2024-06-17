@@ -202,30 +202,29 @@ function fillPlayers(scoreDiff, storyteller, scoreReg, scoreStoryteller) {
 
 export function countScore(state) {
     const {
-        logger,
-        players, storyteller, cardsOnTable, votesMap,
+        storyteller, cardsOnTable, votesMap,
         scoreAllReg, scoreAllStoryteller,
         scoreNoneReg, scoreNoneStoryteller,
         scoreAdditionReg,
         scoreAdditionStoryteller,
         scoreGuessReg, scoreGuessStoryteller
     } = {...state};
-    checkSanity(state);
-    assert(players.length === cardsOnTable.length, "countScore state bad");
-    assert(players.length === votesMap.length, "countScore state bad2");
+    assert(votesMap.length === cardsOnTable.length, "countScore state bad");
+    const N = cardsOnTable.length;
     const roundState = RoundStage.COUNT_SCORE;
-    const scoreDiff = Array(players.length).fill(0);
+    const scoreDiff = Array(N).fill(0);
     const storytellerCard = cardsOnTable[storyteller];
     const playersCount = votesMap.reduce((arr, cur) => {
         if (cur !== undefined) {
             const plIndex = cardsOnTable.indexOf(cur);
+            assert(plIndex >= 0);
             ++arr[plIndex];
         }
         return arr;
-    }, Array(players.length).fill(0));
-
+    }, Array(N).fill(0));
+    assert(playersCount.length === N, "Bad playersCount");
     const storytellerCount = playersCount[storyteller];
-    if (storytellerCount === players.length - 1) {
+    if (storytellerCount === N - 1) {
         // all
         fillPlayers(scoreDiff, storyteller, scoreAllReg, scoreAllStoryteller);
     } else if (storytellerCount === 0) {
@@ -252,7 +251,6 @@ export function countScore(state) {
     }
 
     const toJson = () => {
-        logger.log("countScore", scoreDiff);
         return {scoreDiff};
     };
     const getRoundState = () => roundState;

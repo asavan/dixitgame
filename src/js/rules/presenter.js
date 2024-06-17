@@ -16,7 +16,7 @@ import { assert } from "../utils/assert.js";
 
 import urlGenerator from "../views/get_image_url.js";
 
-export default function initPresenter({document, settings, rngEngine, myIndex, queue},
+export default function initPresenter({ document, settings, rngEngine, myIndex, queue },
     {
         dealer,
         direction,
@@ -38,6 +38,7 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
     const commands = ["tryMove"];
 
     const handlers = handlersFunc(commands, queue);
+    let currentPlayer = myIndex;
 
     function size() {
         return players.length;
@@ -79,20 +80,27 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
         return gameState === core.GameStage.CHOOSE_DEALER;
     };
 
-    const onChoose = (card) => {
-        traceLogger.log("onChoose", card);
-        handlers.call("tryMove", {playerIndex: myIndex, card, state: stage});
+    const onChoose = ({ card, plNum }) => {
+        let playerIndex = plNum;
+        if (stage === RoundStage.GUESS) {
+            playerIndex = currentPlayer;
+        }
+        traceLogger.log("onChoose", card, plNum, playerIndex, currentPlayer);
+        handlers.call("tryMove", { playerIndex, card, state: stage });
     };
 
     const onMove = (data) => {
         traceLogger.log("On Move", data);
-        const {playerIndex, state, card} = {...data};
+        const { playerIndex, state, card } = { ...data };
         if (state === RoundStage.HIDE || state === RoundStage.MIMIC) {
             players[playerIndex].removeCard(card);
             // cardsOnTable.push(card);
         }
 
         if (stage === RoundStage.GUESS) {
+            if (["ai", "hotseat"].includes(settings.mode)) {
+                currentPlayer = core.nextPlayer(0, size(), 1, currentPlayer);
+            }
             return;
         }
 
@@ -103,16 +111,19 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
         const cardsToShow = [...cardsOnTable];
         shuffleArray(cardsToShow, rngEngine);
         let myCard;
-        if (myIndex !== dealer) {
-            myCard = cardsOnTable[myIndex];
+        if (currentPlayer !== dealer) {
+            myCard = cardsOnTable[currentPlayer];
         }
-        logger.log("drawGuess", myCard, myIndex, cardsToShow);
+        logger.log("drawGuess", myCard, currentPlayer, cardsToShow);
         layout.drawOpenPile(document, cardsToShow, urlGen, myCard);
     };
 
     const onChangeState = (data) => {
         logger.log("On onChangeState", data, players);
         stage = data.stage;
+        if (["ai", "hotseat"].includes(settings.mode)) {
+            currentPlayer = core.nextPlayer(0, size(), 1, dealer);
+        }
         if (stage === RoundStage.GUESS) {
             cardsOnTable = data.cardsOnTable;
             drawGuess();
@@ -147,14 +158,14 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
 
     const onDeal = (data) => {
         traceLogger.log("On onDeal", data);
-        const {playerIndex, card} = {...data};
+        const { playerIndex, card } = { ...data };
         players[playerIndex].addCard(card);
         drawScreen("onDeal");
     };
 
     function onGameOver(data) {
         drawScreen("onGameOver");
-        const {winners} = {...data};
+        const { winners } = { ...data };
         const names = winners.map(w => players[w].getName());
         const firstLine = names.join(", ") + " wins";
         const secondLine = "with score " + data.score;
@@ -168,9 +179,9 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
     };
 
     function drawScreen(marker) {
-        logger.log("drawScreen", marker);
+        traceLogger.log("drawScreen", marker);
 
-        layout.drawLayout({document, myIndex, settings, players, dealer, urlGen, logger: traceLogger, onChoose});
+        layout.drawLayout({ document, myIndex, settings, players, dealer, urlGen, logger: traceLogger, onChoose });
         if (stage === RoundStage.GUESS) {
             drawGuess();
             return;
@@ -178,7 +189,7 @@ export default function initPresenter({document, settings, rngEngine, myIndex, q
     }
 
     drawScreen("Game init");
-    logger.log("Game init", myIndex);
+    traceLogger.log("Game init", myIndex);
 
     const actionKeys = handlers.actionKeys;
     const on = handlers.on;

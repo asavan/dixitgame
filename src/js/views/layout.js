@@ -31,7 +31,6 @@ function drawOpenPile(document, pile, urlGen, myCard) {
     hand = drawHand(document, parent, pile, urlGen);
     const cardEl = hand.querySelector(`[data-card="${myCard}"]`);
     if (cardEl) {
-        console.log(cardEl);
         cardEl.classList.add("faint");
     }
 }
@@ -70,7 +69,7 @@ function drawMyHand({document, myIndex, players, logger, dealer, urlGen, onChoos
         if (cardEl && cardEl.classList.contains("card")) {
             const card = Number.parseInt(cardEl.dataset.card);
             logger.log(card);
-            return chooseCard(document, card, urlGen).then(onChoose).catch((e) => logger.error(e));
+            return chooseCard(document, card, myIndex, urlGen).then(onChoose).catch((e) => logger.error(e));
         }
     });
 
@@ -79,7 +78,7 @@ function drawMyHand({document, myIndex, players, logger, dealer, urlGen, onChoos
 
 
 function drawLayout(data) {
-    const {document, myIndex, settings, players, dealer, logger, urlGen} = {...data};
+    const {document, myIndex, settings, players, dealer, logger, urlGen, onChoose} = {...data};
     assert(document, "No document");
     const box = document.querySelector(".places");
     assert(box, "No places");
@@ -112,6 +111,7 @@ function drawLayout(data) {
                     if (cardEl && cardEl.classList.contains("card")) {
                         const card = Number.parseInt(cardEl.dataset.card);
                         logger.log(card, plNum);
+                        return chooseCard(document, card, plNum, urlGen).then(onChoose).catch((e) => logger.log(e));
                         // return engine.moveToDiscard(plNum, card);
                     }
                 });

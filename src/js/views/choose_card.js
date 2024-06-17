@@ -1,6 +1,6 @@
 import {drawCard2} from "./basic_views.js";
 
-export default function chooseCard(document, card, urlGen) {
+export default function chooseCard(document, card, plNum, urlGen) {
     return new Promise((resolve, reject) => {
         const cardItem = document.querySelector("#card2");
         const box = document.querySelector(".color-picker-holder");
@@ -14,7 +14,7 @@ export default function chooseCard(document, card, urlGen) {
         colorItem.addEventListener("click", e => {
             e.preventDefault();
             box.replaceChildren();
-            resolve(card);
+            resolve({card, plNum});
         });
         places.appendChild(colorItem);
         const cancel = document.createElement("li");
