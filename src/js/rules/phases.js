@@ -255,10 +255,12 @@ export function countScore(state) {
     };
     const getRoundState = () => roundState;
     const isReady = () => true;
+    const canMove = () => false;
 
     return {
         isReady,
         getRoundState,
+        canMove,
         toJson
     };
 }
@@ -278,10 +280,12 @@ export function applyScore(state) {
     };
     const getRoundState = () => roundState;
     const isReady = () => true;
+    const canMove = () => false;
 
     return {
         isReady,
         getRoundState,
+        canMove,
         toJson
     };
 }

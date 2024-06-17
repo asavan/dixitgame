@@ -39,7 +39,7 @@ async function round(dataRound) {
     const tryMove = async (data) => {
         const {playerIndex, state, card} = {...data};
         logger.log("tryMove", playerIndex, state, card, curState.getRoundState());
-        if (!curState.canMove(data)) {
+        if (!curState || !curState.canMove(data)) {
             logger.log("tryMoveBad");
             return BAD_MOVE;
         }

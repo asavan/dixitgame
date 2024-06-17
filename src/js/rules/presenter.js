@@ -165,6 +165,7 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
     };
 
     function onGameOver(data) {
+        stage = RoundStage.ROUND_OVER;
         drawScreen("onGameOver");
         const { winners } = { ...data };
         const names = winners.map(w => players[w].getName());
