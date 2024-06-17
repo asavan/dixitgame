@@ -100,6 +100,7 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
         if (stage === RoundStage.GUESS) {
             if (["ai", "hotseat"].includes(settings.mode)) {
                 currentPlayer = core.nextPlayer(0, size(), 1, currentPlayer);
+                drawGuess();
             }
             return;
         }
