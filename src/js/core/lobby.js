@@ -4,18 +4,9 @@ import loggerFunc from "../views/logger.js";
 import {assert} from "../utils/assert.js";
 import handlersFunc from "../utils/handlers.js";
 
-function makeCommonSeed(players) {
-    let seed = "";
-    for (const pl of players) {
-        seed += pl.externalId;
-    }
-    return seed;
-}
-
 export default function lobby({window, document, settings, myId, players}) {
 
-    const logger = loggerFunc(8, null, settings);
-    const traceLogger = loggerFunc(2, null, settings);
+    const logger = loggerFunc(3, null, settings);
 
     assert(myId, "No id");
 
@@ -25,9 +16,6 @@ export default function lobby({window, document, settings, myId, players}) {
     ];
 
     const handlers = handlersFunc(commands);
-    function on(name, f) {
-        return handlers.on(name, f);
-    }
 
     ///
     let clickCount = 0;
@@ -112,13 +100,7 @@ export default function lobby({window, document, settings, myId, players}) {
 
     async function afterAllJoined() {
         assert(players.length > 0, "No players");
-        if (!settings.seed) {
-            logger.log("settings", settings);
-            settings.seed = makeCommonSeed(players);
-        } else {
-            logger.log("settings already set", settings);
-        }
-        traceLogger.log("Game init");
+        logger.log("Game init", settings);
         await handlers.call("start", toJson());
     }
 
@@ -132,7 +114,8 @@ export default function lobby({window, document, settings, myId, players}) {
 
     const canSeeGame = (externalId) => hasExternalPlayer(externalId);
 
-    const actionKeys = () => handlers.actionKeys();
+    const actionKeys = handlers.actionKeys;
+    const on = handlers.on;
 
     return {
         on,

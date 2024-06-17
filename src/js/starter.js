@@ -1,12 +1,15 @@
 import settingsOriginal from "./settings.js";
-import {parseSettings, adjustMode} from "./utils/parse-settings.js";
+import {parseSettings, adjustMode, adjustBots, adjustSeed} from "./utils/parse-settings.js";
 import {assert} from "./utils/assert.js";
-
+import rngFunc from "./utils/random.js";
 
 export default async function starter(window, document) {
     const settings = {...settingsOriginal};
     const changed = parseSettings(window.location.search, settings);
+    const rngEngine = Math.random;
     adjustMode(changed, settings, window.location.protocol);
+    adjustBots(changed, settings);
+    adjustSeed(changed, settings, rngFunc, rngEngine);
 
     let mode;
     if (settings.mode === "net") {
@@ -20,6 +23,6 @@ export default async function starter(window, document) {
     } else {
         assert(false, "Unsupported mode");
     }
-    mode.default({window, document, settings, rngEngine: Math.random}).
+    mode.default({window, document, settings, rngEngine}).
         catch((error) => {console.error(error);});
 }

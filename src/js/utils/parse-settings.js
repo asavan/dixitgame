@@ -22,9 +22,18 @@ export function parseSettings(queryString, settings) {
     return changed;
 }
 
-function adjustBots(changed, settings) {
+export function adjustBots(changed, settings) {
     if (!changed.includes("botCount") && settings.mode === "server") {
         settings.botCount = 0;
+    }
+}
+
+export function adjustSeed(changed, settings, rngFunc, rngEngine) {
+    if (!changed.includes("seed")) {
+        return;
+    }
+    if (!settings.seed) {
+        settings.seed = rngFunc.makeId(6, rngEngine);
     }
 }
 
@@ -39,5 +48,15 @@ export function adjustMode(changed, settings, protocol) {
     if (protocol === "https:") {
         settings.mode = "ai";
     }
-    adjustBots(changed, settings);
+
+    if (!changed.includes("clickAll")) {
+        if (["ai", "hotseat"].includes(settings.mode)) {
+            settings.clickAll = true;
+        }
+    }
+    if (!changed.includes("playerIsBot")) {
+        if (["ai"].includes(settings.mode)) {
+            settings.playerIsBot = true;
+        }
+    }
 }

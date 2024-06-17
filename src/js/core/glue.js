@@ -55,8 +55,10 @@ function wrapAdapterActions(core, actions) {
         glueSimple(core, adapter);
         adapter.connectMapper(mapper);
     };
+    const getCore = () => core;
     return {
         connectMapper,
+        getCore,
         actionKeys,
         connectAdapter,
         getAction
