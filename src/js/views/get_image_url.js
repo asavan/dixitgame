@@ -263,7 +263,7 @@ export default function urlGenerator() {
         "pinterest_369576713144778032.jpg"
     ];
 
-    const base = "./images/v1/";
+    const base = "./images/v2/";
     const getUrlInner = (num, arr) => base + arr[num];
     const makeUrlGen = (arr) => {
         const getUrl = (num) => getUrlInner(num, arr);
