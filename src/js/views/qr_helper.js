@@ -16,7 +16,7 @@ function renderQRCodeSVG(text, divElement) {
         level: "M",
         padding: 3,
         image: {
-            source: "./../../images/icon.svg",
+            source: "./../../images/drixit_icon.svg",
             width: "10%",
             height: "20%",
             x: "center",

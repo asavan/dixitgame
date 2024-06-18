@@ -1,14 +1,21 @@
 import settingsOriginal from "./settings.js";
-import {parseSettings, adjustMode, adjustBots, adjustSeed} from "./utils/parse-settings.js";
-import {assert} from "./utils/assert.js";
+import {
+    parseSettings,
+    adjustMode,
+    adjustBots,
+    adjustSeed,
+    adjustOther
+} from "./utils/parse-settings.js";
+import { assert } from "./utils/assert.js";
 import rngFunc from "./utils/random.js";
 
 export default async function starter(window, document) {
-    const settings = {...settingsOriginal};
+    const settings = { ...settingsOriginal };
     const changed = parseSettings(window.location.search, settings);
     const rngEngine = Math.random;
     adjustMode(changed, settings, window.location.protocol);
     adjustBots(changed, settings);
+    adjustOther(changed, settings);
     adjustSeed(changed, settings, rngFunc, rngEngine);
 
     let mode;
@@ -23,6 +30,6 @@ export default async function starter(window, document) {
     } else {
         assert(false, "Unsupported mode");
     }
-    mode.default({window, document, settings: Object.freeze(settings), rngEngine}).
-        catch((error) => {console.error(error);});
+    mode.default({ window, document, settings: Object.freeze(settings), rngEngine }).
+        catch((error) => { console.error(error); });
 }

@@ -22,6 +22,14 @@ export function parseSettings(queryString, settings) {
     return changed;
 }
 
+export function adjustOther(changed, settings) {
+    if (!changed.includes("wh")) {
+        if (settings.mode === "server" && !settings.wh) {
+            settings.wh = "ws://localhost:8088";
+        }
+    }
+}
+
 export function adjustBots(changed, settings) {
     if (!changed.includes("botCount") && settings.mode === "server") {
         settings.botCount = 0;

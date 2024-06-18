@@ -3,7 +3,7 @@
   "short_name": "drixit",
     "icons": [
         {
-          "src": "./images/icon.svg",
+          "src": "./images/drixit_icon.svg",
           "sizes": "any",
           "type": "image/svg+xml",
           "purpose": "any maskable"
