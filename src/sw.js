@@ -31,7 +31,6 @@ self.addEventListener("fetch", (evt) => {
     evt.respondWith(networkOrCache(evt.request));
 });
 
-
 function networkOrCache(request) {
     return fetch(request).then((response) => {
         if (response.ok) {

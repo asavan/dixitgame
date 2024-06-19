@@ -1,5 +1,8 @@
 {
   "typescript": {
+    "indentWidth": 4,
+    "trailingCommas": "never",
+    "newLineKind": "crlf"
   },
   "json": {
   },
@@ -10,7 +13,7 @@
   "malva": {
     "hexCase": "ignore",
     "singleLineBlockThreshold": 1
-  }
+  },
   "excludes": [
     "**/node_modules",
     "**/*-lock.json"

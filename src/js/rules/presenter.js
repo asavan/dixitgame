@@ -75,11 +75,6 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
         };
     }
 
-    const showAllCards = () =>
-        // maybe show cards on round end and on game end
-        gameState === core.GameStage.CHOOSE_DEALER
-    ;
-
     const onChoose = ({ card, plNum }) => {
         let playerIndex = plNum;
         if (stage === RoundStage.GUESS) {
@@ -209,7 +204,6 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
         getPlayerByIndex,
         size,
         getDealer,
-        showAllCards,
         onGameOver,
         onRoundEnd
     };
