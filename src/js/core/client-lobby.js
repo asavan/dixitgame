@@ -23,9 +23,7 @@ export default function lobby({window, document, settings, myId}) {
         return handlers.call("username", {name, externalId: myId});
     };
 
-    const afterSetup = () => {
-        return enterName(window, document, settings, onNameChange);
-    };
+    const afterSetup = () => enterName(window, document, settings, onNameChange);
 
     const actionKeys = handlers.actionKeys;
 

@@ -46,10 +46,10 @@ function handMoveChecker({players, cardsOnTable, allowChangeMove, roundState, lo
 export function roundBegin(state) {
     checkSanity(state);
     const roundState = RoundStage.BEGIN_ROUND;
-    const toJson = () => {return {};};
+    const toJson = () => ({});
     const isReady = () => true;
     const canMove = () => true;
-    const moveInner = () => {return {};};
+    const moveInner = () => ({});
     const getRoundState = () => roundState;
     return {
         canMove,
@@ -79,14 +79,10 @@ export function hide(state) {
     };
     const moveInner = checker.moveInner;
 
-    const toJson = () => {
-        return {cardsOnTable};
-    };
+    const toJson = () => ({cardsOnTable});
 
     const getRoundState = () => roundState;
-    const isReady = () => {
-        return cardsOnTable[storyteller] !== undefined;
-    };
+    const isReady = () => cardsOnTable[storyteller] !== undefined;
 
     return {
         canMove,
@@ -121,9 +117,7 @@ export function mimic(state) {
         return cardsOnTable.length === countMoves;
     };
 
-    const toJson = () => {
-        return {cardsOnTable};
-    };
+    const toJson = () => ({cardsOnTable});
 
     return {
         canMove,
@@ -177,9 +171,7 @@ export function guess(state) {
         const countMoves = votesMap.reduce((acc, item) => acc + (item !== undefined), 0);
         return countMoves + 1 >= players.length;
     };
-    const toJson = () => {
-        return {cardsOnTable, votesMap};
-    };
+    const toJson = () => ({cardsOnTable, votesMap});
 
     return {
         canMove,
@@ -250,9 +242,7 @@ export function countScore(state) {
         }
     }
 
-    const toJson = () => {
-        return {scoreDiff};
-    };
+    const toJson = () => ({scoreDiff});
     const getRoundState = () => roundState;
     const isReady = () => true;
     const canMove = () => false;

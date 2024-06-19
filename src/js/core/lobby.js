@@ -94,9 +94,7 @@ export default function lobby({window, document, settings, myId, players}) {
         return players.filter(p => !p.banned && p.name && !p.disconnected);
     }
 
-    const toJson = () => {
-        return {players: filterPlayers(), seed: settings.seed};
-    };
+    const toJson = () => ({players: filterPlayers(), seed: settings.seed});
 
     async function afterAllJoined() {
         assert(players.length > 0, "No players");

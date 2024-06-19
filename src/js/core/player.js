@@ -7,9 +7,15 @@ export default function newPlayer(arr, ind, oldScore, name, externalId) {
     const getIndex = () => i;
     const addCard = (card) => deck.push(card);
     const pile = () => [...deck];
-    const cleanHand = () => {deck.length = 0;};
-    const updateScore = (s) => { score += s; };
-    const setScore = (s) => { score = s; };
+    const cleanHand = () => {
+        deck.length = 0;
+    };
+    const updateScore = (s) => {
+        score += s;
+    };
+    const setScore = (s) => {
+        score = s;
+    };
     const getScore = () => score;
     const hasCard = (card) => deck.includes(card);
     const hasEmptyHand = () => deck.length === 0;
@@ -27,14 +33,12 @@ export default function newPlayer(arr, ind, oldScore, name, externalId) {
 
     const getName = () => n;
 
-    const toJson = () => {
-        return {
-            score,
-            name,
-            externalId,
-            pile: pile()
-        };
-    };
+    const toJson = () => ({
+        score,
+        name,
+        externalId,
+        pile: pile()
+    });
 
     return {
         toJson,

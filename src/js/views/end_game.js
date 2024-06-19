@@ -3,7 +3,7 @@ export default function onGameEnd(document, message1, message2) {
     const close = document.querySelector(".close");
     const btnInstall = document.querySelector(".install");
 
-    close.addEventListener("click", function (e) {
+    close.addEventListener("click", (e) => {
         e.preventDefault();
         overlay.classList.remove("show");
     }, false);

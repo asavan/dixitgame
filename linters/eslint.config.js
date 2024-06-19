@@ -27,6 +27,13 @@ export default [
         rules: {
             "prefer-const": ["error"],
             "require-await": ["error"],
+            "no-var": ["error"],
+            "prefer-arrow-callback": ["error"],
+            "curly": ["error"],
+            "keyword-spacing": ["error"],
+            "brace-style": ["error", "1tbs"],
+            "arrow-body-style": ["error"],
+            "space-before-blocks": ["error", "always"],
             "@stylistic/js/indent": [
                 "error",
                 4
@@ -51,7 +58,6 @@ export default [
             "@stylistic/js/max-len": ["error", {"code": 120}],
             "@stylistic/js/no-whitespace-before-property": ["error"],
             "@stylistic/js/no-mixed-spaces-and-tabs": ["error"],
-            "@stylistic/js/no-multi-spaces": ["error"],
             "@stylistic/js/comma-spacing": ["error"],
             "@stylistic/js/no-multi-spaces": ["error"]
         }

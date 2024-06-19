@@ -13,8 +13,12 @@ export default function handlersFunc(arr, queue) {
         return arr;
     };
     const on = (name, callback) => getSafe(name).push(callback);
-    const setOnce = (name, callback) => {handlers[name] = [callback];};
-    const reset = (name) => { handlers[name] = []; };
+    const setOnce = (name, callback) => {
+        handlers[name] = [callback];
+    };
+    const reset = (name) => {
+        handlers[name] = [];
+    };
     const call = (name, arg) => {
         const promises = [];
         for (const f of getSafe(name)) {

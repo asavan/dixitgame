@@ -43,8 +43,12 @@ export default function connectionFunc(id, logger, isServer) {
     }
 
     async function connect() {
-        setTimeout(() => {handlers.call("socket_open", {});}, 10);
-        setTimeout(() => {handlers.call("open", {id: "client1"});}, 20);
+        setTimeout(() => {
+            handlers.call("socket_open", {});
+        }, 10);
+        setTimeout(() => {
+            handlers.call("open", {id: "client1"});
+        }, 20);
         setTimeout(() => {
             if (isServer) {
                 const json = {

@@ -33,7 +33,7 @@ export default function connectionFunc(id, logger, isServer) {
                 reject(data);
             });
 
-            signaling.on("message", function(json) {
+            signaling.on("message", (json) => {
                 if (json.from === id) {
                     logger.error("same user");
                     return;

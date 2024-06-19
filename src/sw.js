@@ -3,10 +3,8 @@
 const version = __SERVICE_WORKER_VERSION__;
 const CACHE = "cache-only-" + version;
 
-self.addEventListener("install", function (evt) {
-    evt.waitUntil(precache().then(function () {
-        return self.skipWaiting();
-    }));
+self.addEventListener("install", (evt) => {
+    evt.waitUntil(precache().then(() => self.skipWaiting()));
 });
 
 const deleteCache = async (key) => {
@@ -29,21 +27,19 @@ self.addEventListener("activate", (event) => {
     event.waitUntil(deleteAndClaim());
 });
 
-self.addEventListener("fetch", function (evt) {
+self.addEventListener("fetch", (evt) => {
     evt.respondWith(networkOrCache(evt.request));
 });
 
 
 function networkOrCache(request) {
-    return fetch(request).then(function (response) {
+    return fetch(request).then((response) => {
         if (response.ok) {
             return response;
         }
         return fromCache(request);
     })
-        .catch(function () {
-            return fromCache(request);
-        });
+        .catch(() => fromCache(request));
 }
 
 async function fromCache(request) {

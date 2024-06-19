@@ -45,7 +45,7 @@ export default function enterName(window, document, settings, onUsermameExternal
         formCont.replaceChildren();
     }
 
-    form.addEventListener("submit", function(evt) {
+    form.addEventListener("submit", (evt) => {
         evt.preventDefault();
         onName(input.value);
     });

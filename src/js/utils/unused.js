@@ -8,7 +8,7 @@ export function promiseState(promise) {
     );
 }
 
-export function pluralize(count, noun, suffix = "s"){
+export function pluralize(count, noun, suffix = "s") {
     return `${count} ${noun}${count !== 1 ? suffix : ""}`;
 }
 
@@ -18,8 +18,12 @@ export function stringifyEvent(e) {
         obj[k] = e[k];
     }
     return JSON.stringify(obj, (_k, v) => {
-        if (v instanceof Node) return "Node";
-        if (v instanceof Window) return "Window";
+        if (v instanceof Node) {
+            return "Node";
+        }
+        if (v instanceof Window) {
+            return "Window";
+        }
         return v;
     }, " ");
 }

@@ -53,9 +53,7 @@ export function createSignalingChannel(id, socketUrl, logger) {
         });
     }
 
-    const on = (name, f) => {
-        return handlers.on(name, f);
-    };
+    const on = (name, f) => handlers.on(name, f);
 
     function onMessageInner(text) {
         logger.log("Websocket message received: " + text);
@@ -63,9 +61,7 @@ export function createSignalingChannel(id, socketUrl, logger) {
         return handlers.call("message", json);
     }
 
-    ws.addEventListener("open", function() {
-        return handlers.call("open", id);
-    });
+    ws.addEventListener("open", () => handlers.call("open", id));
 
     ws.onclose = function (e) {
         logger.log("Websocket closed " + e.code + " " + e.reason);

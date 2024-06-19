@@ -75,10 +75,10 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
         };
     }
 
-    const showAllCards = () => {
+    const showAllCards = () =>
         // maybe show cards on round end and on game end
-        return gameState === core.GameStage.CHOOSE_DEALER;
-    };
+        gameState === core.GameStage.CHOOSE_DEALER
+    ;
 
     const onChoose = ({ card, plNum }) => {
         let playerIndex = plNum;

@@ -29,9 +29,7 @@ export default function startServerWithUI({window, document, settings, rngEngine
     window.presenter = presenter;
     window.gameCore = gameCore;
 
-    const start = () => {
-        return gameCore.start(presenter.toJson());
-    };
+    const start = () => gameCore.start(presenter.toJson());
 
     const getCoreAdapter = () => eAdapter;
     const getPresenterAdapter = () => pAdapter;

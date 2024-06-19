@@ -31,5 +31,7 @@ export default async function starter(window, document) {
         assert(false, "Unsupported mode");
     }
     mode.default({ window, document, settings: Object.freeze(settings), rngEngine }).
-        catch((error) => { console.error(error); });
+        catch((error) => {
+            console.error(error);
+        });
 }
