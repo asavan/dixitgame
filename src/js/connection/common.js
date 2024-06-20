@@ -1,6 +1,5 @@
 import handlersFunc from "../utils/handlers.js";
 import rngFunc from "../utils/random.js";
-import glueObj from "../core/glue.js";
 
 function stub() {
     // do nothing.
@@ -81,12 +80,4 @@ export function createSignalingChannel(id, socketUrl, logger) {
         return handlers.call("error", id);
     };
     return {on, send, close, ready};
-}
-
-export function glueNetToActions(connection, actions, queue) {
-    const mapperActions = glueObj.simpleMapper(actions);
-    const networkHandler = handlersFunc(mapperActions.actionKeys(), queue);
-    const glued = glueObj.glueSimple(networkHandler, mapperActions);
-    connection.registerHandler(networkHandler);
-    return glued;
 }

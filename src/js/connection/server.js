@@ -2,10 +2,8 @@ import handlersFunc from "../utils/handlers.js";
 import {createSignalingChannel} from "./common.js";
 
 const connectionFunc = function (id, logger) {
-    const handlers = handlersFunc(["recv", "open", "error", "close", "socket_open", "socket_close", "disconnect"]);
-    function on(name, f) {
-        return handlers.on(name, f);
-    }
+    const handlers = handlersFunc(["open", "error", "close", "socket_open", "socket_close", "disconnect"]);
+    let clientHandler;
 
     function SetupFreshConnection(signaling, id) {
         const peerConnection = new RTCPeerConnection(null);
@@ -151,7 +149,10 @@ const connectionFunc = function (id, logger) {
     function setupDataChannel(dataChannel, id, clients) {
         dataChannel.onmessage = function (e) {
             logger.log("get data " + e.data);
-            return handlers.call("recv", e.data);
+            if (clientHandler) {
+                const obj = JSON.parse(e.data);
+                return clientHandler.call(obj.action, obj.data);
+            }
         };
 
         dataChannel.onopen = function () {
@@ -172,17 +173,11 @@ const connectionFunc = function (id, logger) {
         };
     }
 
-    function registerHandler(actions, queue) {
-        handlers.setOnce("recv", (data) => {
-            // console.log(data);
-            const obj = JSON.parse(data);
-            const res = obj.data;
-            const callback = actions[obj.action];
-            if (typeof callback === "function") {
-                queue.add(() => callback(res, obj.from));
-            }
-        });
+    function registerHandler(handler) {
+        clientHandler = handler;
     }
+
+    const on = handlers.on;
 
     return {
         connect,

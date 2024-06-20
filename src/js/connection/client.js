@@ -6,7 +6,9 @@ import {createSignalingChannel} from "./common.js";
 const connectionFunc = function (id, logger) {
     const user = id;
 
-    const handlers = handlersFunc(["recv", "open", "error", "close", "socket_open", "socket_close"]);
+    const handlers = handlersFunc(["open", "error", "close", "socket_open", "socket_close"]);
+    let clientHandler;
+
     function on(name, f) {
         return handlers.on(name, f);
     }
@@ -119,7 +121,10 @@ const connectionFunc = function (id, logger) {
     function setupDataChannel(dataChannel, signaling) {
         dataChannel.onmessage = function (e) {
             logger.log("data get " + e.data);
-            handlers.call("recv", e.data);
+            if (clientHandler) {
+                const obj = JSON.parse(e.data);
+                return clientHandler.call(obj.action, obj.data);
+            }
         };
 
         dataChannel.onopen = function () {
@@ -141,16 +146,8 @@ const connectionFunc = function (id, logger) {
     }
 
 
-    function registerHandler(actions, queue) {
-        handlers.setOnce("recv", (data) => {
-            // console.log(data);
-            const obj = JSON.parse(data);
-            const res = obj.data;
-            const callback = actions[obj.action];
-            if (typeof callback === "function") {
-                queue.add(() => callback(res, obj.from));
-            }
-        });
+    function registerHandler(handler) {
+        clientHandler = handler;
     }
 
     return {connect, on, registerHandler, sendRawTo};

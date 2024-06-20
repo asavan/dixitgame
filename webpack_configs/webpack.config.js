@@ -1,6 +1,5 @@
 import os from "os";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import CopyPlugin from "copy-webpack-plugin";
 import webpack from "webpack";
 
@@ -18,7 +17,7 @@ const devConfig = () => {
             rules: [
                 {
                     test: /\.css$/i,
-                    use: [MiniCssExtractPlugin.loader, {
+                    use: ["style-loader", {
                         loader: "css-loader",
                         options: {
                             url: false
@@ -32,9 +31,6 @@ const devConfig = () => {
                 template: "./src/index.html",
                 scriptLoading: "module",
                 minify: false,
-            }),
-            new MiniCssExtractPlugin({
-                filename: "[name].css"
             }),
             new webpack.DefinePlugin({
                 __USE_SERVICE_WORKERS__: false,
