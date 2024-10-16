@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -12,60 +13,16 @@
     </Space>
 
     <Button
-        android:id="@+id/ai"
+        android:id="@+id/network_info"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="@string/ai" />
+        android:text="@string/network_info" />
     <Space
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_weight="1" >
     </Space>
 
-    <Button
-        android:id="@+id/twa_ai"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="@string/launch_twa_ai" />
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
-    </Space>
-
-    <Button
-        android:id="@+id/twa_ai_localhost"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="@string/launch_twa_ai_localhost" />
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
-    </Space>
-
-    <Button
-        android:id="@+id/newest"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="@string/newest" />
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
-    </Space>
-
-
-    <Button
-        android:id="@+id/launch_browser"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="@string/launch_browser" />
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
-    </Space>
 
     <Button
         android:id="@+id/twa_real_ip"

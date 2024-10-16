@@ -1,5 +1,6 @@
 import starter from "./js/starter.js";
 import install from "./js/views/install_as_app.js";
+import wakeLock from "./js/utils/wake-lock.js";
 
 if (__USE_SERVICE_WORKERS__) {
     if ("serviceWorker" in navigator) {
@@ -8,4 +9,5 @@ if (__USE_SERVICE_WORKERS__) {
     }
 }
 
+wakeLock.init();
 starter(window, document);

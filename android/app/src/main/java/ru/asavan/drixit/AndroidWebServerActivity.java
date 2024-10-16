@@ -2,7 +2,11 @@ package ru.asavan.drixit;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -24,7 +28,11 @@ public class AndroidWebServerActivity extends Activity {
         setContentView(R.layout.main);
         btnUtils = new BtnUtils(this, STATIC_CONTENT_PORT, WEB_SOCKET_PORT, secure);
         try {
-            addButtons(IpUtils.getIPAddressSafe());
+            setupDebug(this);
+            String formattedIpAddress = IpUtils.getIPAddress();
+            if (formattedIpAddress != null) {
+                addButtons(formattedIpAddress);
+            }
             Map<String, String> mainParams = new LinkedHashMap<>();
             mainParams.put("mode", "hotseat");
             btnUtils.launchWebView(WEB_VIEW_URL, mainParams);
@@ -37,27 +45,26 @@ public class AndroidWebServerActivity extends Activity {
         HostUtils hostUtils = new HostUtils(STATIC_CONTENT_PORT, WEB_SOCKET_PORT, secure);
         final String host = hostUtils.getStaticHost(formattedIpAddress);
         {
-            Map<String, String> mainParams = new LinkedHashMap<>();
-            mainParams.put("mode", "ai");
-            btnUtils.addButtonTwa(WEB_GAME_URL, mainParams, R.id.twa_ai);
-            btnUtils.addButtonTwa(hostUtils.getStaticHost(IpUtils.LOCALHOST), mainParams, R.id.twa_ai_localhost);
-            btnUtils.addButtonWebView(WEB_VIEW_URL, mainParams, R.id.ai);
-        }
-        {
-            Map<String, String> b = new LinkedHashMap<>();
-            b.put("wh", hostUtils.getSocketHost(formattedIpAddress));
-            b.put("sh", host);
-            b.put("mode", "server");
-            btnUtils.addButtonBrowser(host, b, R.id.launch_browser);
-        }
-        {
             Map<String, String> b = new LinkedHashMap<>();
             b.put("wh", hostUtils.getSocketHost(IpUtils.LOCALHOST));
             b.put("sh", host);
             b.put("mode", "server");
             btnUtils.addButtonTwa(hostUtils.getStaticHost(IpUtils.LOCALHOST), b, R.id.twa_real_ip, host);
-            btnUtils.addButtonTwa(WEB_GAME_URL, b, R.id.newest);
         }
+    }
+
+    private void setupDebug(Activity activity) {
+        Button btn = activity.findViewById(R.id.network_info);
+        btn.setOnClickListener(v -> showNetworkInfo(activity));
+    }
+
+    private void showNetworkInfo(Activity activity) {
+        String info = IpUtils.collectNetInfo();
+        LinearLayout lView = activity.findViewById(R.id.layout);
+        TextView myText = new TextView(activity);
+        myText.setMovementMethod(new ScrollingMovementMethod());
+        myText.setText(info);
+        lView.addView(myText);
     }
 
     @Override

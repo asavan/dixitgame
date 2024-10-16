@@ -38,6 +38,7 @@
     <string name="launch_twa_127">Twa 127.0.0.1</string>
     <string name="launch_localhost">localhost</string>
     <string name="launch_twa_local">Launch in app local</string>
+    <string name="network_info">Network info</string>
     <string name="webview">Webview</string>
     <string name="webview_localhost">Webview localhost</string>
     <string name="errors">Error messages</string>

@@ -16,7 +16,8 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {"namespace": "android_app", "package_name": "ru.asavan.drixit",
     "sha256_cert_fingerprints": [
-      "F2:08:85:7A:66:90:A3:C8:90:68:0A:67:64:27:E2:D9:A4:B0:4A:C3:1E:F5:EA:AC:0C:01:14:C7:82:C8:D2:F1"
+      "F2:08:85:7A:66:90:A3:C8:90:68:0A:67:64:27:E2:D9:A4:B0:4A:C3:1E:F5:EA:AC:0C:01:14:C7:82:C8:D2:F1",
+      "42:58:AF:E3:C6:F8:F3:01:E7:33:84:A5:F7:4A:35:C9:34:14:3C:2B:67:B6:5A:5C:6E:A4:4E:BC:5C:73:B4:4D"
     ]
   }
 }
