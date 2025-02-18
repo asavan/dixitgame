@@ -67,4 +67,5 @@ const aConfig = () => {
     };
 };
 
+// noinspection JSUnusedGlobalSymbols
 export default aConfig;

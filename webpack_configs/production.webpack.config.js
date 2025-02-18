@@ -96,4 +96,5 @@ const prodConfig = () => {
     };
 };
 
+// noinspection JSUnusedGlobalSymbols
 export default prodConfig;

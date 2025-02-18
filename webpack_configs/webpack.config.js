@@ -5,7 +5,7 @@ import webpack from "webpack";
 
 const getLocalExternalIP = () => [].concat(...Object.values(os.networkInterfaces()))
     .filter(details => (details.family === "IPv4" || details.family === 4) &&
-        !details.internal && details.netmask == "255.255.255.0")
+        !details.internal && details.netmask === "255.255.255.0")
     .pop()?.address;
 
 const devConfig = () => {
@@ -54,4 +54,5 @@ const devConfig = () => {
     };
 };
 
+// noinspection JSUnusedGlobalSymbols
 export default devConfig;
