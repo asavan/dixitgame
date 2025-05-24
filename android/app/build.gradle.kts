@@ -33,7 +33,7 @@ android {
 dependencies {
     implementation("org.nanohttpd:nanohttpd:2.3.1")
     implementation("org.java-websocket:Java-WebSocket:1.6.0")
-    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.6.0")
+    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.6.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

@@ -9,7 +9,6 @@ import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -74,6 +73,8 @@ public class IpUtils {
 
     public static List<String> apIps() {
         List<String> result = new ArrayList<>();
+        List<String> possible = new ArrayList<>();
+        List<String> maybe = new ArrayList<>();
         try {
             for (var interfaces = NetworkInterface.getNetworkInterfaces();
                  interfaces.hasMoreElements(); ) {
@@ -81,21 +82,31 @@ public class IpUtils {
                 if (!iface.isUp() ||
                         iface.isVirtual() ||
                         iface.isLoopback() ||
-                        !iface.supportsMulticast() ||
-                        !isWlanName(iface)
+                        !iface.supportsMulticast()
                 ) {
                     continue;
                 }
                 for (InterfaceAddress ifAddr : iface.getInterfaceAddresses()) {
                     var addr = ifAddr.getAddress();
-                    if (addr.getAddress().length == 4) {
-                        result.add(addr.getHostAddress());
+                    if (addr.isLoopbackAddress()) {
+                        continue;
+                    }
+                    if (isIPv4F(addr)) {
+                        if (isWlanName(iface) && isPossibleWifiApInterface(ifAddr)) {
+                            result.add(addr.getHostAddress());
+                        } else if (isWlanName(iface)) {
+                            possible.add(addr.getHostAddress());
+                        } else {
+                            maybe.add(addr.getHostAddress());
+                        }
                     }
                 }
             }
         } catch (Exception ignore) {
             //
         }
+        result.addAll(possible);
+        result.addAll(maybe);
         return result;
     }
 
@@ -110,20 +121,14 @@ public class IpUtils {
             for (var interfaces = NetworkInterface.getNetworkInterfaces();
                  interfaces.hasMoreElements(); ) {
                 NetworkInterface interface_ = interfaces.nextElement();
-                for (InetAddress inetAddress : Collections.list(interface_.getInetAddresses())) {
+                for (var addrs = interface_.getInetAddresses(); addrs.hasMoreElements(); ) {
+                    InetAddress inetAddress = addrs.nextElement();
                     if (inetAddress.isLoopbackAddress()) {
                         continue;
                     }
-
-                    String ipAddr = inetAddress.getHostAddress();
-                    if (ipAddr == null) {
-                        continue;
+                    if (inetAddress instanceof Inet4Address ip4Addr) {
+                        return ip4Addr.getHostAddress();
                     }
-                    boolean isIPv6 = ipAddr.indexOf(':') >= 0;
-                    if (isIPv6) {
-                        continue;
-                    }
-                    return ipAddr;
                 }
             }
         } catch (Exception e) {
