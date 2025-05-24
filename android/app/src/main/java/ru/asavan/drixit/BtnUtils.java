@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Button;
 
@@ -15,22 +16,14 @@ import java.util.Map;
 import androidx.browser.trusted.TrustedWebActivityIntentBuilder;
 
 public class BtnUtils {
-    private final int staticContentPort;
-    private final int webSocketPort;
-    private final boolean secure;
     private final Activity activity;
-    private AndroidStaticAssetsServer server = null;
-    private WebSocketBroadcastServer webSocketServer = null;
 
-    public BtnUtils(Activity activity, int staticContentPort, int webSocketPort, boolean secure) {
-        this.staticContentPort = staticContentPort;
-        this.webSocketPort = webSocketPort;
+    public BtnUtils(Activity activity) {
         this.activity = activity;
-        this.secure = secure;
     }
 
     public void launchWebView(String host, Map<String, String> parameters) {
-        Intent intent = new Intent(activity.getApplicationContext(), WebViewActivity.class);
+        Intent intent = new Intent(activity, WebViewActivity.class);
         String launchUrl = UrlUtils.getLaunchUrl(host, parameters);
         Log.i("BTN_UTILS", launchUrl);
         intent.putExtra("url", launchUrl);
@@ -80,15 +73,12 @@ public class BtnUtils {
     }
 
     private void startServerAndSocket() {
-        if (server != null) {
-            return;
-        }
         try {
-            Context applicationContext = activity.getApplicationContext();
-            server = new AndroidStaticAssetsServer(applicationContext, staticContentPort, secure);
-            if (webSocketServer == null) {
-                webSocketServer = new WebSocketBroadcastServer(applicationContext, webSocketPort, secure);
-                webSocketServer.start(0);
+            Intent intent = new Intent(activity, MainService.class); // Build the intent for the service
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                activity.startForegroundService(intent);
+            } else {
+                activity.startService(intent);
             }
         } catch (Exception e) {
             Log.e("BTN_UTILS", "main", e);
@@ -96,11 +86,7 @@ public class BtnUtils {
     }
 
     protected void onDestroy() {
-        if (server != null) {
-            server.stop();
-        }
-        if (webSocketServer != null) {
-            webSocketServer.stop();
-        }
+        Intent intent = new Intent(activity, MainService.class);
+        activity.stopService(intent);
     }
 }

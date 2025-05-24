@@ -1,5 +1,7 @@
 package ru.asavan.drixit;
 
+import static ru.asavan.drixit.AndroidWebServerActivity.MAIN_LOG_TAG;
+
 import android.util.Log;
 
 import java.net.Inet4Address;
@@ -26,27 +28,39 @@ public class IpUtils {
     public static String collectNetInfo() {
         StringBuilder builder = new StringBuilder();
         try {
-            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface iface : interfaces) {
-                boolean up = iface.isUp();
-                if (!up || iface.isLoopback()) continue;
+            for (var interfaces = NetworkInterface.getNetworkInterfaces();
+                 interfaces.hasMoreElements(); ) {
+                NetworkInterface iface = interfaces.nextElement();
+//                boolean up = iface.isUp();
+//                if (!up ||
+//                        iface.isLoopback() ||
+//                        iface.isVirtual()) {
+//                    continue;
+//                }
                 builder.append(iface.getName());
                 builder.append(" ");
                 builder.append(iface.getDisplayName());
-                builder.append(" ");
+                builder.append(" wlan ");
                 builder.append(isWlanName(iface));
-                builder.append(" ");
+                builder.append(" virt ");
+                builder.append(iface.isVirtual());
                 builder.append(iface.supportsMulticast());
+                builder.append(" point ");
+                builder.append(iface.isPointToPoint());
                 builder.append("\n");
 
                 for (InterfaceAddress ifAddr : iface.getInterfaceAddresses()) {
+                    boolean notIpv4 = !isIPv4F(ifAddr.getAddress());
+                    if (notIpv4) {
+                        continue;
+                    }
                     builder.append("\t");
                     builder.append(ifAddr.getAddress().getHostAddress());
-                    builder.append(" ");
+                    builder.append(" local ");
                     builder.append(ifAddr.getAddress().isSiteLocalAddress());
-                    builder.append(" ");
+                    builder.append(" ip4 ");
                     builder.append(isIPv4F(ifAddr.getAddress()));
-                    builder.append(" ");
+                    builder.append(" wifi ");
                     builder.append(isPossibleWifiApInterface(ifAddr));
                     builder.append("\n");
                 }
@@ -61,17 +75,21 @@ public class IpUtils {
     public static List<String> apIps() {
         List<String> result = new ArrayList<>();
         try {
-            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface iface : interfaces) {
+            for (var interfaces = NetworkInterface.getNetworkInterfaces();
+                 interfaces.hasMoreElements(); ) {
+                NetworkInterface iface = interfaces.nextElement();
                 if (!iface.isUp() ||
+                        iface.isVirtual() ||
                         iface.isLoopback() ||
                         !iface.supportsMulticast() ||
-                        !isWlanName(iface)) {
+                        !isWlanName(iface)
+                ) {
                     continue;
                 }
                 for (InterfaceAddress ifAddr : iface.getInterfaceAddresses()) {
-                    if (isPossibleWifiApInterface(ifAddr)) {
-                        result.add(ifAddr.getAddress().getHostAddress());
+                    var addr = ifAddr.getAddress();
+                    if (addr.getAddress().length == 4) {
+                        result.add(addr.getHostAddress());
                     }
                 }
             }
@@ -84,12 +102,14 @@ public class IpUtils {
     public static String getIPAddress() {
         List<String> wlanIps = apIps();
         if (!wlanIps.isEmpty()) {
+            Log.i(MAIN_LOG_TAG, "Get wlans " + wlanIps.size());
             return wlanIps.get(0);
         }
+        Log.i(MAIN_LOG_TAG, "No wlans");
         try {
-            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-
-            for (NetworkInterface interface_ : interfaces) {
+            for (var interfaces = NetworkInterface.getNetworkInterfaces();
+                 interfaces.hasMoreElements(); ) {
+                NetworkInterface interface_ = interfaces.nextElement();
                 for (InetAddress inetAddress : Collections.list(interface_.getInetAddresses())) {
                     if (inetAddress.isLoopbackAddress()) {
                         continue;
@@ -99,8 +119,8 @@ public class IpUtils {
                     if (ipAddr == null) {
                         continue;
                     }
-                    boolean isIPv4 = ipAddr.indexOf(':') < 0;
-                    if (!isIPv4) {
+                    boolean isIPv6 = ipAddr.indexOf(':') >= 0;
+                    if (isIPv6) {
                         continue;
                     }
                     return ipAddr;
