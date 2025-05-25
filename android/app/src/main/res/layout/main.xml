@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:fitsSystemWindows="true"
     >
 
     <Space
@@ -23,6 +24,16 @@
         android:layout_weight="1" >
     </Space>
 
+    <Button
+        android:id="@+id/check_memory"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/check_memory" />
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+    </Space>
 
     <Button
         android:id="@+id/twa_real_ip"

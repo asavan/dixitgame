@@ -31,6 +31,7 @@
     <string name="ai_localhost">Ai in webview localhost</string>
     <string name="launch_twa_ai">Launch ai newest version</string>
     <string name="newest">Launch newest version</string>
+    <string name="check_memory">Memory test</string>
     <string name="launch_browser">Browser</string>
     <string name="launch_real_ip">Real IP</string>
     <string name="launch_twa_localhost">Twa localhost</string>

@@ -3,12 +3,13 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:fitsSystemWindows="true"
     >
 
     <WebView
         android:id="@+id/web"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"/>
 
 </LinearLayout>

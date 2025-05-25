@@ -1,15 +1,20 @@
 package ru.asavan.drixit;
 
 import android.app.Activity;
+import android.app.usage.StorageStatsManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.storage.StorageManager;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 public class AndroidWebServerActivity extends Activity {
@@ -53,10 +58,41 @@ public class AndroidWebServerActivity extends Activity {
     private void setupDebug(Activity activity) {
         Button btn = activity.findViewById(R.id.network_info);
         btn.setOnClickListener(v -> showNetworkInfo(activity));
+
+        Button btn2 = activity.findViewById(R.id.check_memory);
+        btn2.setOnClickListener(v -> showMemoryInfo(activity));
+
     }
 
     private void showNetworkInfo(Activity activity) {
         String info = IpUtils.collectNetInfo();
+        showInfo(activity, info);
+    }
+
+    private void showMemoryInfo(Activity activity) {
+        StringBuilder b = new StringBuilder();
+        try {
+            StorageManager storageManager =
+                    getApplicationContext().getSystemService(StorageManager.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                UUID appSpecificInternalDirUuid = storageManager.getUuidForPath(getFilesDir());
+                long availableBytes = storageManager.getAllocatableBytes(appSpecificInternalDirUuid);
+                b.append("avail ");
+                b.append(availableBytes);
+                var ssm = getApplicationContext().getSystemService(StorageStatsManager.class);;
+                var free = 	ssm.getFreeBytes(appSpecificInternalDirUuid);
+                var total = ssm.getTotalBytes(appSpecificInternalDirUuid);
+                b.append(" free ");
+                b.append(free);
+                b.append(" total ");
+                b.append(total);
+            }
+        } catch (IOException ignore) {
+        }
+        showInfo(activity, b.toString());
+    }
+
+    private static void showInfo(Activity activity, String info) {
         LinearLayout lView = activity.findViewById(R.id.layout);
         TextView myText = new TextView(activity);
         myText.setMovementMethod(new ScrollingMovementMethod());
