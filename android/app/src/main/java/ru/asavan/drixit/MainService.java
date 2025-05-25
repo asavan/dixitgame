@@ -57,7 +57,7 @@ public class MainService extends Service {
     private void startForeground() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "ChannelN", NotificationManager.IMPORTANCE_DEFAULT);
+                NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "ChannelN", NotificationManager.IMPORTANCE_LOW);
                 channel.setDescription("channel for foreground service notification");
 
                 var notificationManager = getSystemService(NotificationManager.class);
@@ -67,6 +67,7 @@ public class MainService extends Service {
                     new NotificationCompat.Builder(this, CHANNEL_ID)
                             .setContentTitle(getString(R.string.app_name))
                             .setContentText("Server Running")
+                            .setSmallIcon(R.drawable.icon)
                             .setAutoCancel(true)
                             .build();
             int type = 0;
