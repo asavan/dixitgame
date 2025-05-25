@@ -21,8 +21,8 @@ public class IpUtils {
      * The interface name is used as a heuristic for deciding whether the
      * device is providing a wifi access point.
      */
-    private static final Pattern AP_INTERFACE_NAME = Pattern.compile("^(wlan|ap|p2p)[-0-9]");
-
+    private static final Pattern AP_INTERFACE_NAME = Pattern.compile("^(ap|p2p)[-0-9]");
+    private static final Pattern AP_OR_WLAN_INTERFACE_NAME = Pattern.compile("^(wlan|ap|p2p)[-0-9]");
 
     public static String collectNetInfo() {
         StringBuilder builder = new StringBuilder();
@@ -30,38 +30,23 @@ public class IpUtils {
             for (var interfaces = NetworkInterface.getNetworkInterfaces();
                  interfaces.hasMoreElements(); ) {
                 NetworkInterface iface = interfaces.nextElement();
-//                boolean up = iface.isUp();
-//                if (!up ||
+                boolean up = iface.isUp();
+                if (!up) {
 //                        iface.isLoopback() ||
 //                        iface.isVirtual()) {
-//                    continue;
-//                }
-                builder.append(iface.getName());
-                builder.append(" ");
-                builder.append(iface.getDisplayName());
-                builder.append(" wlan ");
-                builder.append(isWlanName(iface));
-                builder.append(" virt ");
-                builder.append(iface.isVirtual());
-                builder.append(iface.supportsMulticast());
-                builder.append(" point ");
-                builder.append(iface.isPointToPoint());
-                builder.append("\n");
-
+                    continue;
+                }
+                var list = new ArrayList<InterfaceAddress>();
                 for (InterfaceAddress ifAddr : iface.getInterfaceAddresses()) {
-                    boolean notIpv4 = !isIPv4F(ifAddr.getAddress());
-                    if (notIpv4) {
-                        continue;
+                    if (isIPv4F(ifAddr.getAddress())) {
+                        list.add(ifAddr);
                     }
-                    builder.append("\t");
-                    builder.append(ifAddr.getAddress().getHostAddress());
-                    builder.append(" local ");
-                    builder.append(ifAddr.getAddress().isSiteLocalAddress());
-                    builder.append(" ip4 ");
-                    builder.append(isIPv4F(ifAddr.getAddress()));
-                    builder.append(" wifi ");
-                    builder.append(isPossibleWifiApInterface(ifAddr));
-                    builder.append("\n");
+                }
+                if (!list.isEmpty()) {
+                    printNet(builder, iface);
+                    for (var ifAddr : list) {
+                        printAddr(ifAddr, builder);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -69,6 +54,37 @@ public class IpUtils {
         }
         builder.append("\n\n");
         return builder.toString();
+    }
+
+    private static void printAddr(InterfaceAddress ifAddr, StringBuilder builder) {
+        builder.append("\t");
+        builder.append(ifAddr.getAddress().getHostAddress());
+        builder.append(" local ");
+        builder.append(ifAddr.getAddress().isSiteLocalAddress());
+        builder.append(" ip4 ");
+        builder.append(isIPv4F(ifAddr.getAddress()));
+        builder.append(" wifi ");
+        builder.append(isPossibleWifiApInterface(ifAddr));
+        builder.append("\n");
+    }
+
+    private static void printNet(StringBuilder builder, NetworkInterface iface) {
+        builder.append(iface.getName());
+        builder.append(" ");
+        builder.append(iface.getDisplayName());
+        builder.append(" wlan ");
+        builder.append(isWlanName(iface));
+        builder.append(" virt ");
+        builder.append(iface.isVirtual());
+        try {
+            builder.append(" mult ");
+            builder.append(iface.supportsMulticast());
+            builder.append(" point ");
+            builder.append(iface.isPointToPoint());
+        } catch (Exception ignore) {
+
+        }
+        builder.append("\n");
     }
 
     public static List<String> apIps() {
@@ -81,8 +97,7 @@ public class IpUtils {
                 NetworkInterface iface = interfaces.nextElement();
                 if (!iface.isUp() ||
                         iface.isVirtual() ||
-                        iface.isLoopback() ||
-                        !iface.supportsMulticast()
+                        iface.isLoopback()
                 ) {
                     continue;
                 }
@@ -92,7 +107,7 @@ public class IpUtils {
                         continue;
                     }
                     if (isIPv4F(addr)) {
-                        if (isWlanName(iface) && isPossibleWifiApInterface(ifAddr)) {
+                        if (isApName(iface) && isPossibleWifiApInterface(ifAddr)) {
                             result.add(addr.getHostAddress());
                         } else if (isWlanName(iface)) {
                             possible.add(addr.getHostAddress());
@@ -143,9 +158,14 @@ public class IpUtils {
         return ip.length == 4 && ip[0] == (byte) 192 && ip[1] == (byte) 168;
     }
 
-    private static boolean isWlanName(NetworkInterface iface) {
+    private static boolean isApName(NetworkInterface iface) {
         return AP_INTERFACE_NAME.matcher(iface.getName()).find();
     }
+
+    private static boolean isWlanName(NetworkInterface iface) {
+        return AP_OR_WLAN_INTERFACE_NAME.matcher(iface.getName()).find();
+    }
+
 
     private static boolean isIPv4F(InetAddress ifAddr) {
         return ifAddr instanceof Inet4Address;

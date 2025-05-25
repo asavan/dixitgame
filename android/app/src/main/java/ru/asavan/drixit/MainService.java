@@ -38,7 +38,7 @@ public class MainService extends Service {
     public int onStartCommand(final Intent intent, int flags, int startId) {
         // boolean stopService = intent.getBooleanExtra("request_stop", false);
         startForeground();
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     public void startService(int staticContentPort, int webSocketPort, boolean secure) {

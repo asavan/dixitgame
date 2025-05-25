@@ -16,8 +16,8 @@ android {
         applicationId = "ru.asavan.drixit"
         minSdk = 24
         targetSdk = 36
-        versionCode = 7
-        versionName = "0.0.12"
+        versionCode = 8
+        versionName = "0.0.13"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
