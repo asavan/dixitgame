@@ -1,6 +1,6 @@
 {
   "name": "drixit",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "author": "Alex Sav",
   "description": "Drixit game",
   "private": true,
@@ -37,7 +37,7 @@
     "dependency-cruiser": "^16.10.2",
     "dprint": "^0.50.0",
     "eslint": "^9.27.0",
-    "globals": "^16.1.0",
+    "globals": "^16.2.0",
     "html-inline-css-webpack-plugin": "^1.11.2",
     "html-webpack-plugin": "^5.6.3",
     "jsdom": "^26.1.0",
