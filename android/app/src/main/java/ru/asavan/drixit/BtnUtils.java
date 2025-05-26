@@ -1,7 +1,9 @@
 package ru.asavan.drixit;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Button;
@@ -15,9 +17,11 @@ import androidx.browser.trusted.TrustedWebActivityIntentBuilder;
 
 public class BtnUtils {
     private final Activity activity;
+    private final ServiceConnection mConnection;
 
-    public BtnUtils(Activity activity) {
+    public BtnUtils(Activity activity, ServiceConnection connection) {
         this.activity = activity;
+        this.mConnection = connection;
     }
 
     public void launchWebView(String host, Map<String, String> parameters) {
@@ -72,7 +76,8 @@ public class BtnUtils {
     private void startServerAndSocket() {
         try {
             Intent intent = new Intent(activity, MainService.class);
-            activity.startService(intent);
+            activity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+            // activity.startService(intent);
         } catch (Exception e) {
             Log.e("BTN_UTILS", "main", e);
         }

@@ -2,8 +2,12 @@ package ru.asavan.drixit;
 
 import android.app.Activity;
 import android.app.usage.StorageStatsManager;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.storage.StorageManager;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -23,17 +27,25 @@ public class AndroidWebServerActivity extends Activity {
     public static final String MAIN_LOG_TAG = "DRIXIT_TAG";
     private BtnUtils btnUtils;
 
+    private MainService mService;
+    private boolean mBound = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(MAIN_LOG_TAG, "Create activity");
         setContentView(R.layout.main);
-        btnUtils = new BtnUtils(this);
+        btnUtils = new BtnUtils(this, mConnection);
         try {
             setupDebug(this);
             String formattedIpAddress = IpUtils.getIPAddress();
             if (formattedIpAddress != null) {
                 addButtons(formattedIpAddress);
             }
+
+            Button stopServiceBtn = findViewById(R.id.stop_service);
+            stopServiceBtn.setOnClickListener(_ -> stopService());
+
             Map<String, String> mainParams = new LinkedHashMap<>();
             mainParams.put("mode", "hotseat");
             btnUtils.launchWebView(WEB_VIEW_URL, mainParams);
@@ -61,7 +73,6 @@ public class AndroidWebServerActivity extends Activity {
 
         Button btn2 = activity.findViewById(R.id.check_memory);
         btn2.setOnClickListener(v -> showMemoryInfo(activity));
-
     }
 
     private void showNetworkInfo(Activity activity) {
@@ -92,6 +103,28 @@ public class AndroidWebServerActivity extends Activity {
         showInfo(activity, b.toString());
     }
 
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            MainService.LocalBinder binder = (MainService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
+    private void stopService() {
+        Intent intent = new Intent(this, MainService.class);
+        stopService(intent);
+    }
+
     private static void showInfo(Activity activity, String info) {
         LinearLayout lView = activity.findViewById(R.id.layout);
         TextView myText = new TextView(activity);
@@ -101,7 +134,38 @@ public class AndroidWebServerActivity extends Activity {
     }
 
     @Override
+    protected void onStop() {
+        Log.i(MAIN_LOG_TAG, "Stop activity");
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.i(MAIN_LOG_TAG, "Pause activity");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        Log.i(MAIN_LOG_TAG, "Start activity");
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i(MAIN_LOG_TAG, "onResume activity");
+        super.onResume();
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.i(MAIN_LOG_TAG, "onRestart activity");
+        super.onRestart();
+    }
+
+    @Override
     protected void onDestroy() {
+        Log.i(MAIN_LOG_TAG, "Destroy activity");
         if (btnUtils != null) {
             btnUtils.onDestroy();
         }

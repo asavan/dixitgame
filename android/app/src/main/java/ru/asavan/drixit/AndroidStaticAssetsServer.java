@@ -13,14 +13,17 @@ public class AndroidStaticAssetsServer extends NanoHTTPD {
     private final String folderToServe;
     private static final String DEFAULT_STATIC_FOLDER = "www";
 
-    public AndroidStaticAssetsServer(Context context, int port, boolean secure, String folderToServe) throws IOException {
+    public AndroidStaticAssetsServer(Context context, int port, boolean secure, String folderToServe) {
         super(port);
         this.context = context;
         this.folderToServe = folderToServe;
         if (secure) {
             SslHelper.addSslSupport(context, this);
         }
-        start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+    }
+
+    public void start1() throws IOException {
+        start();
     }
 
     public AndroidStaticAssetsServer(Context context, int port, boolean secure) throws IOException {

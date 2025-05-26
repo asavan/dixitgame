@@ -40,6 +40,7 @@
     <string name="launch_localhost">localhost</string>
     <string name="launch_twa_local">Launch in app local</string>
     <string name="network_info">Network info</string>
+    <string name="stop_service">Stop</string>
     <string name="webview">Webview</string>
     <string name="webview_localhost">Webview localhost</string>
     <string name="errors">Error messages</string>
