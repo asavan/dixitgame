@@ -1,10 +1,12 @@
 package ru.asavan.drixit;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Button;
 
@@ -14,6 +16,7 @@ import com.google.androidbrowserhelper.trusted.TwaLauncher;
 import java.util.Map;
 
 import androidx.browser.trusted.TrustedWebActivityIntentBuilder;
+import androidx.core.app.ActivityCompat;
 
 public class BtnUtils {
     private final Activity activity;
@@ -76,8 +79,18 @@ public class BtnUtils {
     private void startServerAndSocket() {
         try {
             Intent intent = new Intent(activity, MainService.class);
-            activity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-            // activity.startService(intent);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ActivityCompat.requestPermissions(
+                        activity,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        0
+                );
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                activity.startForegroundService(intent);
+            } else {
+                activity.startService(intent);
+            }
         } catch (Exception e) {
             Log.e("BTN_UTILS", "main", e);
         }
