@@ -8,6 +8,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -178,5 +179,16 @@ public class IpUtils {
             return formattedIpAddress;
         }
         return LOCAL_IP;
+    }
+
+    public static int findAFreePort() {
+        try {
+            ServerSocket server = new ServerSocket(0);
+            int port = server.getLocalPort();
+            server.close();
+            return port;
+        } catch (Exception ex) {
+            throw new RuntimeException("Failed to find a free port.", ex);
+        }
     }
 }

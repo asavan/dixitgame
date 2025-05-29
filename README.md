@@ -56,4 +56,5 @@ git tag v1.4.9 HEAD -m "Version 1.4.9 released"
 
 #### Доработки
 - [ ] Сделать презентеру, engine и сети одинаковые интерфейсы, чтобы их можно было втыкать друг в друга в любой последовательности. Сделать "фэйковую" сеть, которая ничего не делает а просто перекладывает данные в след подключенный обработчик.
+- [ ] Start with port 0, and then determine port via server.getListeningPort() and webSocketServer.getPort()
 
