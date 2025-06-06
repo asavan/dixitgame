@@ -5,8 +5,8 @@ export function bigPicture(elem) {
 }
 
 function chomp(string, c) {
-    if (string.charAt(string.length - c.length) === c) {
-        return string.substr(0, string.length - c.length);
+    if (string.endsWith(c)) {
+        return string.slice(0, -c.length);
     }
     return string;
 }
@@ -42,6 +42,6 @@ export function makeQrPlain(staticHost, document, selector) {
 }
 
 export function makeQr(window, document, settings) {
-    const staticHost = settings.sh || window.location.origin;
+    const staticHost = settings.sh || (window.location.origin+window.location.pathname);
     return makeQrPlain(staticHost, document, ".qrcode");
 }

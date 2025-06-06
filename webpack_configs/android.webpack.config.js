@@ -1,5 +1,4 @@
 import path from "path";
-import { fileURLToPath } from "url";
 
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import HTMLInlineCSSWebpackPlugin from "html-inline-css-webpack-plugin";
@@ -11,14 +10,13 @@ import webpack from "webpack";
 
 
 const aConfig = () => {
-    const dirname = path.dirname(fileURLToPath(import.meta.url));
     return {
-
         entry: {main: ["./src/index.js", "./src/css/style.css"]},
         output: {
-            path: path.resolve(dirname, "../android/app/src/main/assets/www"),
+            path: path.resolve(import.meta.dirname, "../android/app/src/main/assets/www"),
             filename: "[name].[contenthash].js",
-            clean: true
+            clean: true,
+            ignoreBrowserWarnings: true
         },
         module: {
             rules: [
