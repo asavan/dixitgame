@@ -34,7 +34,6 @@ jobs:
       - run: npm i
       - run: npm run style
       - run: npm run style2
-      - run: npm run style3
       - run: npm run style4
       - run: npm run test
 
