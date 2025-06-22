@@ -58,6 +58,12 @@ ul { list-style-type: none; }
   transition-timing-function: linear;
 }
 
+@media (max-width: 380px) {
+  .my-hand {
+    padding: 0 5px;
+  }
+}
+
 .hand .card { cursor: pointer; }
 
 .clickable { cursor: pointer; }

@@ -1,3 +1,6 @@
+import wakeLock from "../utils/wake-lock.js";
+
+
 export default function enterName(window, document, settings, onUsermameExternal) {
     const formCont = document.querySelector(".name-form-cont");
     const data = window.sessionStorage.getItem("username");
@@ -37,7 +40,8 @@ export default function enterName(window, document, settings, onUsermameExternal
         if (!checkName(input.value)) {
             return;
         }
-
+        // TODO maybe extract
+        wakeLock.init();
         window.sessionStorage.setItem("username", name);
         notifyExt(name);
         form.classList.add("hidden");
