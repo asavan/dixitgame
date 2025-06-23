@@ -94,7 +94,7 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
 
         if (stage === RoundStage.GUESS) {
             if (["ai", "hotseat"].includes(settings.mode)) {
-                currentPlayer = core.nextPlayer(0, size(), 1, currentPlayer);
+                currentPlayer = core.nextPlayer(0, size(), settings.direction, currentPlayer);
                 drawGuess();
             }
             traceLogger.log(data);
@@ -120,7 +120,7 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
         logger.log("On onChangeState", data, players);
         stage = data.stage;
         if (["ai", "hotseat"].includes(settings.mode)) {
-            currentPlayer = core.nextPlayer(0, size(), 1, dealer);
+            currentPlayer = core.nextPlayer(0, size(), settings.direction, dealer);
         }
         if (stage === RoundStage.GUESS) {
             cardsOnTable = data.cardsOnTable;

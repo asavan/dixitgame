@@ -71,7 +71,7 @@ ul { list-style-type: none; }
   offset-path: ellipse(35% 25%);
   offset-distance: calc(1% * var(--path-pc));
   offset-rotate: 0deg;
-  max-width: 100px;
+  max-width: 120px;
   position: absolute;
 }
 
@@ -116,9 +116,15 @@ ul { list-style-type: none; }
   transform: rotate(45deg);
 }
 
-.guessed .player-name::after { content: "✓"; }
+.player-name {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 
-.dealer .player-name::after { content: "*"; }
+.guessed .player-name::before { content: "✓"; }
+
+.dealer .player-name::before { content: "*"; }
 
 .current-player {
   background-color: green;
