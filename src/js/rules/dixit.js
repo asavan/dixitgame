@@ -45,7 +45,7 @@ async function round(dataRound) {
         }
         await curState.moveInner(data);
         logger.log("tryMove Before move");
-        await handlers.call("move", {...data, roundState: curState.getRoundState()});
+        await handlers.call("move", {...data, ...curState.toJson(), roundState: curState.getRoundState()});
         logger.log("tryMove After move");
 
         // animation

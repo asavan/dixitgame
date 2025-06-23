@@ -6,6 +6,7 @@ import shuffle from "./shuffle.js";
 
 import chooseCard from "./choose_card.js";
 import { assert } from "../utils/assert.js";
+import {nonNegativeDigitOnIndex} from "../utils/array.js";
 
 function showCards(settings) {
     return settings.showAll || settings.clickAll;
@@ -32,6 +33,23 @@ function drawOpenPile(document, pile, urlGen, myCard) {
     const cardEl = hand.querySelector(`[data-card="${myCard}"]`);
     if (cardEl) {
         cardEl.classList.add("faint");
+    }
+}
+
+function drawGuesses(document, cardsOnTable) {
+    console.log(cardsOnTable);
+    if (!cardsOnTable) {
+        console.error("No cards on table");
+        return;
+    }
+    const allPlayers = document.querySelectorAll(".js-player");
+    for (const player of allPlayers) {
+        const plIndex = parseInt(player.dataset.id, 10);
+        if (nonNegativeDigitOnIndex(cardsOnTable, plIndex)) {
+            player.classList.add("guessed");
+        } else {
+            player.classList.remove("guessed");
+        }
     }
 }
 
@@ -343,5 +361,6 @@ export default {
     drawDealOther,
     drawMoveByCard,
     drawMove,
+    drawGuesses,
     drawShuffle: shuffle,
 };

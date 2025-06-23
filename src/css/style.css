@@ -80,6 +80,18 @@ ul { list-style-type: none; }
   background-color: var(--current-color);
 }
 
+.checkmark {
+  display: inline-block;
+  transform: rotate(45deg);
+  height: 25px;
+  width: 12px;
+  margin-left: 60%;
+  border-bottom: 7px solid #78b13f;
+  border-right: 7px solid #78b13f;
+}
+
+.guessed .player-name::after { content: "✓"; }
+
 .dealer .player-name::after { content: "*"; }
 
 .current-player {

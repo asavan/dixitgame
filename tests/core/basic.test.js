@@ -10,3 +10,4 @@ test("number and string", () => {
     const message = "1";
     assert.notEqual(message, 1, "equal string");
 });
+
