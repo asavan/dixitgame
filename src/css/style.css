@@ -68,7 +68,7 @@ ul { list-style-type: none; }
 
 .circle {
   text-align: center;
-  offset-path: ellipse(40% 30%);
+  offset-path: ellipse(35% 25%);
   offset-distance: calc(1% * var(--path-pc));
   offset-rotate: 0deg;
   max-width: 100px;
@@ -88,6 +88,32 @@ ul { list-style-type: none; }
   margin-left: 60%;
   border-bottom: 7px solid #78b13f;
   border-right: 7px solid #78b13f;
+}
+
+.card.checked {
+  position: relative;
+  overflow: hidden;
+}
+
+.card.checked::after {
+  content: "";
+  background-color: transparent;
+
+  /* position the checkbox */
+  position: absolute;
+  left: 30px;
+  opacity: 1;
+  top: 0;
+
+  /* setting the checkbox */
+
+  width: 50px;
+  border-bottom: 30px solid #4D7C2A;
+  height: 80px;
+  border-right: 30px solid #4D7C2A;
+
+  /* rotate the mirrored L to make it a checkbox */
+  transform: rotate(45deg);
 }
 
 .guessed .player-name::after { content: "✓"; }

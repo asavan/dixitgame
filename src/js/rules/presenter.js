@@ -97,8 +97,8 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
                 currentPlayer = core.nextPlayer(0, size(), 1, currentPlayer);
                 drawGuess();
             }
-            console.log(data);
-            layout.drawGuesses(document, data.votesMap);
+            traceLogger.log(data);
+            layout.drawGuessesFull(document, data.votesMap, myIndex);
             return;
         }
 

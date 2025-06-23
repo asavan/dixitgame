@@ -53,6 +53,30 @@ function drawGuesses(document, cardsOnTable) {
     }
 }
 
+function drawMyGuess(document, cardsOnTable, myIndex) {
+    const allCards = document.querySelectorAll(".card");
+    if (!nonNegativeDigitOnIndex(cardsOnTable, myIndex)) {
+        for (const card of allCards) {
+            card.classList.remove("checked");
+        }
+        return;
+    }
+    const myCard = cardsOnTable[myIndex];
+    for (const card of allCards) {
+        const cardNum = parseInt(card.dataset.card, 10);
+        if (cardNum === myCard) {
+            card.classList.add("checked");
+        } else {
+            card.classList.remove("checked");
+        }
+    }
+}
+
+function drawGuessesFull(document, cardsOnTable, myIndex) {
+    drawGuesses(document, cardsOnTable);
+    drawMyGuess(document, cardsOnTable, myIndex);
+}
+
 function drawMyHand({document, myIndex, players, logger, dealer, urlGen, onChoose}, box) {
     const myPlayer = players[myIndex];
     const elem = document.createElement("div");
@@ -362,5 +386,6 @@ export default {
     drawMoveByCard,
     drawMove,
     drawGuesses,
+    drawGuessesFull,
     drawShuffle: shuffle,
 };
