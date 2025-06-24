@@ -64,14 +64,17 @@ ul { list-style-type: none; }
 
 .clickable { cursor: pointer; }
 
-.card-count { font-size: 3rem; }
+.card-count {
+  font-size: 3rem;
+  display: none;
+}
 
 .circle {
   text-align: center;
   offset-path: ellipse(35% 25%);
   offset-distance: calc(1% * var(--path-pc));
   offset-rotate: 0deg;
-  max-width: 120px;
+  max-width: 125px;
   position: absolute;
 }
 
@@ -122,9 +125,10 @@ ul { list-style-type: none; }
   overflow: hidden;
 }
 
-.guessed .player-name::before { content: "✓"; }
+.done .player-name::before { content: "✓"; }
 
 .dealer .player-name::before { content: "*"; }
+.dealer.done .player-name::before { content: "✓*"; }
 
 .current-player {
   background-color: green;
@@ -173,6 +177,7 @@ ul { list-style-type: none; }
 }
 
 .sprite2 {
+  display: block;
   max-width: 100%;
   max-height: 100%;
   width: 100%;
@@ -282,11 +287,16 @@ footer {
 }
 
 .cancel-color {
-  opacity: 0.2;
+  opacity: 0.3;
+  background: repeating-linear-gradient(
+    45deg,
+    black,
+    black 5%,
+    white 5%,
+    white 10%
+  );
   flex-grow: 1;
 }
-
-.main-card { grid-area: a; }
 
 .color-grid > div { cursor: pointer; }
 

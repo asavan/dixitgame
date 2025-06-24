@@ -37,18 +37,13 @@ function drawOpenPile(document, pile, urlGen, myCard) {
 }
 
 function drawGuesses(document, cardsOnTable) {
-    console.log(cardsOnTable);
-    if (!cardsOnTable) {
-        console.error("No cards on table");
-        return;
-    }
     const allPlayers = document.querySelectorAll(".js-player");
     for (const player of allPlayers) {
         const plIndex = parseInt(player.dataset.id, 10);
         if (nonNegativeDigitOnIndex(cardsOnTable, plIndex)) {
-            player.classList.add("guessed");
+            player.classList.add("done");
         } else {
-            player.classList.remove("guessed");
+            player.classList.remove("done");
         }
     }
 }
@@ -111,7 +106,7 @@ function drawMyHand({document, myIndex, players, logger, dealer, urlGen, onChoos
         if (cardEl && cardEl.classList.contains("card")) {
             const card = Number.parseInt(cardEl.dataset.card);
             logger.log(card);
-            return chooseCard(document, card, myIndex, urlGen).then(onChoose).catch((e) => logger.error(e));
+            return chooseCard(document, card, myIndex, urlGen).then(onChoose).catch((e) => logger.log(e));
         }
     });
 
@@ -159,11 +154,14 @@ function drawLayout(data) {
                 });
             }
         } else {
-            const pileElem = document.createElement("div");
-
-            pileElem.textContent = pl.pile().length;
-            pileElem.classList.add("card-count");
-            elem.appendChild(pileElem);
+            if (pl.pile().length < settings.cardsDeal) {
+                elem.classList.add("done");
+            }
+            // const pileElem = document.createElement("div");
+            //
+            // pileElem.textContent = pl.pile().length;
+            // pileElem.classList.add("card-count");
+            // elem.appendChild(pileElem);
         }
 
         const nameElem = document.createElement("div");

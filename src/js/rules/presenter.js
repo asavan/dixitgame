@@ -125,6 +125,7 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
         if (stage === RoundStage.GUESS) {
             cardsOnTable = data.cardsOnTable;
             drawGuess();
+            layout.drawGuessesFull(document, data.votesMap, myIndex);
             return;
         }
         if (stage === RoundStage.APPLY_SCORE) {
