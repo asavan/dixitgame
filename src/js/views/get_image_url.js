@@ -268,7 +268,7 @@ export default function urlGenerator() {
         };
     };
 
-    const makeKUrlGen = (k, rngEngine) => makeUrlGen(random.selectKRandom(urls, k, rngEngine));
+    const makeKUrlGen = (k, rngEngine) => makeUrlGen(random.selectKRandom([...urls], k, rngEngine));
     return {
         makeUrlGen,
         makeKUrlGen
