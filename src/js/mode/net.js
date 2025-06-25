@@ -9,6 +9,27 @@ import networkAdapter from "../connection/network_adapter.js";
 import glueObj from "../core/glue.js";
 
 import viewActions from "../rules/view_actions.js";
+import urlGenerator from "../views/get_image_url.js";
+import {delay} from "../utils/timer.js";
+
+
+function flyingCards(box) {
+    const urlGen = urlGenerator();
+    const loop = async () => {
+        if (!box.classList.contains("flying-cards")) {
+            console.log(box.classList);
+            return;
+        }
+        const nextCardArr = urlGen.makeKUrlGen(1, Math.random);
+        const nextCard = nextCardArr.getUrl(0);
+        const url = `url(${nextCard})`;
+        console.log(url, nextCard, nextCardArr);
+        box.style.setProperty("--background-url", url);
+        await delay(2000);
+        await loop();
+    };
+    return loop();
+}
 
 
 function onConnectionAnimation(document, connection, logger) {
@@ -21,6 +42,7 @@ function onConnectionAnimation(document, connection, logger) {
             logger.log("onConnectionAnimation");
             grid.classList.remove("loading");
             grid.classList.add("flying-cards");
+            flyingCards(grid);
         };
         connection.on("socket_close", onClose);
         connection.on("open", onClose);

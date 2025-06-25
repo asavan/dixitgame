@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 :root {
@@ -14,6 +15,7 @@
   --color-blue: #55F;
   --current-color: aliceblue;
   --inverted-color: white;
+  --background-url: url("./images/deck.png");
 }
 
 html, body { height: 100%; }
@@ -441,13 +443,13 @@ footer {
   /* Create a Responsive Square */
   padding-bottom: 150%;
   box-sizing: border-box;
+  background-size: cover;
   height: 0;
 
   /* Set The Sprite as the Background */
-  background-image: url("./images/deck.png");
-  background-size: 1400%;
+  background-image: var(--background-url);
   display: block;
-  animation: flying-cards-animation 10s steps(10) infinite;
+  transition: background-image 0.5s ease-in-out;
 }
 
 @keyframes flying-cards-animation {
