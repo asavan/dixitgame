@@ -16,6 +16,9 @@ import { assert } from "../utils/assert.js";
 
 import urlGenerator from "../views/get_image_url.js";
 
+import reveal from "../views/reveal.js";
+import {delay} from "../utils/timer.js";
+
 export default function initPresenter({ document, settings, rngEngine, myIndex, queue },
     {
         dealer,
@@ -99,6 +102,10 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
             }
             traceLogger.log(data);
             layout.drawGuessesFull(document, data.votesMap, myIndex);
+            if (myIndex === dealer) {
+                reveal.colorizeDealerCard(dealer, cardsOnTable, document);
+                reveal.showVote(data.votesMap, document, players);
+            }
             return;
         }
 
@@ -116,7 +123,7 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
         layout.drawOpenPile(document, cardsToShow, urlGen, myCard);
     };
 
-    const onChangeState = (data) => {
+    const onChangeState = async (data) => {
         logger.log("On onChangeState", data, players);
         stage = data.stage;
         if (["ai", "hotseat"].includes(settings.mode)) {
@@ -128,6 +135,14 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
             layout.drawGuessesFull(document, data.votesMap, myIndex);
             return;
         }
+
+        if (stage === RoundStage.COUNT_SCORE) {
+            reveal.colorizeDealerCard(dealer, cardsOnTable, document);
+            reveal.showVote(data.votesMap, document, players);
+            await delay(5000);
+            return;
+        }
+
         if (stage === RoundStage.APPLY_SCORE) {
             const scoreDiff = data.scoreDiff;
             assert(scoreDiff.length === players.length, "Bad onChangeState");

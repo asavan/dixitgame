@@ -7,12 +7,13 @@
 :root {
   --main-color: #F0F8FF;
   --player-color: chartreuse;
-  --field-size: 4;
   --card-width: 120px;
   --color-green: #5A5;
   --color-red: #F55;
   --color-yellow: #FA0;
   --color-blue: #55F;
+  --color-white: #FFF;
+  --color-pink: magenta;
   --current-color: aliceblue;
   --inverted-color: white;
   --background-url: url("./images/deck.png");
@@ -35,6 +36,18 @@ body {
 ul { list-style-type: none; }
 
 .selected { background-color: red; }
+
+[data-id="0"] { --player-color: var(--color-yellow); }
+
+[data-id="1"] { --player-color: var(--color-blue); }
+
+[data-id="2"] { --player-color: var(--color-green); }
+
+[data-id="3"] { --player-color: var(--color-pink); }
+
+[data-id="4"] { --player-color: var(--color-red); }
+
+[data-id="5"] { --player-color: var(--color-white); }
 
 .circle-wrapper {
   flex-grow: 1;
@@ -131,13 +144,6 @@ ul { list-style-type: none; }
 
 .dealer .player-name::before { content: "*"; }
 .dealer.done .player-name::before { content: "✓*"; }
-
-.current-player {
-  background-color: green;
-  color: var(--inverted-color);
-}
-
-.current-player .direction { background-color: var(--inverted-color); }
 
 .sprite-container { width: var(--card-width); }
 
@@ -463,10 +469,20 @@ footer {
   transform: translateY(-50%);
 }
 
-@keyframes flying-cards-animation {
-  0% { background-position: 0 0; }
-  30% { background-position: 1000% 0%; }
-  100% { background-position: 1000% 0%; }
+.relative { position: relative; }
+
+.player-guess-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  top: 0;
+}
+
+.player-guess {
+  background: rgb(0 0 0 / 50%);
+  color: white;
+  font-size: 1.5rem;
 }
 
 .card-flip {
@@ -512,10 +528,15 @@ footer {
 
 .highlight-good {
   opacity: 1;
-  transform: scale(1.1);
+  transform: scale(1);
+  border-width: 10px;
+  border-style: double;
 }
 
 .highlight-bad {
-  opacity: 0.5;
-  transform: scale(0.9);
+  opacity: 0.8;
+  border: solid 5px;
+  transform: scale(0.8);
 }
+
+.reveal { border-color: var(--player-color); }

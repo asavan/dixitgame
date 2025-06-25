@@ -39,7 +39,7 @@ function drawOpenPile(document, pile, urlGen, myCard) {
 function drawGuesses(document, cardsOnTable) {
     const allPlayers = document.querySelectorAll(".js-player");
     for (const player of allPlayers) {
-        const plIndex = parseInt(player.dataset.id, 10);
+        const plIndex = Number.parseInt(player.dataset.id, 10);
         if (nonNegativeDigitOnIndex(cardsOnTable, plIndex)) {
             player.classList.add("done");
         } else {
@@ -58,7 +58,7 @@ function drawMyGuess(document, cardsOnTable, myIndex) {
     }
     const myCard = cardsOnTable[myIndex];
     for (const card of allCards) {
-        const cardNum = parseInt(card.dataset.card, 10);
+        const cardNum = Number.parseInt(card.dataset.card, 10);
         if (cardNum === myCard) {
             card.classList.add("checked");
         } else {

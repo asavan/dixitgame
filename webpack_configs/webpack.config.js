@@ -2,6 +2,7 @@ import os from "os";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import CopyPlugin from "copy-webpack-plugin";
 import webpack from "webpack";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 const getLocalExternalIP = () => [].concat(...Object.values(os.networkInterfaces()))
     .filter(details => (details.family === "IPv4" || details.family === 4) &&
@@ -17,7 +18,7 @@ const devConfig = () => {
             rules: [
                 {
                     test: /\.css$/i,
-                    use: ["style-loader", {
+                    use: [MiniCssExtractPlugin.loader, {
                         loader: "css-loader",
                         options: {
                             url: false
@@ -31,6 +32,9 @@ const devConfig = () => {
                 template: "./src/index.html",
                 scriptLoading: "module",
                 minify: false,
+            }),
+            new MiniCssExtractPlugin({
+                filename: "[name].css",
             }),
             new webpack.DefinePlugin({
                 __USE_SERVICE_WORKERS__: false,

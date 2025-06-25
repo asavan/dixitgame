@@ -242,7 +242,7 @@ export function countScore(state) {
         }
     }
 
-    const toJson = () => ({scoreDiff});
+    const toJson = () => ({scoreDiff, votesMap});
     const getRoundState = () => roundState;
     const isReady = () => true;
     const canMove = () => false;
