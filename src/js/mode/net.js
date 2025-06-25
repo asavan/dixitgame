@@ -10,7 +10,7 @@ import glueObj from "../core/glue.js";
 
 import viewActions from "../rules/view_actions.js";
 import urlGenerator from "../views/get_image_url.js";
-import {delay} from "../utils/timer.js";
+import { delay } from "../utils/timer.js";
 
 
 function flyingCards(box) {
@@ -23,14 +23,12 @@ function flyingCards(box) {
         const nextCardArr = urlGen.makeKUrlGen(1, Math.random);
         const nextCard = nextCardArr.getUrl(0);
         const url = `url(${nextCard})`;
-        console.log(url, nextCard, nextCardArr);
         box.style.setProperty("--background-url", url);
         await delay(2000);
         await loop();
     };
     return loop();
 }
-
 
 function onConnectionAnimation(document, connection, logger) {
     connection.on("socket_open", () => {
