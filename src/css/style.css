@@ -441,15 +441,26 @@ footer {
 
 .flying-cards {
   /* Create a Responsive Square */
-  padding-bottom: 150%;
   box-sizing: border-box;
   background-size: cover;
-  height: 0;
 
   /* Set The Sprite as the Background */
   background-image: var(--background-url);
   display: block;
   transition: background-image 0.5s ease-in-out;
+  position: relative;
+}
+
+.flying-cards::after {
+  position: absolute;
+  width: 100%;
+  content: "Waiting for players...";
+  text-align: center;
+  display: block;
+  background-color: rgb(0 0 0 / 70%);
+  color: white;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 @keyframes flying-cards-animation {
