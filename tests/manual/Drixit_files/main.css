@@ -243,19 +243,6 @@ footer {
   overflow: hidden;
 }
 
-/*
-@media (width >= 900px) {
-  .container {
-    max-width: 3000px;
-  }
-
-  .circle {
-    transform: rotate(var(--angle-deg)) translate(300px) rotate(calc(-1 * var(--angle-deg))) translate(-50%, -50%);
-    max-width: 300px;
-  }
-}
-*/
-
 .install {
   background-color: var(--main-color);
   text-align: center;

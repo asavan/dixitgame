@@ -14,11 +14,12 @@ function colorizeDealerCard(dealer, cards, document) {
     }
 }
 
-function addVote(name, namesContainer) {
-    const name1 = document.createElement("div");
-    name1.classList.add("player-guess");
-    name1.textContent = name;
-    namesContainer.append(name1);
+function addVote(name, namesContainer, index) {
+    const playerName = document.createElement("div");
+    playerName.classList.add("player-guess");
+    playerName.textContent = name;
+    playerName.dataset.id = index;
+    namesContainer.append(playerName);
 }
 
 
@@ -55,8 +56,7 @@ function showVote(votesMap, document, players) {
         }
         for (const playerId of playerIds) {
             const player = players[playerId];
-            console.log(player, player.getName());
-            addVote(player.getName(), voteContainer);
+            addVote(player.getName(), voteContainer, playerId);
         }
     }
 }

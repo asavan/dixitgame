@@ -125,7 +125,6 @@ function drawLayout(data) {
     const places = document.createElement("ul");
     places.classList.add("circle-wrapper");
     box.appendChild(places);
-    const increaseDeg = 360 / players.length;
     const N = players.length;
     let i = 0;
     for (const pl of players) {
@@ -157,11 +156,6 @@ function drawLayout(data) {
             if (pl.pile().length < settings.cardsDeal) {
                 elem.classList.add("done");
             }
-            // const pileElem = document.createElement("div");
-            //
-            // pileElem.textContent = pl.pile().length;
-            // pileElem.classList.add("card-count");
-            // elem.appendChild(pileElem);
         }
 
         const nameElem = document.createElement("div");
@@ -178,10 +172,7 @@ function drawLayout(data) {
 
 
         elem.dataset.id = i;
-        const angleDeg = 90 + increaseDeg*(i-myIndex);
-        elem.dataset.angle = angleDeg + "deg";
-        elem.style.setProperty("--angle-deg", angleDeg + "deg");
-        const pathPercent = 25 + ((i-myIndex+N)%N)*100/N;
+        const pathPercent = 25 + Math.floor(((i-myIndex+N)%N)*100/N);
         elem.style.setProperty("--path-pc", pathPercent);
         elem.classList.add("circle");
         if (dealer === i) {
