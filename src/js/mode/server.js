@@ -8,8 +8,10 @@ import lobbyFunc from "../core/lobby.js";
 import glueObj from "../core/glue.js";
 import networkAdapter from "../connection/network_adapter.js";
 import startServerWithUI from "./common.js";
+import addSettingsButton from "../views/settings-form-btn.js";
 
 export default async function server({window, document, settings, rngEngine}) {
+    addSettingsButton(document, settings);
     const clients = {};
     let index = 0;
     const myId = getMyId(window, settings, rngEngine);

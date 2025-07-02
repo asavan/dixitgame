@@ -568,3 +568,102 @@ footer {
 }
 
 .reveal { border-color: var(--player-color); }
+
+.form-container {
+  max-width: 400px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+}
+
+.form-field {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.form-field:hover {
+  background-color: #f8f9fa;
+  color: black;
+}
+
+.form-input {
+  margin-right: 10px;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.form-label {
+  cursor: pointer;
+  user-select: none;
+  flex: 1;
+}
+
+/* Optional: Add visual feedback for changes */
+.form-field.changed {
+  background-color: #e8f5e8;
+  border-left: 3px solid #28a745;
+  padding-left: 10px;
+}
+
+#control-panel.minimized {
+  min-width: auto;
+  min-height: auto;
+  gap: 0;
+  display: block !important;
+  margin-left: 0;
+  padding: 5px;
+  outline: 1px solid #ccc;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#control-panel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #323232;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  font-family: sans-serif;
+  display: flex;
+  z-index: 2;
+  flex-direction: column;
+  min-width: 320px;
+  transition: min-height 0.3s ease, padding 0.3s ease, min-width 0.3s ease;
+  gap: 5px;
+}
+
+.panel-header #minimize-btn, .panel-header #maximize-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 0 3px;
+  line-height: 1;
+  margin-left: 3px;
+}
+
+.panel-header #minimize-btn:hover, .panel-header #maximize-btn:hover {
+  color: white;
+}
+
+#control-panel.minimized .panel-header #minimize-btn { display: none; }
+
+#control-panel:not(.minimized) .panel-header #maximize-btn { display: none; }
+
+#control-panel button:not(:disabled):active {
+  background-color: #7a7a7a;
+  transform: translateY(1px);
+}
+
+#control-panel button:not(:disabled):hover { background-color: #686868; }

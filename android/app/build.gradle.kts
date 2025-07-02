@@ -16,7 +16,7 @@ android {
         applicationId = "ru.asavan.drixit"
         minSdk = 24
         targetSdk = 36
-        versionCode = 12
+        versionCode = 13
         versionName = "0.0.14"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -33,7 +33,7 @@ android {
 dependencies {
     implementation("org.nanohttpd:nanohttpd:2.3.1")
     implementation("org.java-websocket:Java-WebSocket:1.6.0")
-    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.6.1")
+    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.6.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

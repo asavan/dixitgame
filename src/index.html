@@ -12,6 +12,8 @@
 
 <body>
 <div class="name-form-cont"></div>
+<div class="settings-cont"></div>
+
 
 <div class="container" data-background="lime">
     <div class="places"></div>
@@ -67,6 +69,16 @@
         <input class="namesubmit" type="submit" value="Send">
         </div>
     </form>
+</template>
+
+<template id="control-panel-tmpl">
+    <div id="control-panel" class="control-panel minimized">
+        <div class="panel-header">
+            <button id="minimize-btn" title="Minimize Panel">−</button>
+            <button id="maximize-btn" title="Maximize Panel">⚙</button>
+        </div>
+        <div class="panel-content"></div>
+    </div>
 </template>
 
 <div class="hidden devtools">
