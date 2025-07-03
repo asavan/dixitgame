@@ -23,7 +23,11 @@ function flyingCards(box) {
         const nextCardArr = urlGen.makeKUrlGen(1, Math.random);
         const nextCard = nextCardArr.getUrl(0);
         const url = `url(${nextCard})`;
-        box.style.setProperty("--background-url", url);
+        const imagePreload = new Image();
+        imagePreload.onload = ()=> {
+            box.style.setProperty("--background-url", url);
+        };
+        imagePreload.src = nextCard;
         await delay(2000);
         await loop();
     };

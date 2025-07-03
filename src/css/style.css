@@ -78,6 +78,24 @@ ul { list-style-type: none; }
   position: relative;
 }
 
+.score-diff { font-size: 4rem; }
+
+.overlay-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 1s ease-in-out;
+  color: black;
+  border-radius: 50%;
+  background: aliceblue;
+  opacity: 0.8;
+  z-index: 10;
+  transform-origin: center center;
+}
+
+.large { transform: scale(2); }
+
 .places {
   width: 100%;
   height: 100%;
@@ -474,10 +492,10 @@ footer {
 .flying-cards {
   /* Create a Responsive Square */
   box-sizing: border-box;
+  background: var(--background-url) no-repeat center;
   background-size: cover;
 
   /* Set The Sprite as the Background */
-  background-image: var(--background-url);
   display: block;
   transition: background-image 0.5s ease-in-out;
   position: relative;

@@ -48,6 +48,36 @@ function drawGuesses(document, cardsOnTable) {
     }
 }
 
+function drawScore(document, player, score) {
+    if (score === 0) {
+        return;
+    }
+    const scoreDiv = document.createElement("div");
+    scoreDiv.classList.add("score-diff", "relative");
+    const overlay = document.createElement("div");
+    overlay.classList.add("overlay-box");
+    scoreDiv.appendChild(overlay);
+    let scoreText = "+" + score;
+    if (score < 0) {
+        scoreText = score;
+    }
+    overlay.textContent = scoreText;
+    player.prepend(scoreDiv);
+    setTimeout(() => {
+        overlay.classList.add("large");
+    }, 100);
+}
+
+async function drawScoreAll(document, scoreDiff) {
+    const allPlayers = document.querySelectorAll(".js-player");
+    for (const player of allPlayers) {
+        const plIndex = Number.parseInt(player.dataset.id, 10);
+        const score = scoreDiff[plIndex];
+        drawScore(document, player, score);
+        await delay(500);
+    }
+}
+
 function drawMyGuess(document, cardsOnTable, myIndex) {
     const allCards = document.querySelectorAll(".card");
     if (!nonNegativeDigitOnIndex(cardsOnTable, myIndex)) {
@@ -87,6 +117,7 @@ function drawMyHand({document, myIndex, players, logger, dealer, urlGen, onChoos
     const score = myPlayer.getScore();
     if (score > 0) {
         const scoreElem = document.createElement("span");
+        scoreElem.classList.add("score-cnt");
         scoreElem.textContent = score;
         statusRow.appendChild(scoreElem);
     }
@@ -166,6 +197,7 @@ function drawLayout(data) {
         const score = pl.getScore();
         if (score > 0) {
             const scoreElem = document.createElement("div");
+            scoreElem.classList.add("score-cnt");
             scoreElem.textContent = score;
             elem.appendChild(scoreElem);
         }
@@ -376,5 +408,6 @@ export default {
     drawMove,
     drawGuesses,
     drawGuessesFull,
+    drawScoreAll,
     drawShuffle: shuffle,
 };

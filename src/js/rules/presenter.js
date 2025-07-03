@@ -139,7 +139,9 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
         if (stage === RoundStage.COUNT_SCORE) {
             reveal.colorizeDealerCard(dealer, cardsOnTable, document);
             reveal.showVote(data.votesMap, document, players);
-            await delay(5000);
+            await delay(1000);
+            await layout.drawScoreAll(document, data.scoreDiff);
+            await delay(6000);
             return;
         }
 
