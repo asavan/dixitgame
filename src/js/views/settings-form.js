@@ -21,7 +21,7 @@ export default function createBooleanForm(obj, options = {}) {
 
         // Validate that the value is boolean
         if (typeof value !== "boolean") {
-            console.warn(`Property "${key}" is not a boolean, skipping...`);
+            // console.warn(`Property "${key}" is not a boolean, skipping...`);
             return;
         }
 

@@ -85,7 +85,7 @@ ul { list-style-type: none; }
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  transition: all 1s ease-in-out;
+  transition: all 2s ease-in-out;
   color: black;
   border-radius: 50%;
   background: aliceblue;
@@ -369,8 +369,6 @@ footer {
 
 @media (max-width: 450px) { .hidden2 { display: none; } }
 
-.hidden { display: none; }
-
 .nameinput {
   padding: 10px 2px;
   width: 220px;
@@ -643,7 +641,7 @@ footer {
   justify-content: flex-end;
 }
 
-#control-panel {
+.control-panel {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -660,15 +658,16 @@ footer {
   gap: 5px;
 }
 
-.panel-header #minimize-btn, .panel-header #maximize-btn {
+.panel-header #minimize-btn, .panel-header #maximize-btn, #resize-btn {
   background: none;
   border: none;
-  color: #ccc;
+  color: white;
   cursor: pointer;
   font-size: 1.2em;
   padding: 0 3px;
   line-height: 1;
-  margin-left: 3px;
+
+  /* margin-left: 3px; */
 }
 
 .panel-header #minimize-btn:hover, .panel-header #maximize-btn:hover {
@@ -685,3 +684,5 @@ footer {
 }
 
 #control-panel button:not(:disabled):hover { background-color: #686868; }
+
+.hidden { display: none; }

@@ -12,7 +12,16 @@
 
 <body>
 <div class="name-form-cont"></div>
-<div class="settings-cont"></div>
+<div class="settings-cont">
+    <div id="control-panel" class="control-panel minimized">
+        <div class="panel-header">
+            <button id="resize-btn" title="fullscreen">⤮</button>
+            <button id="minimize-btn" class="hidden" title="Minimize Panel">−</button>
+            <button id="maximize-btn" class="hidden" title="Maximize Panel">⚙</button>
+        </div>
+        <div class="panel-content"></div>
+    </div>
+</div>
 
 
 <div class="container" data-background="lime">
@@ -74,6 +83,7 @@
 <template id="control-panel-tmpl">
     <div id="control-panel" class="control-panel minimized">
         <div class="panel-header">
+            <button id="resize-btn" title="fullscreen">⤮</button>
             <button id="minimize-btn" title="Minimize Panel">−</button>
             <button id="maximize-btn" title="Maximize Panel">⚙</button>
         </div>
