@@ -7,6 +7,8 @@ export default function addSettingsButton(document, settings) {
 
     const maxBtn = document.querySelector("#maximize-btn");
     const minBtn = document.querySelector("#minimize-btn");
+    const resizeBtn = document.querySelector("#resize-btn");
+    resizeBtn.classList.add("hidden");
     maxBtn.classList.remove("hidden");
 
     maxBtn.addEventListener("click", (e) => {
