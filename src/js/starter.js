@@ -8,7 +8,6 @@ import {
 } from "./utils/parse-settings.js";
 import { assert } from "./utils/assert.js";
 import rngFunc from "./utils/random.js";
-import fullScreen from "./views/fullscreen.js";
 
 export default async function starter(window, document) {
     const settings = { ...settingsOriginal };
@@ -18,8 +17,6 @@ export default async function starter(window, document) {
     adjustBots(changed, settings);
     adjustOther(changed, settings);
     adjustSeed(changed, settings, rngFunc, rngEngine);
-
-    fullScreen(document);
 
     let mode;
     if (settings.mode === "net") {

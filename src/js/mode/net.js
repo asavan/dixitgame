@@ -11,6 +11,7 @@ import glueObj from "../core/glue.js";
 import viewActions from "../rules/view_actions.js";
 import urlGenerator from "../views/get_image_url.js";
 import { delay } from "../utils/timer.js";
+import addSettingsButton from "../views/settings-form-btn.js";
 
 
 function flyingCards(box) {
@@ -51,7 +52,7 @@ function onConnectionAnimation(document, connection, logger) {
     });
 }
 
-function onConnectionOpen(connection, serverData, netModeData, myId, logger) {
+function onConnectionOpen(connection, serverData, netModeData, myId, logger, settings) {
     const serverId = serverData.data.id;
     assert(serverId === serverData.from, serverData.from);
     const queue = PromiseQueue(logger);
@@ -66,6 +67,10 @@ function onConnectionOpen(connection, serverData, netModeData, myId, logger) {
             pAdapter.connectAdapter(nAdapter);
         }
     };
+
+    lobby.on("username", () => {
+        addSettingsButton(document, settings);
+    });
 
     const lAdapter = glueObj.wrapAdapterActions(lobby, actions);
     lAdapter.connectAdapter(nAdapter);
@@ -93,7 +98,7 @@ export default async function netMode(netModeData) {
         const traceLogger = loggerFunc(1, null, settings);
         connection.on("open", (serverData) => {
             traceLogger.log("Server id ", serverData, myId);
-            const lobby = onConnectionOpen(connection, serverData, netModeData, myId, logger);
+            const lobby = onConnectionOpen(connection, serverData, netModeData, myId, logger, settings);
             resolve(lobby);
         });
         connection.on("error", (e) => {

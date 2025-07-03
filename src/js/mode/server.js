@@ -11,7 +11,6 @@ import startServerWithUI from "./common.js";
 import addSettingsButton from "../views/settings-form-btn.js";
 
 export default async function server({window, document, settings, rngEngine}) {
-    addSettingsButton(document, settings);
     const clients = {};
     let index = 0;
     const myId = getMyId(window, settings, rngEngine);
@@ -45,20 +44,26 @@ export default async function server({window, document, settings, rngEngine}) {
     const queue = PromiseQueue(logger);
     const lobby = lobbyFunc({window, document, settings, myId, players: []});
 
-    // first phase
-    const actions = {
-        "username": (data) => {
-            logger.log("User joined", data);
-            const { name, externalId } = data;
-            assert(name, "No name");
-            assert(externalId, "No externalId");
-            const client = clients[externalId];
-            client.username = name;
-            return lobby.join(name, externalId, settings.playerIsBot);
-        }
+    const onJoin = (data) => {
+        logger.log("User joined", data);
+        const { name, externalId } = data;
+        assert(name, "No name");
+        assert(externalId, "No externalId");
+        const client = clients[externalId];
+        client.username = name;
+        return lobby.join(name, externalId, settings.playerIsBot);
     };
 
-    lobby.on("username", actions["username"]);
+    // first phase
+    const actions = {
+        "username": onJoin
+    };
+
+    const onNameEntered = (data) => {
+        addSettingsButton(document, settings);
+        onJoin(data);
+    };
+    lobby.on("username", onNameEntered);
 
     const nAdapter = networkAdapter(connection, queue, myId, myId, networkLogger);
     nAdapter.connectMapper(glueObj.simpleMapper(actions));

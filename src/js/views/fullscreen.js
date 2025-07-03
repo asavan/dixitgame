@@ -9,15 +9,13 @@ function toggleFullScreen(document, elem) {
     }
 }
 
-export default function fullScreen(document) {
-    const btn = document.querySelector("#resize-btn");
-    // console.log(btn);
-    if (!btn) {
+export default function fullScreen(document, el) {
+    if (!el) {
         return;
     }
     const body = document.querySelector("body");
-    btn.addEventListener("click", (e) => {
-        console.log(e.target);
+    el.addEventListener("click", (e) => {
+        e.preventDefault();
         toggleFullScreen(document, body);
     });
 }
