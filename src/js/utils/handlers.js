@@ -13,6 +13,7 @@ export default function handlersFunc(arr, queue) {
         return arr;
     };
     const on = (name, callback) => getSafe(name).push(callback);
+    const hasAction = (name) => actionKeys().includes(name);
     const setOnce = (name, callback) => {
         handlers[name] = [callback];
     };
@@ -38,6 +39,7 @@ export default function handlersFunc(arr, queue) {
     return {
         on,
         setOnce,
+        hasAction,
         call,
         reset,
         actionKeys

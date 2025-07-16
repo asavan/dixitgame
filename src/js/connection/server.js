@@ -151,8 +151,13 @@ const connectionFunc = function (id, logger) {
             logger.log("get data " + e.data);
             if (clientHandler) {
                 const obj = JSON.parse(e.data);
+                if (!clientHandler.hasAction(obj.action)) {
+                    logger.error("Bad message type " + obj.action);
+                    return;
+                }
                 return clientHandler.call(obj.action, obj.data);
             }
+            logger.error("No suitable handler");
         };
 
         dataChannel.onopen = function () {

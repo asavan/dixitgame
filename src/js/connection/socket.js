@@ -57,11 +57,11 @@ export default function connectionFunc(id, logger, isServer) {
                     return;
                 }
 
-                if (handlers.actionKeys().includes(json.action)) {
+                if (handlers.hasAction(json.action)) {
                     logger.log("handlers.actionKeys", json.action);
                     return handlers.call(json.action, json);
                 }
-                if (userHandlers && userHandlers.actionKeys().includes(json.action)) {
+                if (userHandlers && userHandlers.hasAction(json.action)) {
                     logger.log("callUserHandler", json.action);
                     return userHandlers.call(json.action, json.data);
                 }
