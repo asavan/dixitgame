@@ -2,8 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import settingsOriginal from "../../src/js/settings.js";
-import {parseSettings, adjustMode} from "../../src/js/utils/parse-settings.js";
-
+import {adjustMode} from "../../src/js/utils/parse-settings.js";
+import {parseSettings} from "netutils";
 
 
 test("parse settings", () => {

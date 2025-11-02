@@ -41,6 +41,6 @@
   },
   "dependencies": {
     "esm-seedrandom": "^3.0.5",
-    "netutils": "github:asavan/netutils#v0.1.2"
+    "netutils": "github:asavan/netutils#v0.1.3"
   }
 }
