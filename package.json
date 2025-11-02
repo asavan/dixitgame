@@ -32,12 +32,11 @@
   },
   "homepage": "https://asavan.github.io/dixitgame/",
   "devDependencies": {
-    "@biomejs/biome": "2.3.2",
     "dependency-cruiser": "^17.2.0",
+    "devdeps": "github:asavan/dev-deps#v0.0.8",
     "dprint": "^0.50.2",
     "madge": "^8.0.0",
-    "sharp": "^0.34.4",
-    "devdeps": "github:asavan/dev-deps#v0.0.8"
+    "sharp": "^0.34.4"
   },
   "dependencies": {
     "esm-seedrandom": "^3.0.5",
