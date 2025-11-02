@@ -1,12 +1,11 @@
 import settingsOriginal from "./settings.js";
 import {
-    parseSettings,
     adjustMode,
     adjustBots,
     adjustSeed,
     adjustOther
 } from "./utils/parse-settings.js";
-import { assert } from "./utils/assert.js";
+import { assert, parseSettings } from "netutils";
 import rngFunc from "./utils/random.js";
 
 export default async function starter(window, document) {

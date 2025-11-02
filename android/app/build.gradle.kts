@@ -16,10 +16,19 @@ android {
         applicationId = "ru.asavan.drixit"
         minSdk = 24
         targetSdk = 36
-        versionCode = 15
-        versionName = "0.0.15"
+        versionCode = 16
+        versionName = "0.0.16"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    packaging {
+        jniLibs {
+            pickFirsts += "META-INF/nanohttpd/*"
+        }
+        resources {
+            pickFirsts += "META-INF/nanohttpd/*"
+        }
     }
 
     buildTypes {
@@ -36,6 +45,6 @@ dependencies {
     implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.6.2")
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 }

@@ -34,12 +34,13 @@
   "devDependencies": {
     "dependency-cruiser": "^17.2.0",
     "devdeps": "github:asavan/dev-deps#v0.0.8",
+    "netdeps": "github:asavan/net-deps#v0.0.4",
     "dprint": "^0.50.2",
     "madge": "^8.0.0",
     "sharp": "^0.34.4"
   },
   "dependencies": {
     "esm-seedrandom": "^3.0.5",
-    "netutils": "github:asavan/netutils#v0.1.1"
+    "netutils": "github:asavan/netutils#v0.1.2"
   }
 }
