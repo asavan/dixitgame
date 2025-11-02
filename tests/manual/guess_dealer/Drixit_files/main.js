@@ -54,7 +54,7 @@ addVote(0, "sasha", 6);
 addVote(2, "player1", 6);
 addVote(1, "player2", 6);
 addVote(3, "player3", 6);
-addVote(4, "player4", 6);
+addVote1(4, "player4", 6);
 
 console.log(cardEl);
 

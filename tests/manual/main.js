@@ -15,7 +15,7 @@ function main() {
         }
 
         if (i === 12) {
-            const anchorName = "--anchor-el";
+            // const anchorName = "--anchor-el";
             // elem.style.setProperty("anchor-name", anchorName);
         }
 
@@ -28,6 +28,6 @@ function main() {
         pileElem.textContent = "sasha" + (i+1);
         box.appendChild(pileElem);
     }
-};
+}
 
 main();

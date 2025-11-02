@@ -1,12 +1,14 @@
-import sharp from 'sharp';
+import sharp from "sharp";
 import { readdir, copyFile } from "node:fs/promises";
-import * as path from 'path';
+import * as path from "path";
 
 async function main() {
+    /* eslint-disable */
     const dir = process.argv[2];
     const dir2 = process.argv[3];
+    /* eslint-enable */
     const filenames = await readdir(dir);
-    for (let filename of filenames) {
+    for (const filename of filenames) {
         // console.log(filename);
         const longfile = path.join(dir, filename);
         const longfile2 = path.join(dir2, filename);
