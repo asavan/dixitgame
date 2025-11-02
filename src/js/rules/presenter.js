@@ -2,22 +2,14 @@ import newPlayer from "../core/player.js";
 import core from "../core/basic.js";
 import layout from "../views/layout.js";
 
-// TODO delete mb?
-import loggerFunc from "../views/logger.js";
-
-import handlersFunc from "../utils/handlers.js";
 import RoundStage from "./constants.js";
-
-import { shuffleArray } from "../utils/shuffle.js";
-
 import onGameEnd from "../views/end_game.js";
 
-import { assert } from "../utils/assert.js";
+import { assert, delay, random, handlersFunc, loggerFunc } from "netutils";
 
 import urlGenerator from "../views/get_image_url.js";
 
 import reveal from "../views/reveal.js";
-import {delay} from "../utils/timer.js";
 
 export default function initPresenter({ document, settings, rngEngine, myIndex, queue },
     {
@@ -33,8 +25,8 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
     }
 ) {
 
-    const logger = loggerFunc(6, null, settings);
-    const traceLogger = loggerFunc(1, null, settings);
+    const logger = loggerFunc(document, settings, 6);
+    const traceLogger = loggerFunc(document, settings, 1);
     const players = playersRaw.map((p, i) => newPlayer(p.pile, i, p.score, p.name, p.externalId));
     const urlGen = urlGenerator().makeUrlGen(urlGenRaw);
 
@@ -114,7 +106,7 @@ export default function initPresenter({ document, settings, rngEngine, myIndex, 
 
     const drawGuess = () => {
         const cardsToShow = [...cardsOnTable];
-        shuffleArray(cardsToShow, rngEngine);
+        random.shuffleArray(cardsToShow, rngEngine);
         let myCard;
         if (currentPlayer !== dealer) {
             myCard = cardsOnTable[currentPlayer];

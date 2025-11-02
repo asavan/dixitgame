@@ -11,12 +11,9 @@ import startServerWithUI from "./common.js";
 import addSettingsButton from "../views/settings-form-btn.js";
 
 export default async function server({window, document, settings, rngEngine}) {
-    const clients = {};
-    let index = 0;
     const myId = getMyId(window, settings, rngEngine);
     const logger = loggerFunc(6, null, settings);
     const networkLogger = loggerFunc(3, null, settings);
-    clients[myId] = {index};
     const socketUrl = getWebSocketUrl(settings, window.location);
     if (!socketUrl) {
         logger.error("Can't determine ws address", socketUrl);
@@ -49,8 +46,6 @@ export default async function server({window, document, settings, rngEngine}) {
         const { name, externalId } = data;
         assert(name, "No name");
         assert(externalId, "No externalId");
-        const client = clients[externalId];
-        client.username = name;
         return lobby.join(name, externalId, settings.playerIsBot);
     };
 
@@ -83,16 +78,10 @@ export default async function server({window, document, settings, rngEngine}) {
 
     connection.on("disconnect", (id) => {
         const is_disconnected = lobby.disconnect(id);
-        if (is_disconnected) {
-            --index;
-            delete clients[id];
-        }
-        logger.log({id, index}, "disconnect");
+        logger.log("disconnect", {id, is_disconnected});
     });
 
     connection.on("open", (con) => {
-        ++index;
-        clients[con.id] = {index};
         logger.log("connected", con);
         if (lobby.canSeeGame(con.id) && presenter) {
             return connection.sendRawTo("start", presenter.toJson(), con.id);

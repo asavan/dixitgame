@@ -28,13 +28,5 @@ export default {
     showAll: false,
     clickAll: false,
     seed: "",
-    dealAnim: 500,
-    betweenRounds: 900,
-    shuffleOutDelay: 150,
-    shuffleInDelay: 150,
-    shuffleWaitDelay: 200,
-    shuffleSmallDelay: 10,
-    shuffleTimes: 2,
-    shuffleMaxCardsShow: 20,
     maxNameLen: 11
 };
