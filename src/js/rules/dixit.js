@@ -1,9 +1,8 @@
 import RoundStage from "./constants.js";
 import {hide, mimic, guess, countScore, applyScore} from "./phases.js";
 import deckFunc from "../core/deck.js";
-import handlersFunc from "../utils/handlers.js";
 import core from "../core/basic.js";
-import { assert } from "../utils/assert.js";
+import { assert, handlersFunc } from "netutils";
 
 const BAD_MOVE = 0;
 const SAME_ROUND = 1;

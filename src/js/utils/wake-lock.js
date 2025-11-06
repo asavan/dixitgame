@@ -2,21 +2,21 @@
 let wakeLock = null;
 
 // create an async function to request a wake lock
-async function lock() {
+async function lock(logger) {
     try {
         wakeLock = await navigator.wakeLock.request("screen");
-        console.log("Awake");
+        logger.log("Awake");
     } catch (err) {
-        console.error("wakeLock rejected", err);
+        logger.error("wakeLock rejected", err);
     }
 }
 
-function init() {
-    lock();
+function init(logger) {
+    lock(logger);
     document.addEventListener("visibilitychange", async () => {
-        console.log("visibilitychange", document.visibilityState);
+        logger.log("visibilitychange", document.visibilityState);
         if (document.visibilityState === "visible") {
-            await lock();
+            await lock(logger);
         }
     });
 }

@@ -1,7 +1,9 @@
 import wakeLock from "../utils/wake-lock.js";
+import {loggerFunc} from "netutils";
 
 
 export default function enterName(window, document, settings, onUsermameExternal) {
+    const traceLogger = loggerFunc(document, settings, 1);
     const formCont = document.querySelector(".name-form-cont");
     const data = window.sessionStorage.getItem("username");
     const notifyExt = (name) => {
@@ -41,7 +43,7 @@ export default function enterName(window, document, settings, onUsermameExternal
             return;
         }
         // TODO maybe extract
-        wakeLock.init();
+        wakeLock.init(traceLogger);
         window.sessionStorage.setItem("username", name);
         notifyExt(name);
         form.classList.add("hidden");

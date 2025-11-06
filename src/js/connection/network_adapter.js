@@ -1,6 +1,6 @@
 import networkMapperObj from "./network_mapper.js";
 import glueObj from "../core/glue.js";
-import handlersFunc from "../utils/handlers.js";
+import {handlersFunc} from "netutils";
 
 export default function networkAdapter(connection, queue, myId, serverId, logger) {
     const gameToNetwork = myId === serverId ?

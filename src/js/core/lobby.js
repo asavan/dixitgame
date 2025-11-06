@@ -1,12 +1,14 @@
 import enterName from "../views/names.js";
 import choosePlaceFunc from "../views/places.js";
-import loggerFunc from "../views/logger.js";
-import {assert} from "../utils/assert.js";
-import handlersFunc from "../utils/handlers.js";
+
+import {
+    assert, handlersFunc,
+    loggerFunc
+} from "netutils";
 
 export default function lobby({window, document, settings, myId, players}) {
 
-    const logger = loggerFunc(3, null, settings);
+    const logger = loggerFunc(document, settings, 3);
 
     assert(myId, "No id");
 
@@ -16,6 +18,7 @@ export default function lobby({window, document, settings, myId, players}) {
     ];
 
     const handlers = handlersFunc(commands);
+    const {actionKeys, on} = handlers;
 
     ///
     let clickCount = 0;
@@ -111,9 +114,6 @@ export default function lobby({window, document, settings, myId, players}) {
     };
 
     const canSeeGame = (externalId) => hasExternalPlayer(externalId);
-
-    const actionKeys = handlers.actionKeys;
-    const on = handlers.on;
 
     return {
         on,

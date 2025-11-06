@@ -1,5 +1,3 @@
-import PromiseQueue from "../utils/async-queue.js";
-import {assert} from "../utils/assert.js";
 import lobbyFunc from "../core/lobby.js";
 import glueObj from "../core/glue.js";
 import networkAdapter from "../connection/network_adapter.js";
@@ -7,9 +5,9 @@ import startServerWithUI from "./common.js";
 import addSettingsButton from "../views/settings-form-btn.js";
 
 import {
-    createSignalingChannel,
+    assert, createSignalingChannel,
     broadcastConnectionFunc, loggerFunc, makeQrStr,
-    netObj, removeElem, delay
+    netObj, removeElem, delay, PromiseQueue
 } from "netutils";
 
 function makeQr(window, document, settings, serverId) {

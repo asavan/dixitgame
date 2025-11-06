@@ -1,4 +1,4 @@
-import random from "../utils/random.js";
+import {random} from "netutils";
 
 export default function urlGenerator() {
     const urls = [

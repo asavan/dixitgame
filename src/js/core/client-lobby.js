@@ -1,11 +1,12 @@
 import enterName from "../views/names.js";
-import loggerFunc from "../views/logger.js";
-import {assert} from "../utils/assert.js";
-import handlersFunc from "../utils/handlers.js";
+import {
+    assert, handlersFunc,
+    loggerFunc
+} from "netutils";
 
 export default function lobby({window, document, settings, myId}) {
 
-    const logger = loggerFunc(2, null, settings);
+    const logger = loggerFunc(document, settings, 2);
 
     assert(myId, "No id");
 
@@ -14,18 +15,13 @@ export default function lobby({window, document, settings, myId}) {
     ];
 
     const handlers = handlersFunc(commands);
-    function on(name, f) {
-        return handlers.on(name, f);
-    }
-
+    const {actionKeys, on} = handlers;
     const onNameChange = (name) => {
         logger.log("change name");
         return handlers.call("username", {name, externalId: myId});
     };
 
     const afterSetup = () => enterName(window, document, settings, onNameChange);
-
-    const actionKeys = handlers.actionKeys;
 
     return {
         on,

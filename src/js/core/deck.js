@@ -1,4 +1,4 @@
-import {shuffleArray} from "../utils/shuffle.js";
+import {random} from "netutils";
 
 function newDeck(length) {
     const deck = [ ...Array(length).keys()];
@@ -52,7 +52,7 @@ function newExternalDeck(d, onShuffle, rngFunc) {
     }
 
     function shuffle() {
-        shuffleArray(deck, rngFunc);
+        random.shuffleArray(deck, rngFunc);
         return onShuffle(deck);
     }
 
