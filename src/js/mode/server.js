@@ -9,7 +9,7 @@ import addSettingsButton from "../views/settings-form-btn.js";
 import {
     createSignalingChannel,
     broadcastConnectionFunc, loggerFunc, makeQrStr,
-    netObj, removeElem
+    netObj, removeElem, delay
 } from "netutils";
 
 function makeQr(window, document, settings, serverId) {
@@ -91,14 +91,15 @@ export default async function server({window, document, settings, rngEngine}) {
         logger.log("disconnect", {id, is_disconnected});
     });
 
-    connection.on("join", (json) => {
-        const con = json.data;
-        logger.log("connected", con);
-        gameChannel.send("open", {id: myId}, json.from);
-        if (lobby.canSeeGame(con.id) && presenter) {
-            return connection.sendRawTo("start", presenter.toJson(), con.id);
+    connection.on("join", async (json) => {
+        logger.log("connected", json);
+        const clientId = json.from;
+        connection.sendRawTo("gameinit", {id: myId}, clientId);
+        if (lobby.canSeeGame(clientId) && presenter) {
+            await delay(200);
+            return connection.sendRawTo("start", presenter.toJson(), clientId);
         } else {
-            logger.log("Try see game", con.id);
+            logger.log("Try see game", clientId);
         }
     });
 
