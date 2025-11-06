@@ -7,7 +7,7 @@ import settingsOriginal from "../../src/js/settings.js";
 
 
 async function testMode(mode) {
-    const baseUrl = "http://localhost/?botCount=2";
+    const baseUrl = "http://localhost/?botCount=2&channelType=none";
     const urlToTest = baseUrl + "&mode=" + mode;
     const dom = await JSDOM.fromFile("src/index.html", {
         url: urlToTest,

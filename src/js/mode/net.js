@@ -80,8 +80,12 @@ export default async function netMode(netModeData) {
     assert(myId, "No net id");
     const networkLogger = loggerFunc(document, settings, 3);
     const gameChannel = await createSignalingChannel(myId, settings.serverId, window.location, settings, networkLogger);
-
     const logger = loggerFunc(document, settings, 5);
+    if (!gameChannel) {
+        logger.error("No chan");
+        return;
+    }
+
     const connection = broadcastConnectionFunc(myId, networkLogger, gameChannel);
     onConnectionAnimation(document, connection, logger);
     const lobbyWaiter = new Promise((resolve, reject) => {

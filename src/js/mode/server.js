@@ -36,6 +36,10 @@ export default async function server({window, document, settings, rngEngine}) {
     const networkLogger = loggerFunc(document, settings);
 
     const gameChannel = await createSignalingChannel(myId, myId, window.location, settings, networkLogger);
+    if (!gameChannel) {
+        networkLogger.error("No chan");
+        return;
+    }
     let qrCodeEl = makeQr(window, document, settings, myId);
 
     const connection = broadcastConnectionFunc(myId, networkLogger, gameChannel);

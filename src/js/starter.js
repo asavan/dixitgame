@@ -29,10 +29,8 @@ export default async function starter(window, document) {
         mode = await import("./mode/net.js");
     } else if (settings.mode === "server") {
         mode = await import("./mode/server.js");
-    } else if (settings.mode === "ai") {
+    } else if (settings.mode === "ai" || settings.mode === "hotseat") {
         mode = await import("./mode/ai.js");
-    } else if (settings.mode === "hotseat") {
-        mode = await import("./mode/hotseat.js");
     } else {
         assert(false, "Unsupported mode");
     }
