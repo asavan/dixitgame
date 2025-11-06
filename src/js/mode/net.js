@@ -57,7 +57,7 @@ function onConnectionOpen(connection, serverData, netModeData, myId, logger, set
     assert(serverId === serverData.from, serverData.from);
     const queue = PromiseQueue(logger);
     const lobby = lobbyFunc({ ...netModeData, myId });
-    const nAdapter = networkAdapter(connection, queue, myId, serverId);
+    const nAdapter = networkAdapter(connection, queue, myId, serverId, logger);
     const actions = {
         "start": (data) => {
             logger.log("start", data);
@@ -108,6 +108,7 @@ export default async function netMode(netModeData) {
     });
 
     await connection.connect(socketUrl);
+    connection.sendRawAll("join", {id: myId});
     const lobby = await lobbyWaiter;
     return lobby;
 }

@@ -1,49 +1,59 @@
-import loggerFunc from "../views/logger.js";
-import { getWebSocketUrl, getMyId } from "../connection/common.js";
-import connectionChooser from "../connection/connection_chooser.js";
 import PromiseQueue from "../utils/async-queue.js";
-import { makeQr, removeElem } from "../views/qr_helper.js";
-import { assert } from "../utils/assert.js";
+import {assert} from "../utils/assert.js";
 import lobbyFunc from "../core/lobby.js";
 import glueObj from "../core/glue.js";
 import networkAdapter from "../connection/network_adapter.js";
 import startServerWithUI from "./common.js";
 import addSettingsButton from "../views/settings-form-btn.js";
 
-export default async function server({window, document, settings, rngEngine}) {
-    const myId = getMyId(window, settings, rngEngine);
-    const logger = loggerFunc(6, null, settings);
-    const networkLogger = loggerFunc(3, null, settings);
-    const socketUrl = getWebSocketUrl(settings, window.location);
-    if (!socketUrl) {
-        logger.error("Can't determine ws address", socketUrl);
-        return;
-    }
+import {
+    createSignalingChannel,
+    broadcastConnectionFunc, loggerFunc, makeQrStr,
+    netObj, removeElem
+} from "netutils";
 
-    const connectionFunc = await connectionChooser(settings);
-    const connection = connectionFunc(myId, networkLogger, true);
+function makeQr(window, document, settings, serverId) {
+    const staticHost = netObj.getHostUrl(settings, window.location);
+    const url = new URL(staticHost);
+    if (serverId) {
+        url.searchParams.set("serverId", serverId);
+    }
+    console.log("enemy url", url.toString());
+    const image = {
+        source: "./images/drixit_icon.svg",
+        width: "10%",
+        height: "20%",
+        x: "center",
+        y: "center",
+    };
+    return makeQrStr(url.toString(), window, document, settings, image);
+}
+
+
+export default async function server({window, document, settings, rngEngine}) {
+    const myId = netObj.getMyId(window, settings, Math.random);
+    settings.serverId = myId;
+    const networkLogger = loggerFunc(document, settings);
+
+    const gameChannel = await createSignalingChannel(myId, myId, window.location, settings, networkLogger);
+    let qrCodeEl = makeQr(window, document, settings, myId);
+
+    const connection = broadcastConnectionFunc(myId, networkLogger, gameChannel);
+
+    const logger = loggerFunc(document, settings, 6);
     connection.on("error", (e) => {
         logger.error(e);
         throw e;
     });
 
-    let qrCodeEl;
     let presenter;
-
-    connection.on("socket_open", () => {
-        qrCodeEl = makeQr(window, document, settings);
-        connection.on("socket_close", () => {
-            removeElem(qrCodeEl);
-            qrCodeEl = undefined;
-        });
-    });
 
     const queue = PromiseQueue(logger);
     const lobby = lobbyFunc({window, document, settings, myId, players: []});
 
     const onJoin = (data) => {
         logger.log("User joined", data);
-        const { name, externalId } = data;
+        const {name, externalId} = data;
         assert(name, "No name");
         assert(externalId, "No externalId");
         return lobby.join(name, externalId, settings.playerIsBot);
@@ -81,8 +91,10 @@ export default async function server({window, document, settings, rngEngine}) {
         logger.log("disconnect", {id, is_disconnected});
     });
 
-    connection.on("open", (con) => {
+    connection.on("join", (json) => {
+        const con = json.data;
         logger.log("connected", con);
+        gameChannel.send("open", {id: myId}, json.from);
         if (lobby.canSeeGame(con.id) && presenter) {
             return connection.sendRawTo("start", presenter.toJson(), con.id);
         } else {
@@ -91,5 +103,5 @@ export default async function server({window, document, settings, rngEngine}) {
     });
 
     lobby.afterSetup();
-    await connection.connect(socketUrl);
+    await connection.connect();
 }

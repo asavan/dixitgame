@@ -3,6 +3,8 @@ export default {
     mode: "net",
     connections: ["webrtc", "websocket"],
     connection: "websocket",
+    channelTypes: ["socket", "supa", "fake", "auto", "none"],
+    channelType: "auto",
     wsPort: 8088,
     loggerAnchor: ".log",
     logLevel: 4,

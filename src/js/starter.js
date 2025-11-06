@@ -5,8 +5,7 @@ import {
     adjustSeed,
     adjustOther
 } from "./utils/parse-settings.js";
-import { assert, parseSettings } from "netutils";
-import rngFunc from "./utils/random.js";
+import { assert, loggerFunc, parseSettings, random } from "netutils";
 
 export default async function starter(window, document) {
     const settings = { ...settingsOriginal };
@@ -15,7 +14,15 @@ export default async function starter(window, document) {
     adjustMode(changed, settings, window.location.protocol);
     adjustBots(changed, settings);
     adjustOther(changed, settings);
-    adjustSeed(changed, settings, rngFunc, rngEngine);
+    adjustSeed(changed, settings, random, rngEngine);
+
+    const mainLogger = loggerFunc(document, settings);
+    mainLogger.log("Choosen mode " + settings.mode);
+
+    window.addEventListener("unhandledrejection", (event) => {
+        mainLogger.error(`UNHANDLED PROMISE REJECTION: ${event.reason}`);
+        // event.preventDefault();
+    });
 
     let mode;
     if (settings.mode === "net") {
@@ -31,6 +38,6 @@ export default async function starter(window, document) {
     }
     mode.default({ window, document, settings: settings, rngEngine }).
         catch((error) => {
-            console.error(error);
+            mainLogger.error(error);
         });
 }
