@@ -1,4 +1,3 @@
-import lobbyFunc from "../core/client-lobby.js";
 import initPresenter from "../rules/presenter.js";
 import networkAdapter from "../connection/network_adapter.js";
 import glueObj from "../core/glue.js";
@@ -6,10 +5,11 @@ import glueObj from "../core/glue.js";
 import viewActions from "../rules/view_actions.js";
 import urlGenerator from "../views/get_image_url.js";
 import addSettingsButton from "../views/settings-form-btn.js";
+import enterName from "../views/names.js";
 
 import {
     assert, delay, broadcastConnectionFunc, createSignalingChannel,
-    loggerFunc, netObj, PromiseQueue
+    loggerFunc, netObj, PromiseQueue, actionToHandler
 } from "netutils";
 
 
@@ -48,30 +48,29 @@ function onConnectionAnimation(document, connection, logger) {
     connection.on("gameinit", onClose);
 }
 
-function onConnectionOpen(connection, serverData, netModeData, myId, logger, settings) {
+function onConnectionOpen(connection, serverData, netModeData, myId, logger) {
     const serverId = serverData.data.id;
     assert(serverId === serverData.from, serverData.from);
-    const queue = PromiseQueue(logger);
-    const lobby = lobbyFunc({...netModeData, myId});
-    const nAdapter = networkAdapter(connection, queue, myId, serverId, logger);
+    const {window, document, settings} = {...netModeData};
+    const onNameChange = (name) => {
+        logger.log("change name " + name);
+        connection.sendRawTo("username", {name, externalId: myId}, serverId);
+        addSettingsButton(document, settings);
+    };
     const actions = {
         "start": (data) => {
             logger.log("start", data);
+            const queue = PromiseQueue(logger);
+            const nAdapter = networkAdapter(connection, queue, myId, serverId, logger);
             const myIndex = data.playersRaw.findIndex(p => p.externalId === myId);
             const presenter = initPresenter({...netModeData, queue, myIndex}, data);
             const pAdapter = glueObj.wrapAdapter(presenter, viewActions);
             pAdapter.connectAdapter(nAdapter);
         }
     };
-
-    lobby.on("username", () => {
-        addSettingsButton(document, settings);
-    });
-
-    const lAdapter = glueObj.wrapAdapterActions(lobby, actions);
-    lAdapter.connectAdapter(nAdapter);
-    lobby.afterSetup();
-    return lobby;
+    const handler = actionToHandler(actions);
+    connection.registerHandler(handler);
+    enterName(window, document, settings, onNameChange);
 }
 
 export default async function netMode(netModeData) {
@@ -92,8 +91,8 @@ export default async function netMode(netModeData) {
         const traceLogger = loggerFunc(document, settings, 1);
         connection.on("gameinit", (serverData) => {
             traceLogger.log("Server id ", serverData, myId);
-            const lobby = onConnectionOpen(connection, serverData, netModeData, myId, logger, settings);
-            resolve(lobby);
+            onConnectionOpen(connection, serverData, netModeData, myId, logger, settings);
+            resolve();
         });
         connection.on("error", (e) => {
             traceLogger.error(e);
@@ -103,6 +102,5 @@ export default async function netMode(netModeData) {
 
     await connection.connect();
     connection.sendRawAll("join", {});
-    const lobby = await lobbyWaiter;
-    return lobby;
+    await lobbyWaiter;
 }
