@@ -14,7 +14,7 @@ export default async function starter(window, document) {
     adjustBots(changed, settings);
     adjustSeed(changed, settings, random, rngEngine);
 
-    const mainLogger = loggerFunc(document, settings);
+    const mainLogger = loggerFunc(document, settings, 6);
     mainLogger.log("Choosen mode " + settings.mode);
 
     window.addEventListener("unhandledrejection", (event) => {

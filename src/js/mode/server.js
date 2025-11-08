@@ -31,7 +31,7 @@ function makeQr(window, document, settings, serverId) {
 export default async function server({window, document, settings, rngEngine}) {
     const myId = netObj.getMyId(window, settings, Math.random);
     settings.serverId = myId;
-    const networkLogger = loggerFunc(document, settings);
+    const networkLogger = loggerFunc(document, settings, 2);
 
     const gameChannel = await createSignalingChannel(myId, myId, window.location, settings, networkLogger);
     if (!gameChannel) {
