@@ -368,8 +368,6 @@ footer {
   margin: auto;
 }
 
-@media (max-width: 450px) { .hidden2 { display: none; } }
-
 .nameinput {
   padding: 10px 2px;
   width: 220px;
@@ -699,3 +697,5 @@ footer {
 #control-panel button:not(:disabled):hover { background-color: #686868; }
 
 .hidden { display: none; }
+
+@media (max-width: 450px) { .hidden2 { display: none; } }

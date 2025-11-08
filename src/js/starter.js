@@ -2,8 +2,7 @@ import settingsOriginal from "./settings.js";
 import {
     adjustMode,
     adjustBots,
-    adjustSeed,
-    adjustOther
+    adjustSeed
 } from "./utils/parse-settings.js";
 import { assert, loggerFunc, parseSettings, random } from "netutils";
 
@@ -13,7 +12,6 @@ export default async function starter(window, document) {
     const rngEngine = Math.random;
     adjustMode(changed, settings, window.location.protocol);
     adjustBots(changed, settings);
-    adjustOther(changed, settings);
     adjustSeed(changed, settings, random, rngEngine);
 
     const mainLogger = loggerFunc(document, settings);

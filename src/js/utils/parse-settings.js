@@ -1,11 +1,3 @@
-export function adjustOther(changed, settings) {
-    if (!changed.includes("wh")) {
-        if (settings.mode === "server" && !settings.wh) {
-            settings.wh = "ws://localhost:8088";
-        }
-    }
-}
-
 export function adjustBots(changed, settings) {
     if (!changed.includes("botCount") && settings.mode === "server") {
         settings.botCount = 0;
@@ -36,7 +28,6 @@ export function adjustMode(changed, settings, protocol) {
     const keepModes = ["mode", "wh"];
     for (const keepMode of keepModes) {
         if (changed.includes(keepMode)) {
-            adjustBots(changed, settings);
             return;
         }
     }
