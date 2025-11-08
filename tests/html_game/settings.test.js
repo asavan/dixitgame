@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import settingsOriginal from "../../src/js/settings.js";
-import {adjustMode} from "../../src/js/utils/parse-settings.js";
+import {adjustBots, adjustMode} from "../../src/js/utils/parse-settings.js";
 import {parseSettings} from "netutils";
 
 
@@ -19,6 +19,7 @@ test("ajust settings", () => {
     const changed = parseSettings(search, settings);
     assert.ok(changed.includes("mode"));
     adjustMode(changed, settings, "https:");
+    adjustBots(changed, settings, "https:");
     assert.equal(settings.mode, "server");
     assert.equal(settings.botCount, 0);
 });
@@ -29,6 +30,7 @@ test("ajust settings2", () => {
     const changed = parseSettings(search, settings);
     assert.equal(changed.length, 0);
     adjustMode(changed, settings, "https:");
+    adjustBots(changed, settings, "https:");
     assert.equal(settings.mode, "ai");
     assert.equal(settings.botCount, 2);
 });
