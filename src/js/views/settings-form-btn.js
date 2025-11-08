@@ -2,11 +2,6 @@ import createBooleanForm from "./settings-form.js";
 import fullScreen from "./fullscreen.js";
 
 export default function addSettingsButton(document, settings) {
-    const controlPanelTmpl = document.querySelector("#control-panel-tmpl");
-    const controlPanel = controlPanelTmpl.content.cloneNode(true).firstElementChild;
-    const settingsControl = document.querySelector(".settings-cont");
-    settingsControl.replaceChildren(controlPanel);
-
     const maxBtn = document.querySelector("#maximize-btn");
     const minBtn = document.querySelector("#minimize-btn");
     const resizeBtn = document.querySelector("#resize-btn");
