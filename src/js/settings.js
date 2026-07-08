@@ -13,7 +13,7 @@ export default {
     maxScore: 30,
     direction: 1,
     voteForOwn: false,
-    allowChangeMove: true,
+    allowChangeMove: false,
     cardsCount: 84,
     scoreAllReg: 2,
     scoreAllStoryteller: 0,
