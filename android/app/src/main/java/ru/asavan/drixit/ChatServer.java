@@ -4,7 +4,8 @@ import android.util.Log;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -16,15 +17,9 @@ public class ChatServer extends WebSocketServer {
         super(new InetSocketAddress(port));
     }
 
-    public void broadcast(WebSocket conn, String message) {
-        var allConnections = getConnections();
-        var connections = new ArrayList<WebSocket>(allConnections.size());
-        for (var c : getConnections()) {
-            if (c != conn) {
-                connections.add(c);
-            }
-        }
-        broadcast(message, connections);
+    private Collection<WebSocket> getOtherConnections(WebSocket conn) {
+        return getConnections().stream().filter(c -> c != conn)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -37,14 +32,12 @@ public class ChatServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        broadcast(conn, message);
-        // System.out.println(conn + ": " + message);
+        broadcast(message, getOtherConnections(conn));
     }
 
     @Override
     public void onMessage(WebSocket conn, ByteBuffer message) {
-        broadcast(message.array());
-        // System.out.println(conn + ": " + message);
+        broadcast(message, getOtherConnections(conn));
     }
 
     @Override

@@ -2,12 +2,6 @@ plugins {
     id("com.android.application")
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
-    }
-}
-
 android {
     namespace = "ru.asavan.drixit"
     compileSdk = 37
@@ -33,17 +27,22 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            optimization {
+                enable = true
+            }
         }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
     }
 }
 
 dependencies {
     implementation("org.nanohttpd:nanohttpd:2.3.1")
     implementation("org.java-websocket:Java-WebSocket:1.6.0")
-    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.7.2")
+    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.7.3")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")

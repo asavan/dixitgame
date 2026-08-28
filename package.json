@@ -32,15 +32,15 @@
   },
   "homepage": "https://asavan.github.io/dixitgame/",
   "devDependencies": {
-    "dependency-cruiser": "^18.0.0",
-    "devdeps": "github:asavan/dev-deps#v0.0.16",
-    "netdeps": "github:asavan/net-deps#v0.0.5",
-    "dprint": "^0.55.1",
+    "dependency-cruiser": "^18.1.0",
+    "devdeps": "github:asavan/dev-deps#v0.0.17",
+    "netdeps": "github:asavan/net-deps#v0.0.6",
+    "dprint": "^0.55.2",
     "madge": "^8.0.0",
     "sharp": "^0.35.3"
   },
   "dependencies": {
     "esm-seedrandom": "^3.0.5",
-    "netutils": "github:asavan/netutils#v0.1.6"
+    "netutils": "github:asavan/netutils#v0.1.7"
   }
 }
